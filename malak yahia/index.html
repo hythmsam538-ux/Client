@@ -323,56 +323,85 @@
     </div>
   </div>
 
-  <script>
-    // 🌙 تبديل الوضع الليلي / النهاري
-    const toggleButton = document.getElementById('theme-toggle');
-    const body = document.body;
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'light') {
-      body.classList.add('light');
-      toggleButton.innerHTML = '<i class="fas fa-sun"></i>';
-    }
+  <script type="module">
+  // 🌙 تبديل الوضع الليلي / النهاري
+  const toggleButton = document.getElementById('theme-toggle');
+  const body = document.body;
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme === 'light') {
+    body.classList.add('light');
+    toggleButton.innerHTML = '<i class="fas fa-sun"></i>';
+  }
 
-    toggleButton.addEventListener('click', () => {
-      body.classList.toggle('light');
-      const isLight = body.classList.contains('light');
-      toggleButton.innerHTML = isLight ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
-      localStorage.setItem('theme', isLight ? 'light' : 'dark');
-    });
+  toggleButton.addEventListener('click', () => {
+    body.classList.toggle('light');
+    const isLight = body.classList.contains('light');
+    toggleButton.innerHTML = isLight ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+    localStorage.setItem('theme', isLight ? 'light' : 'dark');
+  });
 
-    // 🔢 عداد الزيارات
-    let count = localStorage.getItem('visitCount') || 0;
-    count++;
-    localStorage.setItem('visitCount', count);
-    document.getElementById('visit-count').textContent = count;
-    document.getElementById('visits').addEventListener('click', e => {
-      e.currentTarget.classList.toggle('show');
-    });
+  /* ------------------ 🔥 Firebase ------------------ */
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+  import { getDatabase, ref, get, set, onValue } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
 
-    // ✨ توليد النجوم
-    const starsContainer = document.getElementById('stars');
-    for (let i = 0; i < 70; i++) {
-      const star = document.createElement('span');
-      star.style.top = Math.random() * 100 + '%';
-      star.style.left = Math.random() * 100 + '%';
-      star.style.animationDelay = Math.random() * 5 + 's';
-      star.style.animationDuration = 6 + Math.random() * 5 + 's';
-      starsContainer.appendChild(star);
-    }
+  const firebaseConfig = {
+    apiKey: "AIzaSyCkrUIoyIRdz2nrUg1iD22rComKYFlEexg",
+    authDomain: "read-8f6ea.firebaseapp.com",
+    databaseURL: "https://read-8f6ea-default-rtdb.firebaseio.com",
+    projectId: "read-8f6ea",
+    storageBucket: "read-8f6ea.firebasestorage.app",
+    messagingSenderId: "850538566690",
+    appId: "1:850538566690:web:a709bb63290101a8d1267b",
+    measurementId: "G-699KDS1TBJ"
+  };
 
-    // 🕓 تسلسل ظهور الأزرار
-    const links = document.querySelectorAll('.links a');
-    links.forEach((link, index) => {
-      link.style.animationDelay = `${index * 0.2 + 3.5}s`;
-    });
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+  const visitRef = ref(db, "visitCount");
 
-    // 🟢 شريط التمرير الجانبي
-    window.addEventListener('scroll', () => {
-      const scrollTop = window.scrollY;
-      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-      const scrollPercent = (scrollTop / docHeight) * 100;
-      document.getElementById('scroll-progress').style.height = scrollPercent + '%';
-    });
-  </script>
+  // تحديث العدد مباشرة عند أي تغيير
+  onValue(visitRef, snapshot => {
+    let visits = snapshot.exists() ? snapshot.val() : 0;
+    document.getElementById("visit-count").textContent = visits;
+  });
+
+  // زيادة العدد عند زيارة جديدة
+  get(visitRef).then(snapshot => {
+    let visits = snapshot.exists() ? snapshot.val() : 0;
+    visits++;
+    set(visitRef, visits);
+  });
+
+  // 📌 إظهار/إخفاء العدد عند الضغط على العين
+  document.getElementById("visits").addEventListener("click", e => {
+    e.currentTarget.classList.toggle("show");
+  });
+  /* ------------------------------------------------------- */
+
+  // ✨ توليد النجوم
+  const starsContainer = document.getElementById('stars');
+  for (let i = 0; i < 70; i++) {
+    const star = document.createElement('span');
+    star.style.top = Math.random() * 100 + '%';
+    star.style.left = Math.random() * 100 + '%';
+    star.style.animationDelay = Math.random() * 5 + 's';
+    star.style.animationDuration = 6 + Math.random() * 5 + 's';
+    starsContainer.appendChild(star);
+  }
+
+  // 🕓 تسلسل ظهور الأزرار
+  const links = document.querySelectorAll('.links a');
+  links.forEach((link, index) => {
+    link.style.animationDelay = `${index * 0.2 + 3.5}s`;
+  });
+
+  // 🟢 شريط التمرير الجانبي
+  window.addEventListener('scroll', () => {
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const scrollPercent = (scrollTop / docHeight) * 100;
+    document.getElementById('scroll-progress').style.height = scrollPercent + '%';
+  });
+</script>
 </body>
 </html>
