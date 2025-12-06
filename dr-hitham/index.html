@@ -1241,62 +1241,99 @@
         </div>
     </header>
 
-    <!-- Mobile Menu with Close Button -->
-    <div class="mobile-menu" id="mobileMenu">
-        <!-- زر إغلاق القائمة -->
-        <button class="menu-close" id="menuClose">
-            <i class="fas fa-times"></i>
-        </button>
+ <!-- Mobile Menu with Close Button -->
+<div class="mobile-menu" id="mobileMenu">
+    <!-- زر إغلاق القائمة -->
+    <button class="menu-close" id="menuClose">
+        <i class="fas fa-times"></i>
+    </button>
 
-        <!-- عنوان القائمة -->
-        <div class="mobile-menu-header">
-            <img src="logo-removebg-preview.png" alt="مُـخـتـلـف">
-            <h3>مُـخـتـلـف | هويتك الذكية</h3>
-        </div>
+    <!-- عنوان القائمة -->
+    <div class="mobile-menu-header">
+        <img src="loweb.png" alt="مُـخـتـلـف">
+        <h3>مُـخـتـلـف | هويتك الذكية</h3>
+    </div>
 
-        <!-- روابط القائمة -->
-        <nav class="mobile-nav">
-            <a href="features.html" class="mobile-nav-link">
-                <i class="fas fa-star"></i>
-                <span>المميزات</span>
-            </a>
-            <a href="shr7.html" class="mobile-nav-link">
-                <i class="fas fa-play-circle"></i>
-                <span>العرض الواقعي</span>
-            </a>
-            <a href="about.html" class="mobile-nav-link">
-                <i class="fas fa-info-circle"></i>
-                <span>عن مُـخـتـلـف</span>
-            </a>
-            <a href="faq.html" class="mobile-nav-link">
-                <i class="fas fa-question-circle"></i>
-                <span>الأسئلة الشائعة</span>
-            </a>
-            <a href="cart.html" class="mobile-nav-link">
-                <i class="fas fa-shopping-cart"></i>
-                <span>السلة <span id="mobileCartCount">(0)</span></span>
-            </a>
-        </nav>
+    <!-- روابط القائمة مع شريط التمرير -->
+    <nav class="mobile-nav">
+        <a href="index.html" class="mobile-nav-link">
+            <i class="fas fa-home"></i>
+            <span>الرئيسية</span>
+        </a>
+        <a href="about.html" class="mobile-nav-link">
+            <i class="fas fa-info-circle"></i>
+            <span>عن مُـخـتـلـف</span>
+        </a>
+        <a href="shr7.html" class="mobile-nav-link">
+            <i class="fas fa-play-circle"></i>
+            <span>العرض الواقعي</span>
+        </a>
+        <a href="features.html" class="mobile-nav-link">
+            <i class="fas fa-star"></i>
+            <span>المميزات</span>
+        </a>
+        <a href="faq.html" class="mobile-nav-link active">
+            <i class="fas fa-question-circle"></i>
+            <span>الأسئلة الشائعة</span>
+        </a>
+        <a href="cart.html" class="mobile-nav-link">
+            <i class="fas fa-shopping-cart"></i>
+            <span>السلة <span id="mobileCartCount">(0)</span></span>
+        </a>
+    </nav>
 
-        <!-- وسائل التواصل -->
-        <div class="mobile-social">
-            <h4>تابعنا على</h4>
-            <div class="social-icons">
-                <a href="https://www.facebook.com" target="_blank">
-                    <i class="fab fa-facebook-f"></i>
-                </a>
-                <a href="https://www.instagram.com/a_different1" target="_blank">
-                    <i class="fab fa-instagram"></i>
-                </a>
-                <a href="https://www.tiktok.com/@a_different_" target="_blank">
-                    <i class="fab fa-tiktok"></i>
-                </a>
-                <a href="https://wa.me/966547856086" target="_blank">
-                    <i class="fab fa-whatsapp"></i>
-                </a>
-            </div>
+    <!-- وسائل التواصل -->
+    <div class="mobile-social">
+        <h4>تابعنا على</h4>
+        <div class="social-icons">
+            <a href="https://www.facebook.com/share/17SvsYFmAu/" target="_blank">
+                <i class="fab fa-facebook-f"></i>
+            </a>
+            <a href="https://www.instagram.com/a_different1" target="_blank">
+                <i class="fab fa-instagram"></i>
+            </a>
+            <a href="https://www.tiktok.com/@a_different_?_r=1&_t=ZS-91JP97UzArn" target="_blank">
+                <i class="fab fa-tiktok"></i>
+            </a>
+            <a href="https://wa.me/message/364PZMOXC2UWA1" target="_blank">
+                <i class="fab fa-whatsapp"></i>
+            </a>
         </div>
     </div>
+</div>
+<style>
+    .mobile-nav {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    max-height: calc(100vh - 280px);
+    padding-left: 5px;
+    margin: 10px 0;
+    /* إخفاء الشريط */
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+}
+
+/* إظهار الشريط عند التحويم فقط */
+.mobile-nav:hover {
+    scrollbar-color: rgba(76, 201, 240, 0.3) rgba(255, 255, 255, 0.05);
+}
+
+/* للمتصفحات التي تدعم webkit */
+.mobile-nav::-webkit-scrollbar {
+    width: 6px;
+    background: transparent;
+}
+
+.mobile-nav:hover::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.mobile-nav:hover::-webkit-scrollbar-thumb {
+    background: rgba(76, 201, 240, 0.3);
+    border-radius: 3px;
+}
+</style>
 
     <!-- Menu Overlay -->
     <div class="menu-overlay" id="menuOverlay"></div>
@@ -1897,4 +1934,5 @@
         });
     </script>
 </body>
+
 </html>
