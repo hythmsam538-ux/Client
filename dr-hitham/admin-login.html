@@ -422,7 +422,7 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            min-width: 1300px;
+            min-width: 1400px;
         }
 
         th {
@@ -487,6 +487,32 @@
             background: rgba(34, 197, 94, 0.2);
             color: #22c55e;
             border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+
+        .status-ready {
+            background: rgba(168, 85, 247, 0.2);
+            color: #a855f7;
+            border: 1px solid rgba(168, 85, 247, 0.3);
+        }
+
+        .status-cancelled {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        /* Discount Badge */
+        .discount-badge {
+            background: rgba(74, 222, 128, 0.2);
+            color: #4ade80;
+            border: 1px solid rgba(74, 222, 128, 0.3);
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin-right: 5px;
         }
 
         /* Payment Status */
@@ -608,7 +634,7 @@
             background: var(--dark-light);
             border-radius: var(--radius);
             width: 100%;
-            max-width: 900px;
+            max-width: 1000px;
             max-height: 90vh;
             overflow-y: auto;
             border: 1px solid rgba(255, 255, 255, 0.2);
@@ -675,13 +701,14 @@
             border-radius: var(--radius);
             padding: 25px;
             margin-bottom: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .section-title {
             color: var(--accent);
             margin-bottom: 20px;
             padding-bottom: 15px;
-            border-bottom: 2px solid var(--accent);
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
             font-size: 1.2rem;
             display: flex;
             align-items: center;
@@ -730,14 +757,15 @@
         .products-table th {
             background: rgba(67, 97, 238, 0.2);
             color: var(--accent);
-            padding: 15px;
-            font-size: 0.95rem;
+            padding: 12px 15px;
+            font-size: 0.9rem;
         }
 
         .products-table td {
-            padding: 15px;
+            padding: 10px 15px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             color: var(--gray-light);
+            font-size: 0.9rem;
         }
 
         .products-table tr:hover {
@@ -939,6 +967,100 @@
             background: linear-gradient(135deg, var(--danger), #be185d);
         }
 
+        /* Financial Summary */
+        .financial-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .financial-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 15px;
+            border-radius: var(--radius);
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .financial-item .label {
+            font-size: 0.85rem;
+            color: var(--gray-light);
+            margin-bottom: 8px;
+        }
+
+        .financial-item .value {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: var(--accent);
+        }
+
+        .financial-item.discount .value {
+            color: var(--success);
+        }
+
+        .financial-item.original .value {
+            color: var(--gray-light);
+            text-decoration: line-through;
+        }
+
+        /* Discount Details */
+        .discount-details {
+            background: rgba(74, 222, 128, 0.1);
+            border: 1px solid rgba(74, 222, 128, 0.2);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .discount-details h4 {
+            color: var(--success);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .discount-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .discount-row:last-child {
+            border-bottom: none;
+            font-weight: bold;
+            color: var(--success);
+        }
+
+        /* Payment Filter Styling */
+        .payment-filter-select {
+            padding: 12px 15px;
+            background: #1e293b !important;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: var(--radius);
+            color: var(--light) !important;
+            font-size: 1rem;
+            transition: var(--transition);
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='white' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E") !important;
+            background-repeat: no-repeat !important;
+            background-position: left 15px center !important;
+            background-size: 12px !important;
+            padding-right: 15px !important;
+            padding-left: 40px !important;
+        }
+
         /* Responsive */
         @media (max-width: 1200px) {
             .country-stats-section {
@@ -1082,6 +1204,32 @@
                     </div>
                 </div>
                 
+                <!-- الطلبات قيد المعالجة -->
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(59, 130, 246, 0.2); color: #3b82f6;">
+                        <i class="fas fa-cogs"></i>
+                    </div>
+                    <h3>طلبات قيد المعالجة</h3>
+                    <div class="stat-value" id="processingOrders">0</div>
+                    <div class="stat-change change-up" id="processingChange">
+                        <i class="fas fa-arrow-up"></i>
+                        <span>+0 اليوم</span>
+                    </div>
+                </div>
+                
+                <!-- الطلبات الجاهزة -->
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(168, 85, 247, 0.2); color: #a855f7;">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <h3>طلبات جاهزة</h3>
+                    <div class="stat-value" id="readyOrders">0</div>
+                    <div class="stat-change change-up" id="readyChange">
+                        <i class="fas fa-arrow-up"></i>
+                        <span>+0 اليوم</span>
+                    </div>
+                </div>
+                
                 <!-- الطلبات قيد الشحن -->
                 <div class="stat-card">
                     <div class="stat-icon" style="background: rgba(139, 92, 246, 0.2); color: #8b5cf6;">
@@ -1134,27 +1282,27 @@
                     </div>
                 </div>
                 
-                <!-- تكاليف الشحن -->
+                <!-- إجمالي الطلبات مع خصم -->
                 <div class="stat-card">
-                    <div class="stat-icon" style="background: rgba(245, 158, 11, 0.2); color: #f59e0b;">
-                        <i class="fas fa-shipping-fast"></i>
+                    <div class="stat-icon" style="background: rgba(74, 222, 128, 0.2); color: #4ade80;">
+                        <i class="fas fa-tag"></i>
                     </div>
-                    <h3>إجمالي تكاليف الشحن</h3>
-                    <div class="stat-value" id="totalShipping">0</div>
-                    <div class="stat-change change-up" id="shippingCostChange">
+                    <h3>طلبات مع خصم</h3>
+                    <div class="stat-value" id="discountOrders">0</div>
+                    <div class="stat-change change-up" id="discountChange">
                         <i class="fas fa-arrow-up"></i>
                         <span>+0 اليوم</span>
                     </div>
                 </div>
                 
-                <!-- متوسط قيمة الطلب -->
+                <!-- إجمالي التوفير من الخصومات -->
                 <div class="stat-card">
-                    <div class="stat-icon" style="background: rgba(168, 85, 247, 0.2); color: #a855f7;">
-                        <i class="fas fa-chart-line"></i>
+                    <div class="stat-icon" style="background: rgba(245, 158, 11, 0.2); color: #f59e0b;">
+                        <i class="fas fa-money-bill-wave"></i>
                     </div>
-                    <h3>متوسط قيمة الطلب</h3>
-                    <div class="stat-value" id="avgOrderValue">0</div>
-                    <div class="stat-change change-up" id="avgOrderChange">
+                    <h3>إجمالي التوفير</h3>
+                    <div class="stat-value" id="totalSavings">0</div>
+                    <div class="stat-change change-up" id="savingsChange">
                         <i class="fas fa-arrow-up"></i>
                         <span>+0 اليوم</span>
                     </div>
@@ -1187,25 +1335,33 @@
                     <div class="country-stat-row">
                         <div class="country-stat-label">
                             <i class="fas fa-money-bill-wave"></i>
-                            <span>إجمالي الإيرادات</span>
+                            <span>إيرادات صافية</span>
                         </div>
-                        <div class="country-stat-value" id="saudiTotalRevenue">0 ر.س</div>
+                        <div class="country-stat-value" id="saudiNetRevenue">0 ر.س</div>
+                    </div>
+                    
+                    <div class="country-stat-row">
+                        <div class="country-stat-label">
+                            <i class="fas fa-box"></i>
+                            <span>إيرادات المنتجات</span>
+                        </div>
+                        <div class="country-stat-value" id="saudiProductRevenue">0 ر.س</div>
                     </div>
                     
                     <div class="country-stat-row">
                         <div class="country-stat-label">
                             <i class="fas fa-truck"></i>
-                            <span>تكاليف الشحن</span>
+                            <span>إيرادات الشحن</span>
                         </div>
-                        <div class="country-stat-value" id="saudiShippingCost">0 ر.س</div>
+                        <div class="country-stat-value" id="saudiShippingRevenue">0 ر.س</div>
                     </div>
                     
                     <div class="country-stat-row">
                         <div class="country-stat-label">
-                            <i class="fas fa-chart-bar"></i>
-                            <span>متوسط قيمة الطلب</span>
+                            <i class="fas fa-tag"></i>
+                            <span>طلبات مع خصم</span>
                         </div>
-                        <div class="country-stat-value" id="saudiAvgOrder">0 ر.س</div>
+                        <div class="country-stat-value" id="saudiDiscountOrders">0</div>
                     </div>
                     
                     <div class="country-stat-row">
@@ -1241,25 +1397,33 @@
                     <div class="country-stat-row">
                         <div class="country-stat-label">
                             <i class="fas fa-money-bill-wave"></i>
-                            <span>إجمالي الإيرادات</span>
+                            <span>إيرادات صافية</span>
                         </div>
-                        <div class="country-stat-value" id="egyptTotalRevenue">0 ج.م</div>
+                        <div class="country-stat-value" id="egyptNetRevenue">0 ج.م</div>
+                    </div>
+                    
+                    <div class="country-stat-row">
+                        <div class="country-stat-label">
+                            <i class="fas fa-box"></i>
+                            <span>إيرادات المنتجات</span>
+                        </div>
+                        <div class="country-stat-value" id="egyptProductRevenue">0 ج.م</div>
                     </div>
                     
                     <div class="country-stat-row">
                         <div class="country-stat-label">
                             <i class="fas fa-truck"></i>
-                            <span>تكاليف الشحن</span>
+                            <span>إيرادات الشحن</span>
                         </div>
-                        <div class="country-stat-value" id="egyptShippingCost">0 ج.م</div>
+                        <div class="country-stat-value" id="egyptShippingRevenue">0 ج.م</div>
                     </div>
                     
                     <div class="country-stat-row">
                         <div class="country-stat-label">
-                            <i class="fas fa-chart-bar"></i>
-                            <span>متوسط قيمة الطلب</span>
+                            <i class="fas fa-tag"></i>
+                            <span>طلبات مع خصم</span>
                         </div>
-                        <div class="country-stat-value" id="egyptAvgOrder">0 ج.م</div>
+                        <div class="country-stat-value" id="egyptDiscountOrders">0</div>
                     </div>
                     
                     <div class="country-stat-row">
@@ -1290,8 +1454,10 @@
                         <option value="جديد">جديد</option>
                         <option value="قيد المراجعة">قيد المراجعة</option>
                         <option value="قيد المعالجة">قيد المعالجة</option>
+                        <option value="جاهز">جاهز</option>
                         <option value="قيد الشحن">قيد الشحن</option>
                         <option value="تم التسليم">تم التسليم</option>
+                        <option value="ملغي">ملغي</option>
                     </select>
                 </div>
                 
@@ -1308,8 +1474,21 @@
                 </div>
                 
                 <div class="filter-group">
-                    <label for="filterCity"><i class="fas fa-map-marker-alt"></i> المدينة/المحافظة</label>
-                    <input type="text" id="filterCity" placeholder="اكتب اسم المدينة...">
+                    <label for="filterPaymentStatus"><i class="fas fa-money-bill-wave"></i> حالة الدفع</label>
+                    <select id="filterPaymentStatus" class="payment-filter-select">
+                        <option value="">جميع حالات الدفع</option>
+                        <option value="paid">تم الدفع</option>
+                        <option value="pending">لم يتم الدفع</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label for="filterDiscount"><i class="fas fa-tag"></i> حالة الخصم</label>
+                    <select id="filterDiscount">
+                        <option value="">الكل</option>
+                        <option value="with-discount">مع خصم</option>
+                        <option value="without-discount">بدون خصم</option>
+                    </select>
                 </div>
                 
                 <div class="filter-group">
@@ -1346,8 +1525,8 @@
                                 <th>المدينة</th>
                                 <th>طريقة الدفع</th>
                                 <th>حالة الدفع</th>
-                                <th>الشحن</th>
                                 <th>الإجمالي</th>
+                                <th>الخصم</th>
                                 <th>الحالة</th>
                                 <th>الإجراءات</th>
                             </tr>
@@ -1395,14 +1574,14 @@
     </div>
 
     <script>
-        // تكوين Firebase
+        // تكوين Firebase الجديد
         const firebaseConfig = {
-            apiKey: "AIzaSyADyJbkYryUHvfoLHHu1GVJkIvLcHg7cr4",
-            authDomain: "different-store-d935d.firebaseapp.com",
-            projectId: "different-store-d935d",
-            storageBucket: "different-store-d935d.firebasestorage.app",
-            messagingSenderId: "148780624236",
-            appId: "1:148780624236:web:e92420a6423731d9e92b49"
+            apiKey: "AIzaSyBEKzQ_S_WRMLWLHk8fLTrIjrN4bvbYb0",
+            authDomain: "different-store-admin.firebaseapp.com",
+            projectId: "different-store-admin",
+            storageBucket: "different-store-admin.firebasestorage.app",
+            messagingSenderId: "75347854869d",
+            appId: "1:75347854869d:web:044088f5cf63bf3c74c10b"
         };
 
         // تهيئة Firebase
@@ -1536,18 +1715,16 @@
             }, 30000);
         }
 
-        // 🛠️ **إصلاح مشكلة الحذف** - التحميل الذكي
+        // تحميل الطلبات
         async function loadOrders() {
             try {
                 document.getElementById('loading').style.display = 'block';
                 
                 let orders = [];
-                let newOrdersLoaded = false;
                 
                 // 1. تحميل الطلبات المحذوفة من الذاكرة
                 const deleted = JSON.parse(localStorage.getItem('deleted_orders')) || [];
                 deletedOrders = new Set(deleted);
-                console.log(`🗑️ الطلبات المحذوفة: ${deleted.length} طلب`);
                 
                 // 2. تحميل من Firebase مع فلترة الطلبات المحذوفة مسبقاً
                 try {
@@ -1559,10 +1736,9 @@
                         const data = doc.data();
                         const orderId = data.orderNumber || data.orderId || doc.id;
                         
-                        // ✅ التحقق من الطلب المحذوف
                         if (!deletedOrders.has(orderId.toString())) {
-                            // حساب سعر الشحن حسب المحافظة
                             let shippingCost = calculateShippingCost(data);
+                            const discountInfo = extractDiscountInfo(data);
                             
                             orders.push({
                                 id: doc.id,
@@ -1570,14 +1746,12 @@
                                 orderId: orderId,
                                 ...data,
                                 shippingCost: shippingCost,
+                                discountInfo: discountInfo,
                                 source: 'firebase',
-                                isDeleted: false // علامة أن الطلب غير محذوف
+                                isDeleted: false
                             });
-                        } else {
-                            console.log(`⏭️ تخطي الطلب المحذوف: ${orderId}`);
                         }
                     });
-                    console.log(`✅ تم تحميل ${orders.length} طلب من Firebase (بعد الفلترة)`);
                 } catch (firebaseError) {
                     console.warn('⚠️ خطأ في جلب البيانات من Firebase:', firebaseError.message);
                 }
@@ -1587,41 +1761,39 @@
                     const savedOrders = JSON.parse(localStorage.getItem('orders')) || [];
                     const savedNewOrders = JSON.parse(localStorage.getItem('new_orders')) || [];
                     
-                    // معالجة savedOrders
                     savedOrders.forEach(order => {
                         if (order.orderNumber && !deletedOrders.has(order.orderNumber.toString())) {
-                            // حساب سعر الشحن حسب المحافظة
                             let shippingCost = calculateShippingCost(order);
+                            const discountInfo = extractDiscountInfo(order);
                             
                             orders.push({
                                 id: order.orderNumber.toString(),
                                 orderId: order.orderNumber,
                                 ...order,
                                 shippingCost: shippingCost,
+                                discountInfo: discountInfo,
                                 source: 'local',
                                 isDeleted: false
                             });
                         }
                     });
                     
-                    // معالجة savedNewOrders
                     savedNewOrders.forEach(order => {
                         if (order.orderId && !deletedOrders.has(order.orderId.toString())) {
-                            // حساب سعر الشحن حسب المحافظة
                             let shippingCost = calculateShippingCost(order);
+                            const discountInfo = extractDiscountInfo(order);
                             
                             orders.push({
                                 id: order.orderId.toString(),
                                 orderId: order.orderId,
                                 ...order,
                                 shippingCost: shippingCost,
+                                discountInfo: discountInfo,
                                 source: 'new',
                                 isDeleted: false
                             });
                         }
                     });
-                    
-                    console.log(`✅ تم تحميل ${savedOrders.length + savedNewOrders.length} طلب من localStorage (بعد الفلترة)`);
                 } catch (localError) {
                     console.warn('⚠️ خطأ في جلب البيانات من localStorage:', localError);
                 }
@@ -1641,15 +1813,32 @@
                 
                 document.getElementById('loading').style.display = 'none';
                 
-                if (allOrders.length > 0) {
-                    console.log(`📊 جاهز للعرض: ${allOrders.length} طلب`);
-                }
-                
             } catch (error) {
                 console.error('❌ خطأ في تحميل الطلبات:', error);
                 document.getElementById('loading').style.display = 'none';
                 showNotification('خطأ في التحميل', error.message, 'error');
             }
+        }
+
+        // استخراج معلومات الخصم من الطلب
+        function extractDiscountInfo(order) {
+            const discount = order.discount || {};
+            const totals = order.totals || {};
+            
+            return {
+                applied: discount.applied || false,
+                code: discount.code || '',
+                amount: discount.amount || 0,
+                originalTotal: discount.originalTotal || totals.total || 0,
+                finalTotal: totals.total || order.total || 0,
+                shippingCost: order.shippingCost || totals.shipping || 0,
+                freeShipping: discount.applied || false,
+                description: discount.applied ? 
+                    (order.customer?.address?.country === 'مصر' ? 
+                     'خصم 20% + توصيل مجاني (259 ج.م)' : 
+                     'خصم 20% + توصيل مجاني') : 
+                    'بدون خصم'
+            };
         }
 
         // حساب سعر الشحن حسب المحافظة
@@ -1664,16 +1853,18 @@
                     return order.totals?.shipping || 0;
                 }
                 
-                // الحصول على سعر الشحن من القائمة
-                const countryShipping = shippingPrices[country];
-                if (!countryShipping) {
-                    return order.totals?.shipping || (country === 'مصر' ? 60 : 30);
+                // إذا كان هناك خصم (توصيل مجاني)
+                if (order.discount?.applied) {
+                    return 0;
                 }
                 
-                // البحث عن المحافظة
+                const countryShipping = shippingPrices[country];
+                if (!countryShipping) {
+                    return country === 'مصر' ? 60 : 30;
+                }
+                
                 let shippingCost = countryShipping.default || (country === 'مصر' ? 60 : 30);
                 
-                // البحث عن المحافظة المحددة
                 const foundGovernorate = Object.keys(countryShipping).find(gov => 
                     gov.includes(governorate) || governorate.includes(gov)
                 );
@@ -1727,105 +1918,121 @@
                 return orderDate === today;
             });
             
-            const todaySaudi = saudiOrders.filter(order => {
+            // الطلبات مع خصم
+            const discountOrders = orders.filter(order => 
+                order.discount?.applied || order.discountInfo?.applied
+            );
+            
+            const todayDiscountOrders = discountOrders.filter(order => {
                 const orderDate = new Date(order.createdAt).toDateString();
                 return orderDate === today;
             });
             
-            const todayEgypt = egyptOrders.filter(order => {
-                const orderDate = new Date(order.createdAt).toDateString();
-                return orderDate === today;
-            });
-            
-            // الحالات
-            const newOrders = orders.filter(order => order.status === 'جديد');
-            const shippingOrders = orders.filter(order => order.status === 'قيد الشحن');
-            const deliveredOrders = orders.filter(order => order.status === 'تم التسليم');
-            
-            // إحصائيات الإيرادات
+            // إحصائيات الإيرادات والخصومات
             let totalRevenue = 0;
-            let saudiRevenue = 0;
-            let egyptRevenue = 0;
-            let totalShipping = 0;
-            let saudiShipping = 0;
-            let egyptShipping = 0;
-            let todayRevenue = 0;
-            let todaySaudiRevenue = 0;
-            let todayEgyptRevenue = 0;
-            let todayShipping = 0;
+            let saudiNetRevenue = 0;
+            let egyptNetRevenue = 0;
+            let saudiProductRevenue = 0;
+            let egyptProductRevenue = 0;
+            let saudiShippingRevenue = 0;
+            let egyptShippingRevenue = 0;
+            let totalSavings = 0;
+            let todaySavings = 0;
             
             orders.forEach(order => {
+                const discount = order.discount || order.discountInfo || {};
+                const totals = order.totals || {};
+                const items = order.items || [];
                 const country = order.customer?.address?.country || order.customer?.country;
-                const currency = order.totals?.currency || (country === 'مصر' ? 'ج.م' : 'ر.س');
-                const orderTotal = order.total || order.totals?.total || 0;
-                const shippingCost = order.shippingCost || order.totals?.shipping || 0;
                 
-                totalRevenue += orderTotal;
-                totalShipping += shippingCost;
+                // حساب إيرادات المنتجات
+                let productRevenue = 0;
+                items.forEach(item => {
+                    productRevenue += (item.price || 0) * (item.quantity || 1);
+                });
+                
+                // حساب إيرادات الشحن
+                const shippingRevenue = order.shippingCost || totals.shipping || 0;
+                
+                // الإيرادات الصافية (المنتجات + الشحن)
+                const netRevenue = productRevenue + shippingRevenue;
+                
+                totalRevenue += netRevenue;
                 
                 if (country === 'السعودية') {
-                    saudiRevenue += orderTotal;
-                    saudiShipping += shippingCost;
+                    saudiNetRevenue += netRevenue;
+                    saudiProductRevenue += productRevenue;
+                    saudiShippingRevenue += shippingRevenue;
                 } else if (country === 'مصر') {
-                    egyptRevenue += orderTotal;
-                    egyptShipping += shippingCost;
+                    egyptNetRevenue += netRevenue;
+                    egyptProductRevenue += productRevenue;
+                    egyptShippingRevenue += shippingRevenue;
                 }
                 
-                const orderDate = new Date(order.createdAt).toDateString();
-                if (orderDate === today) {
-                    todayRevenue += orderTotal;
-                    todayShipping += shippingCost;
+                // حساب التوفير من الخصومات
+                if (discount.applied) {
+                    const originalTotal = discount.originalTotal || netRevenue;
+                    const finalTotal = totals.total || order.total || 0;
+                    totalSavings += (originalTotal - finalTotal);
                     
-                    if (country === 'السعودية') {
-                        todaySaudiRevenue += orderTotal;
-                    } else if (country === 'مصر') {
-                        todayEgyptRevenue += orderTotal;
+                    const orderDate = new Date(order.createdAt).toDateString();
+                    if (orderDate === today) {
+                        todaySavings += (originalTotal - finalTotal);
                     }
                 }
             });
+            
+            // الحالات
+            const processingOrders = orders.filter(order => order.status === 'قيد المعالجة');
+            const readyOrders = orders.filter(order => order.status === 'جاهز');
+            const shippingOrders = orders.filter(order => order.status === 'قيد الشحن');
+            const deliveredOrders = orders.filter(order => order.status === 'تم التسليم');
             
             // العملاء الفريدين
             const allCustomers = [...new Set(orders.map(order => order.customer?.phone))].filter(phone => phone).length;
             const saudiCustomers = [...new Set(saudiOrders.map(order => order.customer?.phone))].filter(phone => phone).length;
             const egyptCustomers = [...new Set(egyptOrders.map(order => order.customer?.phone))].filter(phone => phone).length;
             
-            // متوسط قيمة الطلب
-            const avgOrderValue = orders.length > 0 ? (totalRevenue / orders.length).toFixed(0) : 0;
-            const saudiAvgOrder = saudiOrders.length > 0 ? (saudiRevenue / saudiOrders.length).toFixed(0) : 0;
-            const egyptAvgOrder = egyptOrders.length > 0 ? (egyptRevenue / egyptOrders.length).toFixed(0) : 0;
-            
             // تحديث الإحصائيات العامة
             document.getElementById('totalOrders').textContent = orders.length;
-            document.getElementById('newOrders').textContent = newOrders.length;
+            document.getElementById('newOrders').textContent = orders.filter(o => o.status === 'جديد').length;
+            document.getElementById('processingOrders').textContent = processingOrders.length;
+            document.getElementById('readyOrders').textContent = readyOrders.length;
             document.getElementById('shippingOrders').textContent = shippingOrders.length;
             document.getElementById('deliveredOrders').textContent = deliveredOrders.length;
-            document.getElementById('totalShipping').textContent = formatCurrency(totalShipping);
-            document.getElementById('avgOrderValue').textContent = formatCurrency(avgOrderValue);
             
-            document.getElementById('saudiRevenue').textContent = formatCurrency(saudiRevenue) + ' ر.س';
-            document.getElementById('egyptRevenue').textContent = formatCurrency(egyptRevenue) + ' ج.م';
+            document.getElementById('discountOrders').textContent = discountOrders.length;
+            document.getElementById('totalSavings').textContent = formatCurrency(totalSavings);
+            
+            // إيرادات صافية (مطروح منها الشحن)
+            document.getElementById('saudiRevenue').textContent = formatCurrency(saudiNetRevenue) + ' ر.س';
+            document.getElementById('egyptRevenue').textContent = formatCurrency(egyptNetRevenue) + ' ج.م';
             
             // تحديث التغيرات
             document.getElementById('ordersChange').innerHTML = `<i class="fas fa-arrow-up"></i><span>+${todayOrders.length} اليوم</span>`;
-            document.getElementById('newOrdersChange').innerHTML = `<i class="fas fa-arrow-up"></i><span>+${todayOrders.filter(o => o.status === 'جديد').length} اليوم</span>`;
-            document.getElementById('shippingChange').innerHTML = `<i class="fas fa-arrow-up"></i><span>+${todayOrders.filter(o => o.status === 'قيد الشحن').length} اليوم</span>`;
-            document.getElementById('deliveredChange').innerHTML = `<i class="fas fa-arrow-up"></i><span>+${todayOrders.filter(o => o.status === 'تم التسليم').length} اليوم</span>`;
-            document.getElementById('saudiRevenueChange').innerHTML = `<i class="fas fa-arrow-up"></i><span>+${formatCurrency(todaySaudiRevenue)} اليوم</span>`;
-            document.getElementById('egyptRevenueChange').innerHTML = `<i class="fas fa-arrow-up"></i><span>+${formatCurrency(todayEgyptRevenue)} اليوم</span>`;
-            document.getElementById('shippingCostChange').innerHTML = `<i class="fas fa-arrow-up"></i><span>+${formatCurrency(todayShipping)} اليوم</span>`;
+            document.getElementById('processingChange').innerHTML = `<i class="fas fa-arrow-up"></i><span>+${processingOrders.filter(o => new Date(o.createdAt).toDateString() === today).length} اليوم</span>`;
+            document.getElementById('readyChange').innerHTML = `<i class="fas fa-arrow-up"></i><span>+${readyOrders.filter(o => new Date(o.createdAt).toDateString() === today).length} اليوم</span>`;
+            document.getElementById('shippingChange').innerHTML = `<i class="fas fa-arrow-up"></i><span>+${shippingOrders.filter(o => new Date(o.createdAt).toDateString() === today).length} اليوم</span>`;
+            document.getElementById('deliveredChange').innerHTML = `<i class="fas fa-arrow-up"></i><span>+${deliveredOrders.filter(o => new Date(o.createdAt).toDateString() === today).length} اليوم</span>`;
+            document.getElementById('discountChange').innerHTML = `<i class="fas fa-arrow-up"></i><span>+${todayDiscountOrders.length} اليوم</span>`;
+            document.getElementById('savingsChange').innerHTML = `<i class="fas fa-arrow-up"></i><span>+${formatCurrency(todaySavings)} اليوم</span>`;
             
             // تحديث إحصائيات السعودية
+            const saudiDiscountOrders = saudiOrders.filter(o => o.discount?.applied || o.discountInfo?.applied);
             document.getElementById('saudiOrders').textContent = saudiOrders.length;
-            document.getElementById('saudiTotalRevenue').textContent = formatCurrency(saudiRevenue) + ' ر.س';
-            document.getElementById('saudiShippingCost').textContent = formatCurrency(saudiShipping) + ' ر.س';
-            document.getElementById('saudiAvgOrder').textContent = formatCurrency(saudiAvgOrder) + ' ر.س';
+            document.getElementById('saudiNetRevenue').textContent = formatCurrency(saudiNetRevenue) + ' ر.س';
+            document.getElementById('saudiProductRevenue').textContent = formatCurrency(saudiProductRevenue) + ' ر.س';
+            document.getElementById('saudiShippingRevenue').textContent = formatCurrency(saudiShippingRevenue) + ' ر.س';
+            document.getElementById('saudiDiscountOrders').textContent = saudiDiscountOrders.length;
             document.getElementById('saudiCustomers').textContent = saudiCustomers;
             
             // تحديث إحصائيات مصر
+            const egyptDiscountOrders = egyptOrders.filter(o => o.discount?.applied || o.discountInfo?.applied);
             document.getElementById('egyptOrders').textContent = egyptOrders.length;
-            document.getElementById('egyptTotalRevenue').textContent = formatCurrency(egyptRevenue) + ' ج.م';
-            document.getElementById('egyptShippingCost').textContent = formatCurrency(egyptShipping) + ' ج.م';
-            document.getElementById('egyptAvgOrder').textContent = formatCurrency(egyptAvgOrder) + ' ج.م';
+            document.getElementById('egyptNetRevenue').textContent = formatCurrency(egyptNetRevenue) + ' ج.م';
+            document.getElementById('egyptProductRevenue').textContent = formatCurrency(egyptProductRevenue) + ' ج.م';
+            document.getElementById('egyptShippingRevenue').textContent = formatCurrency(egyptShippingRevenue) + ' ج.م';
+            document.getElementById('egyptDiscountOrders').textContent = egyptDiscountOrders.length;
             document.getElementById('egyptCustomers').textContent = egyptCustomers;
         }
 
@@ -1857,6 +2064,7 @@
                 const customer = order.customer || {};
                 const address = customer.address || {};
                 const totals = order.totals || {};
+                const discount = order.discount || order.discountInfo || {};
                 
                 const orderNumber = order.orderId || order.id || '---';
                 const orderDate = formatDate(order.createdAt);
@@ -1866,11 +2074,20 @@
                 const city = address.city || customer.city || 'غير محدد';
                 const governorate = address.governorate || customer.governorate || 'غير محدد';
                 const paymentMethod = getPaymentMethodArabic(order.payment?.method);
-                const shippingCost = order.shippingCost || order.totals?.shipping || 0;
                 const currency = totals.currency || (country === 'مصر' ? 'ج.م' : 'ر.س');
                 const total = totals.total || order.total || 0;
                 const status = order.status || 'جديد';
                 const paymentStatus = order.paymentStatus || 'pending';
+                
+                // معلومات الخصم
+                const hasDiscount = discount.applied || false;
+                const discountAmount = discount.amount || 0;
+                const discountCode = discount.code || '';
+                const discountText = hasDiscount ? 
+                    `<span class="discount-badge" title="كود الخصم: ${discountCode}">
+                        <i class="fas fa-tag"></i> ${formatCurrency(discountAmount)} ${currency}
+                    </span>` : 
+                    '--';
                 
                 html += `
                     <tr>
@@ -1893,8 +2110,8 @@
                                 <option value="paid" ${paymentStatus === 'paid' ? 'selected' : ''}>تم الدفع</option>
                             </select>
                         </td>
-                        <td>${shippingCost} ${currency}</td>
                         <td><strong style="color: var(--accent);">${total} ${currency}</strong></td>
+                        <td>${discountText}</td>
                         <td>
                             <span class="status-badge status-${getStatusClass(status)}">
                                 ${status}
@@ -1957,9 +2174,10 @@
                 'جديد': 'new',
                 'قيد المراجعة': 'review',
                 'قيد المعالجة': 'processing',
+                'جاهز': 'ready',
                 'قيد الشحن': 'shipping',
                 'تم التسليم': 'delivered',
-                'ملغي': 'review'
+                'ملغي': 'cancelled'
             };
             return map[status] || 'new';
         }
@@ -1969,7 +2187,8 @@
             document.getElementById('filterCountry').addEventListener('change', applyFilters);
             document.getElementById('filterStatus').addEventListener('change', applyFilters);
             document.getElementById('filterPayment').addEventListener('change', applyFilters);
-            document.getElementById('filterCity').addEventListener('input', applyFilters);
+            document.getElementById('filterPaymentStatus').addEventListener('change', applyFilters);
+            document.getElementById('filterDiscount').addEventListener('change', applyFilters);
             document.getElementById('searchOrders').addEventListener('input', applyFilters);
         }
 
@@ -1978,7 +2197,8 @@
             const country = document.getElementById('filterCountry').value;
             const status = document.getElementById('filterStatus').value;
             const payment = document.getElementById('filterPayment').value;
-            const city = document.getElementById('filterCity').value.toLowerCase();
+            const paymentStatus = document.getElementById('filterPaymentStatus').value;
+            const discount = document.getElementById('filterDiscount').value;
             const search = document.getElementById('searchOrders').value.toLowerCase();
             
             let filtered = allOrders;
@@ -1998,12 +2218,18 @@
                 filtered = filtered.filter(order => order.payment?.method === payment);
             }
             
-            if (city) {
-                filtered = filtered.filter(order => {
-                    const orderCity = (order.customer?.address?.city || order.customer?.city || '').toLowerCase();
-                    const orderGovernorate = (order.customer?.address?.governorate || order.customer?.governorate || '').toLowerCase();
-                    return orderCity.includes(city) || orderGovernorate.includes(city);
-                });
+            if (paymentStatus) {
+                filtered = filtered.filter(order => order.paymentStatus === paymentStatus);
+            }
+            
+            if (discount === 'with-discount') {
+                filtered = filtered.filter(order => 
+                    order.discount?.applied || order.discountInfo?.applied
+                );
+            } else if (discount === 'without-discount') {
+                filtered = filtered.filter(order => 
+                    !order.discount?.applied && !order.discountInfo?.applied
+                );
             }
             
             if (search) {
@@ -2014,7 +2240,8 @@
                         (order.customer?.fullName && order.customer.fullName.toLowerCase().includes(search)) ||
                         (order.customer?.phone && order.customer.phone.includes(search)) ||
                         (order.customer?.email && order.customer.email.toLowerCase().includes(search)) ||
-                        (order.customer?.address?.details && order.customer.address.details.toLowerCase().includes(search))
+                        (order.discount?.code && order.discount.code.toLowerCase().includes(search)) ||
+                        (order.discountInfo?.code && order.discountInfo.code.toLowerCase().includes(search))
                     );
                 });
             }
@@ -2066,7 +2293,7 @@
             }
         }
 
-        // 🗑️ **إصلاح دالة الحذف** - الحذف التام
+        // حذف الطلب - محسّن ولا يعود للظهور
         async function deleteOrder(orderId, orderNumber) {
             if (!confirm(`⚠️ هل أنت متأكد من حذف الطلب #${orderNumber}؟\nهذا الإجراء لا يمكن التراجع عنه.`)) {
                 return;
@@ -2076,7 +2303,6 @@
                 // 1. إضافة إلى قائمة المحذوفات في الذاكرة المحلية
                 deletedOrders.add(orderNumber.toString());
                 localStorage.setItem('deleted_orders', JSON.stringify(Array.from(deletedOrders)));
-                console.log(`🗑️ تم إضافة الطلب ${orderNumber} إلى قائمة المحذوفات`);
                 
                 // 2. البحث عن الطلب المراد حذفه
                 const order = allOrders.find(o => o.id === orderId || o.orderId === orderNumber);
@@ -2085,16 +2311,16 @@
                 if (order && order.source === 'firebase' && order.firebaseId) {
                     try {
                         await db.collection('orders').doc(order.firebaseId).delete();
-                        console.log(`✅ تم حذف الطلب ${orderNumber} من Firebase`);
+                        console.log(`✅ تم حذف الطلب #${orderNumber} من Firebase`);
                     } catch (firebaseError) {
                         console.warn('⚠️ خطأ في حذف الطلب من Firebase:', firebaseError);
                     }
                 }
                 
-                // 4. الحذف من localStorage
+                // 4. الحذف من localStorage بشكل كامل
                 removeOrderFromLocalStorage(orderNumber);
                 
-                // 5. إزالة من القائمة المحلية مباشرة
+                // 5. إزالة من القائمة المحلية
                 allOrders = allOrders.filter(o => 
                     o.id !== orderId && 
                     o.orderId !== orderNumber && 
@@ -2117,9 +2343,10 @@
                 closeStatusModal();
                 
                 // 9. إظهار إشعار النجاح
-                showNotification('تم الحذف', `تم حذف الطلب #${orderNumber} بنجاح`);
+                showNotification('✅ تم الحذف', `تم حذف الطلب #${orderNumber} بنجاح ولن يعود للظهور`);
                 
-                console.log(`🗑️ تم حذف الطلب #${orderNumber} نهائياً`);
+                // 10. تحديث localStorage مرة أخرى للتأكد
+                localStorage.setItem('orders', JSON.stringify(allOrders.filter(o => o.source === 'local')));
                 
             } catch (error) {
                 console.error('❌ خطأ في حذف الطلب:', error);
@@ -2127,7 +2354,7 @@
             }
         }
 
-        // إزالة الطلب من localStorage
+        // إزالة الطلب من localStorage بشكل كامل
         function removeOrderFromLocalStorage(orderNumber) {
             try {
                 // إزالة من orders
@@ -2140,7 +2367,10 @@
                 const filteredNewOrders = newOrders.filter(o => o.orderId != orderNumber);
                 localStorage.setItem('new_orders', JSON.stringify(filteredNewOrders));
                 
-                console.log(`🗑️ تم إزالة الطلب ${orderNumber} من localStorage`);
+                // إزالة من أي مكان آخر
+                localStorage.removeItem(`order_${orderNumber}`);
+                
+                console.log(`✅ تم حذف الطلب #${orderNumber} من localStorage`);
             } catch (error) {
                 console.error('❌ خطأ في إزالة الطلب من localStorage:', error);
             }
@@ -2159,21 +2389,33 @@
             const payment = order.payment || {};
             const totals = order.totals || {};
             const items = order.items || [];
+            const discount = order.discount || order.discountInfo || {};
+            
             const country = address.country || customer.country || 'غير محدد';
             const currency = totals.currency || (country === 'مصر' ? 'ج.م' : 'ر.س');
             const shippingCost = order.shippingCost || order.totals?.shipping || 0;
             
-            // استخراج المحافظة والمدينة من صفحة الدفع
+            // استخراج المحافظة والمدينة
             const governorate = address.governorate || customer.governorate || address.city || customer.city || 'غير محدد';
             const city = address.city || customer.city || address.region || customer.region || 'غير محدد';
             const detailedAddress = address.details || customer.address || address.address || 'غير محدد';
             
+            // حساب التوفير
+            const originalTotal = discount.originalTotal || totals.total || 0;
+            const finalTotal = totals.total || order.total || 0;
+            const discountAmount = discount.amount || (originalTotal - finalTotal);
+            const discountPercentage = originalTotal > 0 ? Math.round((discountAmount / originalTotal) * 100) : 0;
+            
+            // حساب إيرادات المنتجات
+            let productRevenue = 0;
+            items.forEach(item => {
+                productRevenue += (item.price || 0) * (item.quantity || 1);
+            });
+            
             // تحضير قائمة المنتجات
             let itemsHtml = '';
-            let itemsTotal = 0;
             items.forEach((item, index) => {
                 const itemTotal = (item.price || 0) * (item.quantity || 1);
-                itemsTotal += itemTotal;
                 itemsHtml += `
                     <tr>
                         <td>${index + 1}</td>
@@ -2187,6 +2429,34 @@
                     </tr>
                 `;
             });
+            
+            // قسم معلومات الخصم
+            let discountSection = '';
+            if (discount.applied) {
+                discountSection = `
+                    <div class="discount-details">
+                        <h4><i class="fas fa-gift"></i> معلومات الخصم</h4>
+                        <div class="discount-row">
+                            <span>كود الخصم:</span>
+                            <span style="color: var(--success); font-weight: bold;">${discount.code || '--'}</span>
+                        </div>
+                        <div class="discount-row">
+                            <span>نسبة الخصم:</span>
+                            <span style="color: var(--success);">${discountPercentage}%</span>
+                        </div>
+                        <div class="discount-row">
+                            <span>التوصيل:</span>
+                            <span style="color: var(--success);">
+                                ${discount.freeShipping ? 'مجاني ✅' : 'مدفوع'}
+                            </span>
+                        </div>
+                        <div class="discount-row">
+                            <span>مبلغ التوفير:</span>
+                            <span style="color: var(--success); font-weight: bold;">${formatCurrency(discountAmount)} ${currency}</span>
+                        </div>
+                    </div>
+                `;
+            }
             
             const modalContent = `
                 <div class="info-section">
@@ -2252,7 +2522,9 @@
                         </div>
                         <div class="info-item">
                             <strong>سعر الشحن</strong>
-                            <span style="color: var(--accent); font-weight: bold;">${shippingCost} ${currency}</span>
+                            <span style="color: ${discount.freeShipping ? 'var(--success)' : 'var(--accent)'}; font-weight: bold;">
+                                ${discount.freeShipping ? 'مجاني ✅' : shippingCost + ' ' + currency}
+                            </span>
                         </div>
                     </div>
                     <div class="info-item" style="margin-top: 20px;">
@@ -2261,23 +2533,7 @@
                     </div>
                 </div>
                 
-                <div class="info-section">
-                    <h4 class="section-title"><i class="fas fa-credit-card"></i> معلومات الدفع والشحن</h4>
-                    <div class="info-grid">
-                        <div class="info-item">
-                            <strong>طريقة الدفع</strong>
-                            <span>${getPaymentMethodArabic(payment.method)}</span>
-                        </div>
-                        <div class="info-item">
-                            <strong>تكلفة الشحن (${city})</strong>
-                            <span>${shippingCost} ${currency}</span>
-                        </div>
-                        <div class="info-item">
-                            <strong>ملاحظات على الطلب</strong>
-                            <span>${order.notes || 'لا توجد ملاحظات'}</span>
-                        </div>
-                    </div>
-                </div>
+                ${discountSection}
                 
                 <div class="info-section">
                     <h4 class="section-title"><i class="fas fa-shopping-bag"></i> المنتجات (${items.length})</h4>
@@ -2298,19 +2554,31 @@
                 </div>
                 
                 <div class="info-section">
-                    <h4 class="section-title"><i class="fas fa-calculator"></i> الإجماليات</h4>
-                    <div style="padding: 20px;">
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 15px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.1);">
-                            <span style="color: var(--gray-light);">مجموع المنتجات:</span>
-                            <span style="font-weight: 500;">${itemsTotal} ${currency}</span>
+                    <h4 class="section-title"><i class="fas fa-calculator"></i> ملخص مالي</h4>
+                    <div class="financial-summary">
+                        <div class="financial-item">
+                            <span class="label">قيمة المنتجات</span>
+                            <span class="value">${formatCurrency(productRevenue)} ${currency}</span>
                         </div>
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 15px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.1);">
-                            <span style="color: var(--gray-light);">تكلفة الشحن:</span>
-                            <span style="font-weight: 500;">${shippingCost} ${currency}</span>
+                        <div class="financial-item">
+                            <span class="label">الشحن</span>
+                            <span class="value">${discount.freeShipping ? 'مجاني' : formatCurrency(shippingCost) + ' ' + currency}</span>
                         </div>
-                        <div style="display: flex; justify-content: space-between; font-size: 1.3rem; font-weight: bold; color: var(--accent); padding-top: 15px; border-top: 2px solid rgba(255,255,255,0.2);">
-                            <span>الإجمالي النهائي:</span>
-                            <span>${totals.total || order.total || 0} ${currency}</span>
+                        ${discount.applied ? `
+                        <div class="financial-item original">
+                            <span class="label">السعر الأصلي</span>
+                            <span class="value">${formatCurrency(originalTotal)} ${currency}</span>
+                        </div>
+                        <div class="financial-item discount">
+                            <span class="label">الخصم</span>
+                            <span class="value">-${formatCurrency(discountAmount)} ${currency}</span>
+                        </div>
+                        ` : ''}
+                        <div class="financial-item" style="grid-column: span 2; background: rgba(67, 97, 238, 0.1);">
+                            <span class="label">الإجمالي النهائي</span>
+                            <span class="value" style="color: var(--accent); font-size: 1.5rem;">
+                                ${formatCurrency(finalTotal)} ${currency}
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -2329,7 +2597,7 @@
             document.getElementById('orderModal').classList.add('show');
         }
 
-        // **تعديل حالة الطلب - نافذة التعديل**
+        // تعديل حالة الطلب
         function editOrderStatusModal(orderId) {
             const order = allOrders.find(o => o.id === orderId || o.orderId === orderId);
             if (!order) {
@@ -2364,10 +2632,11 @@
                         <label for="newStatus" style="display: block; margin-bottom: 10px; color: var(--light);">
                             <i class="fas fa-edit"></i> حدد الحالة الجديدة:
                         </label>
-                        <select id="newStatus" style="width: 100%; padding: 12px; border-radius: 8px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: black;">
+                        <select id="newStatus" style="width: 100%; padding: 12px; border-radius: 8px; background: #1e293b; border: 1px solid rgba(255,255,255,0.2); color: white;">
                             <option value="جديد" ${order.status === 'جديد' ? 'selected' : ''}>جديد</option>
                             <option value="قيد المراجعة" ${order.status === 'قيد المراجعة' ? 'selected' : ''}>قيد المراجعة</option>
                             <option value="قيد المعالجة" ${order.status === 'قيد المعالجة' ? 'selected' : ''}>قيد المعالجة</option>
+                            <option value="جاهز" ${order.status === 'جاهز' ? 'selected' : ''}>جاهز</option>
                             <option value="قيد الشحن" ${order.status === 'قيد الشحن' ? 'selected' : ''}>قيد الشحن</option>
                             <option value="تم التسليم" ${order.status === 'تم التسليم' ? 'selected' : ''}>تم التسليم</option>
                             <option value="ملغي" ${order.status === 'ملغي' ? 'selected' : ''}>ملغي</option>
@@ -2396,7 +2665,7 @@
             document.getElementById('statusModal').classList.add('show');
         }
 
-        // **تحديث حالة الطلب في النظام**
+        // تحديث حالة الطلب
         async function updateOrderStatus(orderId) {
             const newStatus = document.getElementById('newStatus').value;
             const orderNotes = document.getElementById('orderNotes').value.trim();
@@ -2407,14 +2676,12 @@
                 return;
             }
             
-            // تحديث الحالة المحلية
             order.status = newStatus;
             if (orderNotes) {
                 order.notes = orderNotes;
             }
             order.statusUpdatedAt = new Date().toISOString();
             
-            // تحديث Firebase إذا كان موجوداً
             if (order.source === 'firebase' && order.firebaseId) {
                 try {
                     await db.collection('orders').doc(order.firebaseId).update({
@@ -2427,24 +2694,16 @@
                 }
             }
             
-            // تحديث localStorage
             updateOrderInLocalStorage(order);
-            
-            // إغلاق النافذة
             closeStatusModal();
-            
-            // تحديث الواجهة
             updateAllStats(allOrders);
             displayOrders(currentFilteredOrders);
-            
-            // إظهار إشعار النجاح
             showNotification('تم التحديث', `تم تحديث حالة الطلب #${order.orderId || order.id} إلى "${newStatus}"`);
         }
 
         // تحديث الطلب في localStorage
         function updateOrderInLocalStorage(order) {
             try {
-                // تحديث في orders
                 const orders = JSON.parse(localStorage.getItem('orders')) || [];
                 const orderIndex = orders.findIndex(o => o.orderNumber == order.orderId);
                 if (orderIndex !== -1) {
@@ -2453,7 +2712,6 @@
                     localStorage.setItem('orders', JSON.stringify(orders));
                 }
                 
-                // تحديث في new_orders
                 const newOrders = JSON.parse(localStorage.getItem('new_orders')) || [];
                 const newOrderIndex = newOrders.findIndex(o => o.orderId == order.orderId);
                 if (newOrderIndex !== -1) {
@@ -2461,8 +2719,6 @@
                     if (order.notes) newOrders[newOrderIndex].notes = order.notes;
                     localStorage.setItem('new_orders', JSON.stringify(newOrders));
                 }
-                
-                console.log(`✅ تم تحديث حالة الطلب ${order.orderId} في localStorage`);
             } catch (error) {
                 console.error('❌ خطأ في تحديث localStorage:', error);
             }
@@ -2497,11 +2753,21 @@
                 const address = customer.address || {};
                 const totals = order.totals || {};
                 const items = order.items || [];
+                const discount = order.discount || order.discountInfo || {};
                 const country = address.country || customer.country || 'غير محدد';
                 const currency = totals.currency || (country === 'مصر' ? 'EGP' : 'SAR');
                 const shippingCost = order.shippingCost || order.totals?.shipping || 0;
                 const governorate = address.governorate || customer.governorate || address.city || customer.city || 'غير محدد';
                 const city = address.city || customer.city || address.region || customer.region || 'غير محدد';
+                const discountAmount = discount.amount || 0;
+                const originalTotal = discount.originalTotal || totals.total || 0;
+                const finalTotal = totals.total || order.total || 0;
+                
+                // حساب إيرادات المنتجات
+                let productRevenue = 0;
+                items.forEach(item => {
+                    productRevenue += (item.price || 0) * (item.quantity || 1);
+                });
                 
                 return {
                     'م': index + 1,
@@ -2516,10 +2782,14 @@
                     'العنوان التفصيلي': address.details || customer.address || address.address || 'غير محدد',
                     'طريقة الدفع': getPaymentMethodArabic(order.payment?.method),
                     'حالة الدفع': order.paymentStatus === 'paid' ? 'تم الدفع' : 'لم يتم الدفع',
-                    'سعر الشحن': shippingCost,
+                    'إيرادات المنتجات': productRevenue,
+                    'إيرادات الشحن': discount.freeShipping ? 0 : shippingCost,
                     'عملة الشحن': currency,
-                    'قيمة الطلب': totals.total || order.total || 0,
-                    'العملة': currency,
+                    'كود الخصم': discount.code || '--',
+                    'مبلغ الخصم': discountAmount,
+                    'السعر الأصلي': originalTotal,
+                    'السعر بعد الخصم': finalTotal,
+                    'نسبة التوفير': originalTotal > 0 ? `${Math.round(((originalTotal - finalTotal) / originalTotal) * 100)}%` : '0%',
                     'حالة الطلب': order.status || 'جديد',
                     'المنتجات': items.map(item => `${item.name} (الكمية: ${item.quantity || 1})`).join('، '),
                     'ملاحظات': order.notes || 'لا توجد',
