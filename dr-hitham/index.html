@@ -8,6 +8,7 @@
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -748,28 +749,155 @@
             line-height: 1.6;
         }
 
+        /* تحسين جدول المنتجات في المودال - تم التعديل */
         .products-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
+            margin-top: 10px;
+            font-size: 0.85rem;
+            table-layout: fixed;
         }
 
         .products-table th {
             background: rgba(67, 97, 238, 0.2);
             color: var(--accent);
-            padding: 12px 15px;
-            font-size: 0.9rem;
+            padding: 8px 6px;
+            font-size: 0.75rem;
+            white-space: nowrap;
+            text-align: center;
         }
 
         .products-table td {
-            padding: 10px 15px;
+            padding: 6px 4px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             color: var(--gray-light);
-            font-size: 0.9rem;
+            font-size: 0.75rem;
+            text-align: center;
+            vertical-align: middle;
+            word-wrap: break-word;
         }
 
         .products-table tr:hover {
             background: rgba(255, 255, 255, 0.03);
+        }
+
+        /* تحديد أبعاد الأعمدة */
+        .products-table th:nth-child(1),
+        .products-table td:nth-child(1) {
+            width: 30px;
+            padding: 4px 2px;
+        }
+
+        .products-table th:nth-child(2),
+        .products-table td:nth-child(2) {
+            width: 55%;
+            text-align: right;
+            padding-right: 6px;
+        }
+
+        .products-table th:nth-child(3),
+        .products-table td:nth-child(3) {
+            width: 80px;
+            padding: 4px 2px;
+        }
+
+        .products-table th:nth-child(4),
+        .products-table td:nth-child(4) {
+            width: 90px;
+            padding: 4px 2px;
+        }
+
+        .products-table th:nth-child(5),
+        .products-table td:nth-child(5) {
+            width: 100px;
+            padding: 4px 2px;
+        }
+
+        /* تصغير حجم النص في خلايا المنتجات */
+        .product-name-cell {
+            font-size: 0.8rem;
+            line-height: 1.3;
+            text-align: right;
+            padding-right: 6px;
+        }
+
+        .product-name {
+            font-size: 0.8rem;
+            color: white;
+            margin-bottom: 3px;
+            display: block;
+            line-height: 1.2;
+        }
+
+        .product-code {
+            font-size: 0.7rem;
+            color: var(--accent);
+            background: rgba(76, 201, 240, 0.1);
+            padding: 2px 5px;
+            border-radius: 3px;
+            display: inline-block;
+            margin-top: 2px;
+        }
+
+        /* حاوية للكمية والسعر بجانب بعض */
+        .quantity-price-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: nowrap;
+        }
+
+        .quantity-badge {
+            background: rgba(76, 201, 240, 0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 0.75rem;
+            min-width: 25px;
+            text-align: center;
+        }
+
+        .product-price {
+            font-size: 0.75rem;
+            color: var(--accent);
+            font-weight: bold;
+        }
+
+        /* تحسين عرض المنتجات داخل المودال */
+        .products-section {
+            margin-top: 15px;
+        }
+
+        .products-container {
+            max-height: 250px;
+            overflow-y: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 5px;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        /* ملاحظات الطلب */
+        .notes-box {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: var(--radius);
+            margin-top: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            max-height: 200px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .notes-box.empty {
+            color: var(--gray-light);
+            font-style: italic;
+            text-align: center;
+            padding: 20px;
         }
 
         .order-number {
@@ -779,6 +907,147 @@
             border-radius: 6px;
             color: var(--accent);
             font-weight: bold;
+        }
+
+        /* تخطيط جديد لعرض معلومات الطلب جنباً إلى جنب */
+        .order-details-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+
+        .order-info-column {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .compact-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .compact-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .compact-item strong {
+            font-size: 0.8rem;
+            color: var(--gray-light);
+            margin-bottom: 4px;
+        }
+
+        .compact-item span {
+            font-size: 0.9rem;
+            color: white;
+            font-weight: 500;
+        }
+
+        /* عرض المنتجات جنباً إلى جنب مع المعلومات */
+        .products-section {
+            grid-column: span 2;
+        }
+
+        /* Financial Summary */
+        .financial-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .financial-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 12px;
+            border-radius: var(--radius);
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .financial-item .label {
+            font-size: 0.75rem;
+            color: var(--gray-light);
+            margin-bottom: 6px;
+        }
+
+        .financial-item .value {
+            font-size: 1rem;
+            font-weight: bold;
+            color: var(--accent);
+        }
+
+        .financial-item.discount .value {
+            color: var(--success);
+        }
+
+        .financial-item.original .value {
+            color: var(--gray-light);
+            text-decoration: line-through;
+        }
+
+        /* Discount Details */
+        .discount-info {
+            background: rgba(74, 222, 128, 0.1);
+            border: 1px solid rgba(74, 222, 128, 0.2);
+            border-radius: var(--radius);
+            padding: 12px;
+            margin-top: 5px;
+            font-size: 0.8rem;
+        }
+
+        .discount-info .discount-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+        }
+
+        .discount-info .discount-row:last-child {
+            margin-bottom: 0;
+            font-weight: bold;
+            color: var(--success);
+        }
+
+        /* Payment Filter Styling */
+        .payment-filter-select {
+            padding: 12px 15px;
+            background: #1e293b !important;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: var(--radius);
+            color: var(--light) !important;
+            font-size: 1rem;
+            transition: var(--transition);
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='white' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E") !important;
+            background-repeat: no-repeat !important;
+            background-position: left 15px center !important;
+            background-size: 12px !important;
+            padding-right: 15px !important;
+            padding-left: 40px !important;
+        }
+
+        /* Free Shipping Badge */
+        .free-shipping-badge {
+            background: rgba(59, 130, 246, 0.2);
+            color: #3b82f6;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin-right: 5px;
         }
 
         /* Login Page */
@@ -967,100 +1236,6 @@
             background: linear-gradient(135deg, var(--danger), #be185d);
         }
 
-        /* Financial Summary */
-        .financial-summary {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-top: 20px;
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: var(--radius);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .financial-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            padding: 15px;
-            border-radius: var(--radius);
-            background: rgba(255, 255, 255, 0.03);
-        }
-
-        .financial-item .label {
-            font-size: 0.85rem;
-            color: var(--gray-light);
-            margin-bottom: 8px;
-        }
-
-        .financial-item .value {
-            font-size: 1.3rem;
-            font-weight: bold;
-            color: var(--accent);
-        }
-
-        .financial-item.discount .value {
-            color: var(--success);
-        }
-
-        .financial-item.original .value {
-            color: var(--gray-light);
-            text-decoration: line-through;
-        }
-
-        /* Discount Details */
-        .discount-details {
-            background: rgba(74, 222, 128, 0.1);
-            border: 1px solid rgba(74, 222, 128, 0.2);
-            border-radius: var(--radius);
-            padding: 20px;
-            margin-top: 20px;
-        }
-
-        .discount-details h4 {
-            color: var(--success);
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .discount-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .discount-row:last-child {
-            border-bottom: none;
-            font-weight: bold;
-            color: var(--success);
-        }
-
-        /* Payment Filter Styling */
-        .payment-filter-select {
-            padding: 12px 15px;
-            background: #1e293b !important;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: var(--radius);
-            color: var(--light) !important;
-            font-size: 1rem;
-            transition: var(--transition);
-            appearance: none;
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='white' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E") !important;
-            background-repeat: no-repeat !important;
-            background-position: left 15px center !important;
-            background-size: 12px !important;
-            padding-right: 15px !important;
-            padding-left: 40px !important;
-        }
-
         /* Responsive */
         @media (max-width: 1200px) {
             .country-stats-section {
@@ -1107,6 +1282,40 @@
             .login-box {
                 padding: 30px;
             }
+            
+            .products-table th,
+            .products-table td {
+                padding: 5px 3px;
+                font-size: 0.7rem;
+            }
+            
+            .products-table th:nth-child(2),
+            .products-table td:nth-child(2) {
+                width: 45%;
+            }
+            
+            .product-name {
+                font-size: 0.75rem;
+            }
+            
+            .product-code {
+                font-size: 0.65rem;
+                padding: 1px 4px;
+            }
+            
+            .order-details-layout {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .compact-grid {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            
+            .products-section {
+                grid-column: span 1;
+            }
         }
     </style>
 </head>
@@ -1132,11 +1341,11 @@
             <form id="loginForm" class="login-form">
                 <div class="form-group">
                     <label for="adminEmail">البريد الإلكتروني</label>
-                    <input type="email" id="adminEmail" placeholder="admin@  .com" required>
+                    <input type="email" id="adminEmail" placeholder="admin@different.com" required>
                 </div>
                 <div class="form-group">
                     <label for="adminPassword">كلمة المرور</label>
-                    <input type="password" id="adminPassword" placeholder="" required>
+                    <input type="password" id="adminPassword" placeholder="********" required>
                 </div>
                 <button type="submit">
                     <i class="fas fa-sign-in-alt"></i> تسجيل الدخول
@@ -1256,14 +1465,40 @@
                     </div>
                 </div>
                 
+                <!-- مجموع المنتجات السعودية -->
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(0, 104, 56, 0.2); color: #00ff88;">
+                        <i class="fas fa-calculator"></i>
+                    </div>
+                    <h3>مجموع المنتجات السعودية</h3>
+                    <div class="stat-value" id="saudiProductSum">0 ر.س</div>
+                    <div class="stat-change change-up" id="saudiProductSumChange">
+                        <i class="fas fa-arrow-up"></i>
+                        <span>+0 اليوم</span>
+                    </div>
+                </div>
+                
+                <!-- مجموع المنتجات مصر -->
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(206, 17, 38, 0.2); color: #ff6b6b;">
+                        <i class="fas fa-calculator"></i>
+                    </div>
+                    <h3>مجموع المنتجات مصر</h3>
+                    <div class="stat-value" id="egyptProductSum">0 ج.م</div>
+                    <div class="stat-change change-up" id="egyptProductSumChange">
+                        <i class="fas fa-arrow-up"></i>
+                        <span>+0 اليوم</span>
+                    </div>
+                </div>
+                
                 <!-- إجمالي الإيرادات السعودية -->
                 <div class="stat-card">
                     <div class="stat-icon" style="background: rgba(0, 104, 56, 0.2); color: #00ff88;">
-                        <i class="fas fa-flag"></i>
+                        <i class="fas fa-money-bill-wave"></i>
                     </div>
-                    <h3>إيرادات السعودية</h3>
-                    <div class="stat-value" id="saudiRevenue">0 ر.س</div>
-                    <div class="stat-change change-up" id="saudiRevenueChange">
+                    <h3>الإجمالي النهائي السعودية</h3>
+                    <div class="stat-value" id="saudiTotalRevenue">0 ر.س</div>
+                    <div class="stat-change change-up" id="saudiTotalRevenueChange">
                         <i class="fas fa-arrow-up"></i>
                         <span>+0 اليوم</span>
                     </div>
@@ -1272,11 +1507,11 @@
                 <!-- إجمالي الإيرادات مصر -->
                 <div class="stat-card">
                     <div class="stat-icon" style="background: rgba(206, 17, 38, 0.2); color: #ff6b6b;">
-                        <i class="fas fa-flag"></i>
+                        <i class="fas fa-money-bill-wave"></i>
                     </div>
-                    <h3>إيرادات مصر</h3>
-                    <div class="stat-value" id="egyptRevenue">0 ج.م</div>
-                    <div class="stat-change change-up" id="egyptRevenueChange">
+                    <h3>الإجمالي النهائي مصر</h3>
+                    <div class="stat-value" id="egyptTotalRevenue">0 ج.م</div>
+                    <div class="stat-change change-up" id="egyptTotalRevenueChange">
                         <i class="fas fa-arrow-up"></i>
                         <span>+0 اليوم</span>
                     </div>
@@ -1334,18 +1569,10 @@
                     
                     <div class="country-stat-row">
                         <div class="country-stat-label">
-                            <i class="fas fa-money-bill-wave"></i>
-                            <span>إيرادات صافية</span>
+                            <i class="fas fa-calculator"></i>
+                            <span>مجموع المنتجات</span>
                         </div>
-                        <div class="country-stat-value" id="saudiNetRevenue">0 ر.س</div>
-                    </div>
-                    
-                    <div class="country-stat-row">
-                        <div class="country-stat-label">
-                            <i class="fas fa-box"></i>
-                            <span>إيرادات المنتجات</span>
-                        </div>
-                        <div class="country-stat-value" id="saudiProductRevenue">0 ر.س</div>
+                        <div class="country-stat-value" id="saudiProductSum2">0 ر.س</div>
                     </div>
                     
                     <div class="country-stat-row">
@@ -1354,6 +1581,14 @@
                             <span>إيرادات الشحن</span>
                         </div>
                         <div class="country-stat-value" id="saudiShippingRevenue">0 ر.س</div>
+                    </div>
+                    
+                    <div class="country-stat-row">
+                        <div class="country-stat-label">
+                            <i class="fas fa-money-bill-wave"></i>
+                            <span>الإجمالي النهائي</span>
+                        </div>
+                        <div class="country-stat-value" id="saudiTotalRevenue2">0 ر.س</div>
                     </div>
                     
                     <div class="country-stat-row">
@@ -1396,18 +1631,10 @@
                     
                     <div class="country-stat-row">
                         <div class="country-stat-label">
-                            <i class="fas fa-money-bill-wave"></i>
-                            <span>إيرادات صافية</span>
+                            <i class="fas fa-calculator"></i>
+                            <span>مجموع المنتجات</span>
                         </div>
-                        <div class="country-stat-value" id="egyptNetRevenue">0 ج.م</div>
-                    </div>
-                    
-                    <div class="country-stat-row">
-                        <div class="country-stat-label">
-                            <i class="fas fa-box"></i>
-                            <span>إيرادات المنتجات</span>
-                        </div>
-                        <div class="country-stat-value" id="egyptProductRevenue">0 ج.م</div>
+                        <div class="country-stat-value" id="egyptProductSum2">0 ج.م</div>
                     </div>
                     
                     <div class="country-stat-row">
@@ -1416,6 +1643,14 @@
                             <span>إيرادات الشحن</span>
                         </div>
                         <div class="country-stat-value" id="egyptShippingRevenue">0 ج.م</div>
+                    </div>
+                    
+                    <div class="country-stat-row">
+                        <div class="country-stat-label">
+                            <i class="fas fa-money-bill-wave"></i>
+                            <span>الإجمالي النهائي</span>
+                        </div>
+                        <div class="country-stat-value" id="egyptTotalRevenue2">0 ج.م</div>
                     </div>
                     
                     <div class="country-stat-row">
@@ -1525,7 +1760,8 @@
                                 <th>المدينة</th>
                                 <th>طريقة الدفع</th>
                                 <th>حالة الدفع</th>
-                                <th>الإجمالي</th>
+                                <th>المجموع الكلي</th>
+                                <th>سعر المنتجات</th>
                                 <th>الخصم</th>
                                 <th>الحالة</th>
                                 <th>الإجراءات</th>
@@ -1533,7 +1769,7 @@
                         </thead>
                         <tbody id="ordersBody">
                             <tr>
-                                <td colspan="13" class="no-data">
+                                <td colspan="14" class="no-data">
                                     <i class="fas fa-shopping-cart"></i>
                                     <p>لا توجد طلبات حالياً</p>
                                 </td>
@@ -1573,6 +1809,21 @@
         </div>
     </div>
 
+    <!-- Add Notes Modal -->
+    <div class="modal-overlay" id="notesModal">
+        <div class="modal" style="max-width: 600px;">
+            <div class="modal-header">
+                <h3><i class="fas fa-edit"></i> إضافة / تعديل ملاحظة</h3>
+                <button class="modal-close" onclick="closeNotesModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div id="notesModalContent">
+                    <!-- Content will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         // تكوين Firebase الجديد
         const firebaseConfig = {
@@ -1598,335 +1849,397 @@
         let autoRefreshInterval = null;
         let deletedOrders = new Set();
 
-        // بيانات أسعار الشحن حسب المحافظة
-        const shippingPrices = {
-            'السعودية': {
-                'الرياض': 25,
-                'جدة': 25,
-                'مكة': 25,
-                'المدينة المنورة': 25,
-                'الدمام': 25,
-                'الخبر': 25,
-                'الطائف': 25,
-                'تبوك': 25,
-                'أبها': 25,
-                'حائل': 25,
-                'الباحة': 25,
-                'الجوف': 25,
-                'نجران': 25,
-                'عرعر': 25,
-                'سكاكا': 25,
-                'بريدة': 25,
-                'عنيزة': 25,
-                'حفر الباطن': 10,
-                'الخفجي': 25,
-                'القطيف': 25,
-                'الهفوف': 25,
-                'المجمعة': 25,
-                'default': 25
-            },
-            'مصر': {
-                'القاهرة': 55,
-                'الجيزة': 55,
-                'الإسكندرية': 80,
-                'الدقهلية': 70,
-                'البحر الأحمر': 80,
-                'البحيرة': 80,
-                'الفيوم': 55,
-                'الغربية': 70,
-                'الإسماعيلية': 70,
-                'المنوفية': 70,
-                'المنيا': 50,
-                'القليوبية': 55,
-                'الوادي الجديد': 95,
-                'السويس': 70,
-                'أسوان': 95,
-                'أسيوط': 55,
-                'بني سويف': 55,
-                'بورسعيد': 80,
-                'دمياط': 80,
-                'سوهاج': 55,
-                'جنوب سيناء': 95,
-                'كفر الشيخ': 80,
-                'مطروح': 95,
-                'الأقصر': 80,
-                'قنا': 70,
-                'شمال سيناء': 85,
-                'الشرقية': 70,
-                'default': 70
-            }
-        };
-
-        // تسجيل الدخول
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
+        // ========================= 🔧 **دالة معالجة بيانات السعودية والمصرية المحسنة** =========================
+        function processSaudiAndEgyptOrders(orders) {
+            console.log('🔄 معالجة بيانات الطلبات...');
             
-            const email = document.getElementById('adminEmail').value;
-            const password = document.getElementById('adminPassword').value;
-            
-            if (email === 'admin@different.com' && password === 'admin123') {
-                currentUser = { email, name: 'مدير النظام' };
-                localStorage.setItem('checkout_admin', JSON.stringify(currentUser));
-                showDashboard();
-                loadOrders();
-                showNotification('تم تسجيل الدخول بنجاح', 'مرحباً بك في لوحة التحكم');
-            } else {
-                showNotification('خطأ في البيانات', 'بيانات الدخول غير صحيحة', 'error');
-            }
-        });
-
-        // تحقق من تسجيل الدخول السابق
-        function checkAuth() {
-            const savedUser = localStorage.getItem('checkout_admin');
-            if (savedUser) {
-                currentUser = JSON.parse(savedUser);
-                showDashboard();
-                loadOrders();
-                startAutoRefresh();
-                return true;
-            }
-            return false;
-        }
-
-        // تسجيل الخروج
-        function logout() {
-            if (confirm('هل أنت متأكد من تسجيل الخروج؟')) {
-                localStorage.removeItem('checkout_admin');
-                currentUser = null;
-                if (autoRefreshInterval) {
-                    clearInterval(autoRefreshInterval);
+            return orders.map(order => {
+                try {
+                    // تحديد البلد
+                    let country = order.customer?.address?.country || 
+                                 order.customer?.country || 
+                                 order.country || 
+                                 'غير محدد';
+                    
+                    // تحديد العملة
+                    let currency = 'ر.س';
+                    if (country === 'مصر') {
+                        currency = 'ج.م';
+                    }
+                    
+                    // ===== **معالجة البيانات المشكلة** =====
+                    let orderNumber = order.orderNumber || order.orderId || '---';
+                    let createdAt = order.createdAt || new Date().toISOString();
+                    let customer = order.customer || {};
+                    let address = customer.address || {};
+                    let items = Array.isArray(order.items) ? order.items : [];
+                    let discount = order.discount || {};
+                    let payment = order.payment || {};
+                    let notes = order.notes || '';
+                    let total = order.total || 0;
+                    let subtotal = order.subtotal || 0;
+                    
+                    // **الإصلاح 1: معالجة المنتجات بشكل صحيح**
+                    if (items.length === 0) {
+                        if (order.products && Array.isArray(order.products)) {
+                            items = order.products.map(product => ({
+                                name: product.name || 'منتج',
+                                code: product.code || product.productCode || product.sku || '',
+                                price: product.price || 0,
+                                quantity: product.quantity || 1,
+                                originalName: product.name || 'منتج'
+                            }));
+                        }
+                    }
+                    
+                    // **الإصلاح 2: استخراج اسم المنتج ورقمه بشكل صحيح مع الحفاظ على الاسم الكامل**
+                    items = items.map(item => {
+                        let name = item.name || item.originalName || 'منتج';
+                        let code = item.code || item.productCode || item.sku || '';
+                        
+                        // إذا كان الاسم يحتوي على رقم المنتج، نفصله مع الحفاظ على الاسم الأصلي
+                        if (name.includes('(') && name.includes(')')) {
+                            const match = name.match(/\(([^)]+)\)/);
+                            if (match) {
+                                code = match[1];
+                                // نترك الاسم كما هو بدون إزالة الرقم
+                            }
+                        }
+                        
+                        return {
+                            name: name,
+                            code: code,
+                            price: item.price || 0,
+                            quantity: item.quantity || 1,
+                            originalName: item.originalName || name
+                        };
+                    });
+                    
+                    // **الإصلاح 3: حساب الخصم بشكل صحيح**
+                    let discountApplied = discount.applied || false;
+                    let discountAmount = discount.amount || 0;
+                    let discountCode = discount.code || '';
+                    let discountPercentage = discount.percentage || 0;
+                    
+                    // **تحديد نسبة الخصم بناءً على الكود**
+                    if (discountCode === 'DIFSA10') {
+                        discountPercentage = 50; // خصم 50% لكود DIFSA10
+                    } else if (discountCode === 'DIFSA20') {
+                        discountPercentage = 20; // خصم 20% لكود DIFSA20
+                    }
+                    
+                    // **الإصلاح 4: حساب الإجماليات بشكل صحيح**
+                    // حساب مجموع المنتجات من المنتجات الفعلية
+                    let productSum = 0;
+                    items.forEach(item => {
+                        productSum += (item.price || 0) * (item.quantity || 1);
+                    });
+                    
+                    // إذا كان هناك سعر فرعي محدد، نستخدمه
+                    if (subtotal > 0) {
+                        productSum = subtotal;
+                    }
+                    
+                    // **الإصلاح 5: حساب الخصم بناءً على النسبة الصحيحة**
+                    if (discountApplied && discountPercentage > 0 && discountAmount === 0) {
+                        discountAmount = productSum * (discountPercentage / 100);
+                    }
+                    
+                    let productSumAfterDiscount = productSum - discountAmount;
+                    if (productSumAfterDiscount < 0) {
+                        productSumAfterDiscount = 0;
+                    }
+                    
+                    // **الإصلاح 6: حساب الشحن الصحيح**
+                    let shippingCost = order.shippingCost || 0;
+                    let freeShipping = discount.freeShipping || false;
+                    
+                    if (country === 'السعودية') {
+                        shippingCost = shippingCost || 25;
+                    } else if (country === 'مصر') {
+                        shippingCost = shippingCost || 55;
+                    }
+                    
+                    // إذا كان هناك توصيل مجاني
+                    if (freeShipping) {
+                        shippingCost = 0;
+                    }
+                    
+                    // **الإصلاح 7: حساب الإجمالي النهائي**
+                    let finalTotal = total || (productSumAfterDiscount + shippingCost);
+                    
+                    // **الإصلاح 8: معالجة حالة الطلب والدفع**
+                    let status = order.status || 'جديد';
+                    let paymentStatus = order.paymentStatus || 'pending';
+                    
+                    // **الإصلاح 9: معالجة المحافظة والمدينة**
+                    let governorate = address.governorate || customer.governorate || address.city || customer.city || 'غير محدد';
+                    let city = address.city || customer.city || address.region || customer.region || 'غير محدد';
+                    let detailedAddress = address.details || customer.address || address.address || 'غير محدد';
+                    
+                    // **الإصلاح 10: معالجة طريقة الدفع**
+                    let paymentMethod = payment.method || 'cod';
+                    
+                    // **إضافة ملاحظات إضافية إذا كانت موجودة**
+                    let additionalNotes = order.additionalNotes || '';
+                    if (additionalNotes) {
+                        notes = notes ? `${notes}\n\n${additionalNotes}` : additionalNotes;
+                    }
+                    
+                    // إنشاء كائن الطلب المعالج
+                    return {
+                        id: order.id || orderNumber,
+                        firebaseId: order.id,
+                        orderId: orderNumber,
+                        orderNumber: orderNumber,
+                        createdAt: createdAt,
+                        customer: {
+                            name: customer.name || customer.fullName || 'زائر',
+                            phone: customer.phone || 'غير محدد',
+                            email: customer.email || 'غير محدد',
+                            country: country,
+                            address: {
+                                country: country,
+                                governorate: governorate,
+                                city: city,
+                                details: detailedAddress
+                            }
+                        },
+                        items: items,
+                        payment: {
+                            method: paymentMethod,
+                            status: payment.status || 'pending'
+                        },
+                        paymentStatus: paymentStatus,
+                        status: status,
+                        notes: notes,
+                        totals: {
+                            subtotal: productSum,
+                            shipping: shippingCost,
+                            total: finalTotal,
+                            currency: currency
+                        },
+                        discount: {
+                            applied: discountApplied,
+                            code: discountCode,
+                            amount: discountAmount,
+                            percentage: discountPercentage,
+                            originalTotal: productSum + shippingCost,
+                            finalTotal: finalTotal,
+                            description: discountApplied ? 
+                                (discountCode === 'DIFSA10' ? 'خصم 50%' : 
+                                 discountCode === 'DIFSA20' ? 'خصم 20%' : 
+                                 'خصم') : 
+                                'بدون خصم',
+                            discountValue: discountPercentage,
+                            freeShipping: freeShipping,
+                            quantity: items.reduce((sum, item) => sum + (item.quantity || 1), 0)
+                        },
+                        shippingCost: shippingCost,
+                        source: order.source || 'firebase',
+                        paymentUpdatedAt: order.paymentUpdatedAt,
+                        statusUpdatedAt: order.statusUpdatedAt
+                    };
+                    
+                } catch (error) {
+                    console.error('❌ خطأ في معالجة الطلب:', error);
+                    console.log('طلب به مشكلة:', order);
+                    return null;
                 }
-                document.getElementById('dashboard').style.display = 'none';
-                document.getElementById('loginScreen').style.display = 'flex';
-                showNotification('تم تسجيل الخروج', 'شكراً لاستخدامك لوحة التحكم');
-            }
+            }).filter(order => order !== null);
         }
 
-        // عرض الداشبورد
-        function showDashboard() {
-            document.getElementById('loginScreen').style.display = 'none';
-            document.getElementById('dashboard').style.display = 'block';
-            if (currentUser) {
-                document.getElementById('userEmail').textContent = currentUser.email;
-            }
-        }
-
-        // بدء التحديث التلقائي
-        function startAutoRefresh() {
-            if (autoRefreshInterval) {
-                clearInterval(autoRefreshInterval);
-            }
-            autoRefreshInterval = setInterval(() => {
-                refreshOrders();
-            }, 30000);
-        }
-
-        // تحميل الطلبات
+        // ========================= 🔧 **دالة تحميل الطلبات المحسنة** =========================
         async function loadOrders() {
+            console.log('🚀 بدء تحميل الطلبات...');
+            
             try {
                 document.getElementById('loading').style.display = 'block';
-                
-                let orders = [];
+                document.getElementById('ordersBody').innerHTML = `
+                    <tr>
+                        <td colspan="14" style="text-align: center; padding: 50px;">
+                            <div class="loading">
+                                <i class="fas fa-spinner fa-spin"></i>
+                                <p>جاري تحميل الطلبات...</p>
+                            </div>
+                        </td>
+                    </tr>
+                `;
                 
                 // 1. تحميل الطلبات المحذوفة من الذاكرة
                 const deleted = JSON.parse(localStorage.getItem('deleted_orders')) || [];
                 deletedOrders = new Set(deleted);
+                console.log(`🗑️ عدد الطلبات المحذوفة: ${deletedOrders.size}`);
                 
-                // 2. تحميل من Firebase مع فلترة الطلبات المحذوفة مسبقاً
+                let firebaseOrders = [];
+                let localOrders = [];
+                
+                // 2. تحميل من Firebase
                 try {
-                    const snapshot = await db.collection('orders')
-                        .orderBy('createdAt', 'desc')
-                        .get();
+                    console.log('🔥 جاري تحميل الطلبات من Firebase...');
                     
-                    snapshot.forEach(doc => {
-                        const data = doc.data();
-                        const orderId = data.orderNumber || data.orderId || doc.id;
-                        
-                        if (!deletedOrders.has(orderId.toString())) {
-                            let shippingCost = calculateShippingCost(data);
-                            const discountInfo = extractDiscountInfo(data);
-                            
-                            orders.push({
-                                id: doc.id,
-                                firebaseId: doc.id,
-                                orderId: orderId,
-                                ...data,
-                                shippingCost: shippingCost,
-                                discountInfo: discountInfo,
-                                source: 'firebase',
-                                isDeleted: false
+                    const queries = [
+                        db.collection('orders').orderBy('createdAt', 'desc').limit(100),
+                        db.collection('orders').orderBy('orderNumber', 'desc').limit(100),
+                        db.collection('orders').orderBy('orderId', 'desc').limit(100)
+                    ];
+                    
+                    let combinedResults = [];
+                    
+                    for (let query of queries) {
+                        try {
+                            const snapshot = await query.get();
+                            snapshot.forEach(doc => {
+                                const data = doc.data();
+                                data.id = doc.id;
+                                data.firebaseId = doc.id;
+                                data.source = 'firebase';
+                                
+                                const orderKey = data.orderNumber || data.orderId || doc.id;
+                                if (!deletedOrders.has(orderKey.toString())) {
+                                    combinedResults.push(data);
+                                }
                             });
+                        } catch (queryError) {
+                            console.warn('⚠️ استعلام Firebase فشل:', queryError.message);
                         }
-                    });
+                    }
+                    
+                    firebaseOrders = Array.from(new Map(combinedResults.map(order => 
+                        [order.orderNumber || order.orderId || order.id, order]
+                    )).values());
+                    
+                    console.log(`✅ تم تحميل ${firebaseOrders.length} طلب من Firebase`);
+                    
                 } catch (firebaseError) {
-                    console.warn('⚠️ خطأ في جلب البيانات من Firebase:', firebaseError.message);
+                    console.error('❌ خطأ في جلب البيانات من Firebase:', firebaseError);
                 }
                 
-                // 3. تحميل من localStorage مع الفلترة
+                // 3. تحميل من localStorage
                 try {
+                    console.log('💾 جاري تحميل الطلبات من localStorage...');
+                    
                     const savedOrders = JSON.parse(localStorage.getItem('orders')) || [];
                     const savedNewOrders = JSON.parse(localStorage.getItem('new_orders')) || [];
                     
-                    savedOrders.forEach(order => {
-                        if (order.orderNumber && !deletedOrders.has(order.orderNumber.toString())) {
-                            let shippingCost = calculateShippingCost(order);
-                            const discountInfo = extractDiscountInfo(order);
-                            
-                            orders.push({
-                                id: order.orderNumber.toString(),
-                                orderId: order.orderNumber,
-                                ...order,
-                                shippingCost: shippingCost,
-                                discountInfo: discountInfo,
-                                source: 'local',
-                                isDeleted: false
-                            });
+                    [...savedOrders, ...savedNewOrders].forEach(order => {
+                        const orderKey = order.orderNumber || order.orderId || order.id;
+                        
+                        if (orderKey && !deletedOrders.has(orderKey.toString())) {
+                            order.source = 'local';
+                            localOrders.push(order);
                         }
                     });
                     
-                    savedNewOrders.forEach(order => {
-                        if (order.orderId && !deletedOrders.has(order.orderId.toString())) {
-                            let shippingCost = calculateShippingCost(order);
-                            const discountInfo = extractDiscountInfo(order);
-                            
-                            orders.push({
-                                id: order.orderId.toString(),
-                                orderId: order.orderId,
-                                ...order,
-                                shippingCost: shippingCost,
-                                discountInfo: discountInfo,
-                                source: 'new',
-                                isDeleted: false
-                            });
-                        }
-                    });
+                    console.log(`✅ تم تحميل ${localOrders.length} طلب من localStorage`);
+                    
                 } catch (localError) {
                     console.warn('⚠️ خطأ في جلب البيانات من localStorage:', localError);
                 }
                 
-                // 4. إزالة التكرارات
-                allOrders = removeDuplicates(orders);
-                currentFilteredOrders = [...allOrders];
+                // 4. دمج جميع الطلبات
+                let allOrdersRaw = [...firebaseOrders, ...localOrders];
+                console.log(`📊 إجمالي الطلبات قبل المعالجة: ${allOrdersRaw.length}`);
                 
-                // 5. تحديث الإحصائيات
+                // 5. **التطبيق: معالجة بيانات السعودية والمصرية**
+                const processedOrders = processSaudiAndEgyptOrders(allOrdersRaw);
+                
+                // 6. إزالة التكرارات بعد المعالجة
+                const orderMap = new Map();
+                processedOrders.forEach(order => {
+                    const key = order.orderNumber || order.orderId || order.id;
+                    if (key && !orderMap.has(key)) {
+                        orderMap.set(key, order);
+                    }
+                });
+                
+                allOrders = Array.from(orderMap.values())
+                    .sort((a, b) => {
+                        const dateA = new Date(a.createdAt || 0);
+                        const dateB = new Date(b.createdAt || 0);
+                        return dateB - dateA;
+                    });
+                
+                console.log(`🎉 تم تحميل ${allOrders.length} طلب (${allOrders.filter(o => 
+                    o.customer?.country === 'السعودية' || 
+                    o.customer?.address?.country === 'السعودية'
+                ).length} سعودي، ${allOrders.filter(o => 
+                    o.customer?.country === 'مصر' || 
+                    o.customer?.address?.country === 'مصر'
+                ).length} مصري)`);
+                
+                // 7. تحديث الإحصائيات
                 updateAllStats(allOrders);
                 
-                // 6. عرض الطلبات
+                // 8. عرض الطلبات
                 displayOrders(allOrders);
                 
-                // 7. تحديث وقت آخر تحديث
+                // 9. تحديث وقت آخر تحديث
                 updateLastUpdateTime();
                 
                 document.getElementById('loading').style.display = 'none';
                 
+                // 10. إظهار إشعار النجاح
+                if (allOrders.length > 0) {
+                    const saudiCount = allOrders.filter(o => 
+                        o.customer?.country === 'السعودية' || 
+                        o.customer?.address?.country === 'السعودية'
+                    ).length;
+                    const egyptCount = allOrders.filter(o => 
+                        o.customer?.country === 'مصر' || 
+                        o.customer?.address?.country === 'مصر'
+                    ).length;
+                    
+                    showNotification('✅ تم تحميل الطلبات', 
+                        `${allOrders.length} طلب (${saudiCount} سعودي، ${egyptCount} مصري)`,
+                        'success'
+                    );
+                }
+                
             } catch (error) {
                 console.error('❌ خطأ في تحميل الطلبات:', error);
                 document.getElementById('loading').style.display = 'none';
+                
+                document.getElementById('ordersBody').innerHTML = `
+                    <tr>
+                        <td colspan="14" class="no-data">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <h3>خطأ في تحميل الطلبات</h3>
+                            <p>${error.message}</p>
+                            <button class="btn btn-secondary" onclick="loadOrders()" style="margin-top: 20px;">
+                                <i class="fas fa-redo"></i> إعادة المحاولة
+                            </button>
+                        </td>
+                    </tr>
+                `;
+                
                 showNotification('خطأ في التحميل', error.message, 'error');
             }
         }
 
-        // استخراج معلومات الخصم من الطلب
-        function extractDiscountInfo(order) {
-            const discount = order.discount || {};
-            const totals = order.totals || {};
-            
-            return {
-                applied: discount.applied || false,
-                code: discount.code || '',
-                amount: discount.amount || 0,
-                originalTotal: discount.originalTotal || totals.total || 0,
-                finalTotal: totals.total || order.total || 0,
-                shippingCost: order.shippingCost || totals.shipping || 0,
-                freeShipping: discount.applied || false,
-                description: discount.applied ? 
-                    (order.customer?.address?.country === 'مصر' ? 
-                     'خصم 20% + توصيل مجاني (259 ج.م)' : 
-                     'خصم 20% + توصيل مجاني') : 
-                    'بدون خصم'
-            };
-        }
-
-        // حساب سعر الشحن حسب المحافظة
-        function calculateShippingCost(order) {
-            try {
-                const customer = order.customer || {};
-                const address = customer.address || {};
-                const country = address.country || customer.country;
-                const governorate = address.governorate || customer.governorate || '';
-                
-                if (!country || !governorate) {
-                    return order.totals?.shipping || 0;
-                }
-                
-                // إذا كان هناك خصم (توصيل مجاني)
-                if (order.discount?.applied) {
-                    return 0;
-                }
-                
-                const countryShipping = shippingPrices[country];
-                if (!countryShipping) {
-                    return country === 'مصر' ? 60 : 30;
-                }
-                
-                let shippingCost = countryShipping.default || (country === 'مصر' ? 60 : 30);
-                
-                const foundGovernorate = Object.keys(countryShipping).find(gov => 
-                    gov.includes(governorate) || governorate.includes(gov)
-                );
-                
-                if (foundGovernorate && countryShipping[foundGovernorate]) {
-                    shippingCost = countryShipping[foundGovernorate];
-                }
-                
-                return shippingCost;
-            } catch (error) {
-                console.error('❌ خطأ في حساب سعر الشحن:', error);
-                return order.totals?.shipping || 0;
-            }
-        }
-
-        // إزالة التكرارات
-        function removeDuplicates(orders) {
-            const orderMap = new Map();
-            orders.forEach(order => {
-                const key = order.orderId || order.id;
-                if (key && !orderMap.has(key.toString())) {
-                    orderMap.set(key.toString(), order);
-                }
-            });
-            return Array.from(orderMap.values())
-                .sort((a, b) => {
-                    const dateA = new Date(a.createdAt || 0);
-                    const dateB = new Date(b.createdAt || 0);
-                    return dateB - dateA;
-                });
-        }
-
-        // تحديث جميع الإحصائيات
+        // ========================= 🔧 **دالة تحديث الإحصائيات** =========================
         function updateAllStats(orders) {
+            console.log('📈 تحديث الإحصائيات...');
+            
             const today = new Date().toDateString();
             
-            // تصنيف الطلبات حسب البلد
-            const saudiOrders = orders.filter(order => 
-                order.customer?.address?.country === 'السعودية' || 
-                order.customer?.country === 'السعودية'
-            );
+            const saudiOrders = orders.filter(order => {
+                const country = order.customer?.country || order.customer?.address?.country;
+                return country === 'السعودية';
+            });
             
-            const egyptOrders = orders.filter(order => 
-                order.customer?.address?.country === 'مصر' || 
-                order.customer?.country === 'مصر'
-            );
+            const egyptOrders = orders.filter(order => {
+                const country = order.customer?.country || order.customer?.address?.country;
+                return country === 'مصر';
+            });
             
-            // اليوم
             const todayOrders = orders.filter(order => {
                 const orderDate = new Date(order.createdAt).toDateString();
                 return orderDate === today;
             });
             
-            // الطلبات مع خصم
             const discountOrders = orders.filter(order => 
-                order.discount?.applied || order.discountInfo?.applied
+                order.discount?.applied
             );
             
             const todayDiscountOrders = discountOrders.filter(order => {
@@ -1934,74 +2247,81 @@
                 return orderDate === today;
             });
             
-            // إحصائيات الإيرادات والخصومات
-            let totalRevenue = 0;
-            let saudiNetRevenue = 0;
-            let egyptNetRevenue = 0;
-            let saudiProductRevenue = 0;
-            let egyptProductRevenue = 0;
+            let saudiProductSum = 0;
+            let egyptProductSum = 0;
             let saudiShippingRevenue = 0;
             let egyptShippingRevenue = 0;
+            let saudiTotalRevenue = 0;
+            let egyptTotalRevenue = 0;
             let totalSavings = 0;
             let todaySavings = 0;
             
+            let todaySaudiProductSum = 0;
+            let todayEgyptProductSum = 0;
+            let todaySaudiTotalRevenue = 0;
+            let todayEgyptTotalRevenue = 0;
+            
             orders.forEach(order => {
-                const discount = order.discount || order.discountInfo || {};
+                const discount = order.discount || {};
                 const totals = order.totals || {};
                 const items = order.items || [];
-                const country = order.customer?.address?.country || order.customer?.country;
+                const country = order.customer?.country || order.customer?.address?.country;
                 
-                // حساب إيرادات المنتجات
-                let productRevenue = 0;
-                items.forEach(item => {
-                    productRevenue += (item.price || 0) * (item.quantity || 1);
-                });
+                let productSum = totals.subtotal || 0;
+                let productSumAfterDiscount = productSum - (discount.amount || 0);
                 
-                // حساب إيرادات الشحن
-                const shippingRevenue = order.shippingCost || totals.shipping || 0;
-                
-                // الإيرادات الصافية (المنتجات + الشحن)
-                const netRevenue = productRevenue + shippingRevenue;
-                
-                totalRevenue += netRevenue;
+                const shippingCost = order.shippingCost || totals.shipping || 0;
+                let totalRevenue = totals.total || (productSumAfterDiscount + shippingCost);
                 
                 if (country === 'السعودية') {
-                    saudiNetRevenue += netRevenue;
-                    saudiProductRevenue += productRevenue;
-                    saudiShippingRevenue += shippingRevenue;
-                } else if (country === 'مصر') {
-                    egyptNetRevenue += netRevenue;
-                    egyptProductRevenue += productRevenue;
-                    egyptShippingRevenue += shippingRevenue;
-                }
-                
-                // حساب التوفير من الخصومات
-                if (discount.applied) {
-                    const originalTotal = discount.originalTotal || netRevenue;
-                    const finalTotal = totals.total || order.total || 0;
-                    totalSavings += (originalTotal - finalTotal);
+                    saudiProductSum += productSumAfterDiscount;
+                    saudiShippingRevenue += shippingCost;
+                    saudiTotalRevenue += totalRevenue;
                     
                     const orderDate = new Date(order.createdAt).toDateString();
                     if (orderDate === today) {
-                        todaySavings += (originalTotal - finalTotal);
+                        todaySaudiProductSum += productSumAfterDiscount;
+                        todaySaudiTotalRevenue += totalRevenue;
+                    }
+                } else if (country === 'مصر') {
+                    egyptProductSum += productSumAfterDiscount;
+                    egyptShippingRevenue += shippingCost;
+                    egyptTotalRevenue += totalRevenue;
+                    
+                    const orderDate = new Date(order.createdAt).toDateString();
+                    if (orderDate === today) {
+                        todayEgyptProductSum += productSumAfterDiscount;
+                        todayEgyptTotalRevenue += totalRevenue;
+                    }
+                }
+                
+                if (discount.applied) {
+                    const originalTotal = productSum + shippingCost;
+                    const finalTotal = totalRevenue;
+                    const orderSavings = originalTotal - finalTotal;
+                    
+                    if (orderSavings > 0) {
+                        totalSavings += orderSavings;
+                        
+                        const orderDate = new Date(order.createdAt).toDateString();
+                        if (orderDate === today) {
+                            todaySavings += orderSavings;
+                        }
                     }
                 }
             });
             
-            // الحالات
             const processingOrders = orders.filter(order => order.status === 'قيد المعالجة');
             const readyOrders = orders.filter(order => order.status === 'جاهز');
             const shippingOrders = orders.filter(order => order.status === 'قيد الشحن');
             const deliveredOrders = orders.filter(order => order.status === 'تم التسليم');
+            const newOrders = orders.filter(order => order.status === 'جديد');
             
-            // العملاء الفريدين
-            const allCustomers = [...new Set(orders.map(order => order.customer?.phone))].filter(phone => phone).length;
             const saudiCustomers = [...new Set(saudiOrders.map(order => order.customer?.phone))].filter(phone => phone).length;
             const egyptCustomers = [...new Set(egyptOrders.map(order => order.customer?.phone))].filter(phone => phone).length;
             
-            // تحديث الإحصائيات العامة
             document.getElementById('totalOrders').textContent = orders.length;
-            document.getElementById('newOrders').textContent = orders.filter(o => o.status === 'جديد').length;
+            document.getElementById('newOrders').textContent = newOrders.length;
             document.getElementById('processingOrders').textContent = processingOrders.length;
             document.getElementById('readyOrders').textContent = readyOrders.length;
             document.getElementById('shippingOrders').textContent = shippingOrders.length;
@@ -2010,53 +2330,68 @@
             document.getElementById('discountOrders').textContent = discountOrders.length;
             document.getElementById('totalSavings').textContent = formatCurrency(totalSavings);
             
-            // إيرادات صافية (مطروح منها الشحن)
-            document.getElementById('saudiRevenue').textContent = formatCurrency(saudiNetRevenue) + ' ر.س';
-            document.getElementById('egyptRevenue').textContent = formatCurrency(egyptNetRevenue) + ' ج.م';
+            document.getElementById('saudiProductSum').textContent = formatCurrency(saudiProductSum) + ' ر.س';
+            document.getElementById('egyptProductSum').textContent = formatCurrency(egyptProductSum) + ' ج.م';
             
-            // تحديث التغيرات
+            document.getElementById('saudiTotalRevenue').textContent = formatCurrency(saudiTotalRevenue) + ' ر.س';
+            document.getElementById('egyptTotalRevenue').textContent = formatCurrency(egyptTotalRevenue) + ' ج.م';
+            
             document.getElementById('ordersChange').innerHTML = `<i class="fas fa-arrow-up"></i><span>+${todayOrders.length} اليوم</span>`;
+            document.getElementById('newOrdersChange').innerHTML = `<i class="fas fa-arrow-up"></i><span>+${newOrders.filter(o => new Date(o.createdAt).toDateString() === today).length} اليوم</span>`;
             document.getElementById('processingChange').innerHTML = `<i class="fas fa-arrow-up"></i><span>+${processingOrders.filter(o => new Date(o.createdAt).toDateString() === today).length} اليوم</span>`;
             document.getElementById('readyChange').innerHTML = `<i class="fas fa-arrow-up"></i><span>+${readyOrders.filter(o => new Date(o.createdAt).toDateString() === today).length} اليوم</span>`;
             document.getElementById('shippingChange').innerHTML = `<i class="fas fa-arrow-up"></i><span>+${shippingOrders.filter(o => new Date(o.createdAt).toDateString() === today).length} اليوم</span>`;
             document.getElementById('deliveredChange').innerHTML = `<i class="fas fa-arrow-up"></i><span>+${deliveredOrders.filter(o => new Date(o.createdAt).toDateString() === today).length} اليوم</span>`;
             document.getElementById('discountChange').innerHTML = `<i class="fas fa-arrow-up"></i><span>+${todayDiscountOrders.length} اليوم</span>`;
             document.getElementById('savingsChange').innerHTML = `<i class="fas fa-arrow-up"></i><span>+${formatCurrency(todaySavings)} اليوم</span>`;
+            document.getElementById('saudiProductSumChange').innerHTML = `<i class="fas fa-arrow-up"></i><span>+${formatCurrency(todaySaudiProductSum)} اليوم</span>`;
+            document.getElementById('egyptProductSumChange').innerHTML = `<i class="fas fa-arrow-up"></i><span>+${formatCurrency(todayEgyptProductSum)} اليوم</span>`;
+            document.getElementById('saudiTotalRevenueChange').innerHTML = `<i class="fas fa-arrow-up"></i><span>+${formatCurrency(todaySaudiTotalRevenue)} اليوم</span>`;
+            document.getElementById('egyptTotalRevenueChange').innerHTML = `<i class="fas fa-arrow-up"></i><span>+${formatCurrency(todayEgyptTotalRevenue)} اليوم</span>`;
             
-            // تحديث إحصائيات السعودية
-            const saudiDiscountOrders = saudiOrders.filter(o => o.discount?.applied || o.discountInfo?.applied);
+            const saudiDiscountOrders = saudiOrders.filter(o => o.discount?.applied);
             document.getElementById('saudiOrders').textContent = saudiOrders.length;
-            document.getElementById('saudiNetRevenue').textContent = formatCurrency(saudiNetRevenue) + ' ر.س';
-            document.getElementById('saudiProductRevenue').textContent = formatCurrency(saudiProductRevenue) + ' ر.س';
+            document.getElementById('saudiProductSum2').textContent = formatCurrency(saudiProductSum) + ' ر.س';
             document.getElementById('saudiShippingRevenue').textContent = formatCurrency(saudiShippingRevenue) + ' ر.س';
+            document.getElementById('saudiTotalRevenue2').textContent = formatCurrency(saudiTotalRevenue) + ' ر.س';
             document.getElementById('saudiDiscountOrders').textContent = saudiDiscountOrders.length;
             document.getElementById('saudiCustomers').textContent = saudiCustomers;
             
-            // تحديث إحصائيات مصر
-            const egyptDiscountOrders = egyptOrders.filter(o => o.discount?.applied || o.discountInfo?.applied);
+            const egyptDiscountOrders = egyptOrders.filter(o => o.discount?.applied);
             document.getElementById('egyptOrders').textContent = egyptOrders.length;
-            document.getElementById('egyptNetRevenue').textContent = formatCurrency(egyptNetRevenue) + ' ج.م';
-            document.getElementById('egyptProductRevenue').textContent = formatCurrency(egyptProductRevenue) + ' ج.م';
+            document.getElementById('egyptProductSum2').textContent = formatCurrency(egyptProductSum) + ' ج.م';
             document.getElementById('egyptShippingRevenue').textContent = formatCurrency(egyptShippingRevenue) + ' ج.م';
+            document.getElementById('egyptTotalRevenue2').textContent = formatCurrency(egyptTotalRevenue) + ' ج.م';
             document.getElementById('egyptDiscountOrders').textContent = egyptDiscountOrders.length;
             document.getElementById('egyptCustomers').textContent = egyptCustomers;
+            
+            console.log('📊 الإحصائيات المحدثة:', {
+                'طلاب سعودية': saudiOrders.length,
+                'طلاب مصر': egyptOrders.length,
+                'إيرادات سعودية': saudiTotalRevenue,
+                'إيرادات مصر': egyptTotalRevenue
+            });
         }
 
-        // تنسيق العملة
+        // ========================= 🔧 **تنسيق العملة** =========================
         function formatCurrency(amount) {
-            if (typeof amount !== 'number') amount = 0;
-            return amount.toLocaleString('ar-SA');
+            if (typeof amount !== 'number' || isNaN(amount)) {
+                amount = 0;
+            }
+            return Math.round(amount).toLocaleString('ar-SA');
         }
 
-        // عرض الطلبات في الجدول
+        // ========================= 🔧 **عرض الطلبات في الجدول** =========================
         function displayOrders(orders) {
+            console.log('📋 عرض الطلبات في الجدول:', orders.length);
+            
             const tbody = document.getElementById('ordersBody');
             currentFilteredOrders = orders;
             
             if (orders.length === 0) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="13" class="no-data">
+                        <td colspan="14" class="no-data">
                             <i class="fas fa-shopping-cart"></i>
                             <p>لا توجد طلبات حالياً</p>
                         </td>
@@ -2067,102 +2402,117 @@
             
             let html = '';
             orders.forEach((order, index) => {
-                const customer = order.customer || {};
-                const address = customer.address || {};
-                const totals = order.totals || {};
-                const discount = order.discount || order.discountInfo || {};
-                
-                const orderNumber = order.orderId || order.id || '---';
-                const orderDate = formatDate(order.createdAt);
-                const customerName = customer.name || customer.fullName || 'زائر';
-                const country = address.country || customer.country || 'غير محدد';
-                const phone = customer.phone || 'غير محدد';
-                const city = address.city || customer.city || 'غير محدد';
-                const governorate = address.governorate || customer.governorate || 'غير محدد';
-                const paymentMethod = getPaymentMethodArabic(order.payment?.method);
-                const currency = totals.currency || (country === 'مصر' ? 'ج.م' : 'ر.س');
-                const total = totals.total || order.total || 0;
-                const status = order.status || 'جديد';
-                const paymentStatus = order.paymentStatus || 'pending';
-                
-                // معلومات الخصم
-                const hasDiscount = discount.applied || false;
-                const discountAmount = discount.amount || 0;
-                const discountCode = discount.code || '';
-                const discountText = hasDiscount ? 
-                    `<span class="discount-badge" title="كود الخصم: ${discountCode}">
-                        <i class="fas fa-tag"></i> ${formatCurrency(discountAmount)} ${currency}
-                    </span>` : 
-                    '--';
-                
-                html += `
-                    <tr>
-                        <td>${index + 1}</td>
-                        <td><strong class="order-number">#${orderNumber}</strong></td>
-                        <td>${orderDate}</td>
-                        <td><strong>${customerName}</strong></td>
-                        <td>
-                            <span class="country-badge ${country === 'مصر' ? 'egypt-badge' : 'saudi-badge'}">
-                                ${country}
-                            </span>
-                        </td>
-                        <td>${phone}</td>
-                        <td>${governorate}</td>
-                        <td><span class="payment-badge">${paymentMethod}</span></td>
-                        <td>
-                            <select class="payment-status-select ${paymentStatus === 'paid' ? 'payment-paid' : 'payment-pending'}" 
-                                    onchange="updatePaymentStatus('${order.id || order.orderId}', this.value)">
-                                <option value="pending" ${paymentStatus === 'pending' ? 'selected' : ''}>لم يتم الدفع</option>
-                                <option value="paid" ${paymentStatus === 'paid' ? 'selected' : ''}>تم الدفع</option>
-                            </select>
-                        </td>
-                        <td><strong style="color: var(--accent);">${total} ${currency}</strong></td>
-                        <td>${discountText}</td>
-                        <td>
-                            <span class="status-badge status-${getStatusClass(status)}">
-                                ${status}
-                            </span>
-                        </td>
-                        <td>
-                            <div class="action-buttons">
-                                <button class="action-btn btn-view" onclick="viewOrderDetails('${order.id || order.orderId}')" title="عرض التفاصيل">
-                                    <i class="fas fa-eye"></i>
-                                </button>
-                                <button class="action-btn btn-edit" onclick="editOrderStatusModal('${order.id || order.orderId}')" title="تعديل الحالة">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                                <button class="action-btn btn-delete" onclick="deleteOrder('${order.id || order.orderId}', '${orderNumber}')" title="حذف الطلب">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                `;
+                try {
+                    const customer = order.customer || {};
+                    const address = customer.address || {};
+                    const discount = order.discount || {};
+                    const items = order.items || [];
+                    const totals = order.totals || {};
+                    
+                    const orderNumber = order.orderNumber || order.orderId || order.id || '---';
+                    const orderDate = formatDate(order.createdAt);
+                    const customerName = customer.name || customer.fullName || 'زائر';
+                    const country = customer.country || address.country || 'غير محدد';
+                    const phone = customer.phone || 'غير محدد';
+                    const governorate = address.governorate || customer.governorate || address.city || customer.city || 'غير محدد';
+                    const paymentMethod = getPaymentMethodArabic(order.payment?.method);
+                    const currency = country === 'مصر' ? 'ج.م' : 'ر.س';
+                    const status = order.status || 'جديد';
+                    const paymentStatus = order.paymentStatus || 'pending';
+                    
+                    let productSum = totals.subtotal || 0;
+                    let productSumAfterDiscount = productSum - (discount.amount || 0);
+                    
+                    const shippingCost = order.shippingCost || totals.shipping || 0;
+                    let totalRevenue = totals.total || (productSumAfterDiscount + shippingCost);
+                    
+                    const hasDiscount = discount.applied || false;
+                    const discountAmount = discount.amount || 0;
+                    const discountCode = discount.code || '';
+                    const discountText = hasDiscount ? 
+                        `<span class="discount-badge" title="كود الخصم: ${discountCode}">
+                            <i class="fas fa-tag"></i> ${formatCurrency(discountAmount)} ${currency}
+                        </span>` : 
+                        '--';
+                    
+                    html += `
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td><strong class="order-number">#${orderNumber}</strong></td>
+                            <td>${orderDate}</td>
+                            <td><strong>${customerName}</strong></td>
+                            <td>
+                                <span class="country-badge ${country === 'مصر' ? 'egypt-badge' : 'saudi-badge'}">
+                                    ${country}
+                                </span>
+                            </td>
+                            <td>${phone}</td>
+                            <td>${governorate}</td>
+                            <td><span class="payment-badge">${paymentMethod}</span></td>
+                            <td>
+                                <select class="payment-status-select ${paymentStatus === 'paid' ? 'payment-paid' : 'payment-pending'}" 
+                                        onchange="updatePaymentStatus('${order.id || order.orderId}', this.value, '${orderNumber}')">
+                                    <option value="pending" ${paymentStatus === 'pending' ? 'selected' : ''}>لم يتم الدفع</option>
+                                    <option value="paid" ${paymentStatus === 'paid' ? 'selected' : ''}>تم الدفع</option>
+                                </select>
+                            </td>
+                            <td><strong style="color: #00ff88; font-weight: bold;">${formatCurrency(totalRevenue)} ${currency}</strong></td>
+                            <td><strong style="color: var(--accent);">${formatCurrency(productSumAfterDiscount)} ${currency}</strong></td>
+                            <td>${discountText}</td>
+                            <td>
+                                <span class="status-badge status-${getStatusClass(status)}">
+                                    ${status}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="action-btn btn-view" onclick="viewOrderDetails('${order.id || order.orderId}')" title="عرض التفاصيل">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button class="action-btn btn-edit" onclick="editOrderStatusModal('${order.id || order.orderId}')" title="تعديل الحالة">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="action-btn btn-delete" onclick="deleteOrder('${order.id || order.orderId}', '${orderNumber}')" title="حذف الطلب">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                } catch (rowError) {
+                    console.error('❌ خطأ في عرض صف الطلب:', rowError);
+                    console.log('الطلب الذي تسبب في الخطأ:', order);
+                }
             });
             
             tbody.innerHTML = html;
             
-            // إعداد الفلاتر
             setupFilters();
+            
+            console.log('✅ تم عرض الطلبات في الجدول');
         }
 
-        // تنسيق التاريخ بالميلادي مع الوقت
+        // ========================= 🔧 **تنسيق التاريخ** =========================
         function formatDate(dateString) {
             if (!dateString) return '---';
             try {
                 const date = new Date(dateString);
+                if (isNaN(date.getTime())) return '---';
+                
                 const year = date.getFullYear();
                 const month = String(date.getMonth() + 1).padStart(2, '0');
                 const day = String(date.getDate()).padStart(2, '0');
                 const hours = String(date.getHours()).padStart(2, '0');
                 const minutes = String(date.getMinutes()).padStart(2, '0');
+                
                 return `${year}-${month}-${day} ${hours}:${minutes}`;
             } catch (e) {
+                console.warn('⚠️ خطأ في تنسيق التاريخ:', dateString);
                 return '---';
             }
         }
 
-        // الحصول على طريقة الدفع بالعربية
+        // ========================= 🔧 **الحصول على طريقة الدفع بالعربية** =========================
         function getPaymentMethodArabic(method) {
             const methods = {
                 'bank-transfer': 'تحويل بنكي',
@@ -2174,7 +2524,7 @@
             return methods[method] || method || 'غير محدد';
         }
 
-        // الحصول على كلاس الحالة
+        // ========================= 🔧 **الحصول على كلاس الحالة** =========================
         function getStatusClass(status) {
             const map = {
                 'جديد': 'new',
@@ -2188,7 +2538,7 @@
             return map[status] || 'new';
         }
 
-        // إعداد الفلاتر
+        // ========================= 🔧 **إعداد الفلاتر** =========================
         function setupFilters() {
             document.getElementById('filterCountry').addEventListener('change', applyFilters);
             document.getElementById('filterStatus').addEventListener('change', applyFilters);
@@ -2198,7 +2548,7 @@
             document.getElementById('searchOrders').addEventListener('input', applyFilters);
         }
 
-        // تطبيق الفلاتر
+        // ========================= 🔧 **تطبيق الفلاتر** =========================
         function applyFilters() {
             const country = document.getElementById('filterCountry').value;
             const status = document.getElementById('filterStatus').value;
@@ -2211,7 +2561,7 @@
             
             if (country) {
                 filtered = filtered.filter(order => {
-                    const orderCountry = order.customer?.address?.country || order.customer?.country;
+                    const orderCountry = order.customer?.country || order.customer?.address?.country;
                     return orderCountry === country;
                 });
             }
@@ -2229,36 +2579,40 @@
             }
             
             if (discount === 'with-discount') {
-                filtered = filtered.filter(order => 
-                    order.discount?.applied || order.discountInfo?.applied
-                );
+                filtered = filtered.filter(order => order.discount?.applied);
             } else if (discount === 'without-discount') {
-                filtered = filtered.filter(order => 
-                    !order.discount?.applied && !order.discountInfo?.applied
-                );
+                filtered = filtered.filter(order => !order.discount?.applied);
             }
             
             if (search) {
                 filtered = filtered.filter(order => {
-                    return (
-                        (order.orderId && order.orderId.toString().includes(search)) ||
-                        (order.customer?.name && order.customer.name.toLowerCase().includes(search)) ||
-                        (order.customer?.fullName && order.customer.fullName.toLowerCase().includes(search)) ||
-                        (order.customer?.phone && order.customer.phone.includes(search)) ||
-                        (order.customer?.email && order.customer.email.toLowerCase().includes(search)) ||
-                        (order.discount?.code && order.discount.code.toLowerCase().includes(search)) ||
-                        (order.discountInfo?.code && order.discountInfo.code.toLowerCase().includes(search))
-                    );
+                    const searchableText = [
+                        order.orderNumber,
+                        order.orderId,
+                        order.customer?.name,
+                        order.customer?.fullName,
+                        order.customer?.phone,
+                        order.customer?.email,
+                        order.discount?.code,
+                        order.notes || ''
+                    ].filter(text => text).join(' ').toLowerCase();
+                    
+                    return searchableText.includes(search);
                 });
             }
             
             displayOrders(filtered);
         }
 
-        // تحديث حالة الدفع
-        async function updatePaymentStatus(orderId, paymentStatus) {
+        // ========================= 🔧 **تحديث حالة الدفع** =========================
+        async function updatePaymentStatus(orderId, paymentStatus, orderNumber) {
+            console.log(`💳 تحديث حالة الدفع للطلب #${orderNumber} إلى: ${paymentStatus}`);
+            
             const order = allOrders.find(o => o.id === orderId || o.orderId === orderId);
-            if (!order) return;
+            if (!order) {
+                showNotification('خطأ', 'الطلب غير موجود', 'error');
+                return;
+            }
             
             order.paymentStatus = paymentStatus;
             order.paymentUpdatedAt = new Date().toISOString();
@@ -2269,120 +2623,178 @@
                         paymentStatus: paymentStatus,
                         paymentUpdatedAt: firebase.firestore.FieldValue.serverTimestamp()
                     });
+                    console.log(`✅ تم تحديث حالة الدفع في Firebase للطلب #${orderNumber}`);
                 } catch (error) {
-                    console.error('❌ خطأ في تحديث حالة الدفع:', error);
+                    console.error('❌ خطأ في تحديث حالة الدفع في Firebase:', error);
                 }
             }
             
             updatePaymentInLocalStorage(order);
-            showNotification('تم التحديث', `تم تحديث حالة الدفع للطلب #${order.orderId || order.id}`);
+            
+            updateAllStats(allOrders);
+            applyFilters();
+            
+            showNotification('تم التحديث', `تم تحديث حالة الدفع للطلب #${orderNumber}`, 'success');
         }
 
-        // تحديث حالة الدفع في localStorage
+        // ========================= 🔧 **تحديث حالة الدفع في localStorage** =========================
         function updatePaymentInLocalStorage(order) {
             try {
                 const orders = JSON.parse(localStorage.getItem('orders')) || [];
-                const orderIndex = orders.findIndex(o => o.orderNumber == order.orderId);
+                const orderIndex = orders.findIndex(o => 
+                    o.orderNumber == order.orderNumber || 
+                    o.orderId == order.orderNumber ||
+                    o.id == order.orderNumber
+                );
+                
                 if (orderIndex !== -1) {
                     orders[orderIndex].paymentStatus = order.paymentStatus;
                     localStorage.setItem('orders', JSON.stringify(orders));
                 }
                 
                 const newOrders = JSON.parse(localStorage.getItem('new_orders')) || [];
-                const newOrderIndex = newOrders.findIndex(o => o.orderId == order.orderId);
+                const newOrderIndex = newOrders.findIndex(o => 
+                    o.orderId == order.orderNumber || 
+                    o.orderNumber == order.orderNumber ||
+                    o.id == order.orderNumber
+                );
+                
                 if (newOrderIndex !== -1) {
                     newOrders[newOrderIndex].paymentStatus = order.paymentStatus;
                     localStorage.setItem('new_orders', JSON.stringify(newOrders));
                 }
+                
+                console.log(`✅ تم تحديث حالة الدفع في localStorage للطلب #${order.orderNumber}`);
             } catch (error) {
                 console.error('❌ خطأ في تحديث localStorage:', error);
             }
         }
 
-        // حذف الطلب - محسّن ولا يعود للظهور
-        async function deleteOrder(orderId, orderNumber) {
-            if (!confirm(`⚠️ هل أنت متأكد من حذف الطلب #${orderNumber}؟\nهذا الإجراء لا يمكن التراجع عنه.`)) {
-                return;
+        // ========================= 🔧 **تسجيل الدخول** =========================
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('adminEmail').value;
+            const password = document.getElementById('adminPassword').value;
+            
+            if (email === 'admin@different.com' && password === 'admin123') {
+                currentUser = { email, name: 'مدير النظام' };
+                localStorage.setItem('checkout_admin', JSON.stringify(currentUser));
+                showDashboard();
+                loadOrders();
+                showNotification('✅ تم تسجيل الدخول', 'مرحباً بك في لوحة التحكم', 'success');
+                startAutoRefresh();
+            } else {
+                showNotification('❌ خطأ في البيانات', 'بيانات الدخول غير صحيحة', 'error');
+            }
+        });
+
+        // ========================= 🔧 **تحقق من تسجيل الدخول السابق** =========================
+        function checkAuth() {
+            const savedUser = localStorage.getItem('checkout_admin');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                showDashboard();
+                loadOrders();
+                startAutoRefresh();
+                return true;
+            }
+            return false;
+        }
+
+        // ========================= 🔧 **تسجيل الخروج** =========================
+        function logout() {
+            if (confirm('هل أنت متأكد من تسجيل الخروج؟')) {
+                localStorage.removeItem('checkout_admin');
+                currentUser = null;
+                if (autoRefreshInterval) {
+                    clearInterval(autoRefreshInterval);
+                }
+                document.getElementById('dashboard').style.display = 'none';
+                document.getElementById('loginScreen').style.display = 'flex';
+                showNotification('تم تسجيل الخروج', 'شكراً لاستخدامك لوحة التحكم', 'success');
+            }
+        }
+
+        // ========================= 🔧 **عرض الداشبورد** =========================
+        function showDashboard() {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'block';
+            if (currentUser) {
+                document.getElementById('userEmail').textContent = currentUser.email;
+            }
+        }
+
+        // ========================= 🔧 **بدء التحديث التلقائي** =========================
+        function startAutoRefresh() {
+            if (autoRefreshInterval) {
+                clearInterval(autoRefreshInterval);
+            }
+            autoRefreshInterval = setInterval(() => {
+                refreshOrders();
+            }, 30000);
+        }
+
+        // ========================= 🔧 **تحديث الطلبات** =========================
+        function refreshOrders() {
+            console.log('🔄 تحديث البيانات التلقائي...');
+            loadOrders();
+            updateLastUpdateTime();
+        }
+
+        // ========================= 🔧 **تحديث وقت آخر تحديث** =========================
+        function updateLastUpdateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('ar-SA', {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            document.getElementById('lastUpdate').textContent = `آخر تحديث: ${timeString}`;
+        }
+
+        // ========================= 🔧 **إظهار الإشعار** =========================
+        function showNotification(title, message, type = 'success') {
+            const notification = document.getElementById('notification');
+            const notificationTitle = document.getElementById('notificationTitle');
+            const notificationMessage = document.getElementById('notificationMessage');
+            
+            notificationTitle.textContent = title;
+            notificationMessage.textContent = message;
+            
+            notification.className = 'notification';
+            if (type === 'error') {
+                notification.classList.add('error');
             }
             
-            try {
-                // 1. إضافة إلى قائمة المحذوفات في الذاكرة المحلية
-                deletedOrders.add(orderNumber.toString());
-                localStorage.setItem('deleted_orders', JSON.stringify(Array.from(deletedOrders)));
-                
-                // 2. البحث عن الطلب المراد حذفه
-                const order = allOrders.find(o => o.id === orderId || o.orderId === orderNumber);
-                
-                // 3. الحذف من Firebase إذا كان موجوداً
-                if (order && order.source === 'firebase' && order.firebaseId) {
-                    try {
-                        await db.collection('orders').doc(order.firebaseId).delete();
-                        console.log(`✅ تم حذف الطلب #${orderNumber} من Firebase`);
-                    } catch (firebaseError) {
-                        console.warn('⚠️ خطأ في حذف الطلب من Firebase:', firebaseError);
-                    }
-                }
-                
-                // 4. الحذف من localStorage بشكل كامل
-                removeOrderFromLocalStorage(orderNumber);
-                
-                // 5. إزالة من القائمة المحلية
-                allOrders = allOrders.filter(o => 
-                    o.id !== orderId && 
-                    o.orderId !== orderNumber && 
-                    o.orderId !== orderNumber.toString()
-                );
-                
-                // 6. تحديث القائمة المعروضة
-                currentFilteredOrders = currentFilteredOrders.filter(o => 
-                    o.id !== orderId && 
-                    o.orderId !== orderNumber && 
-                    o.orderId !== orderNumber.toString()
-                );
-                
-                // 7. تحديث الإحصائيات والواجهة
-                updateAllStats(allOrders);
-                displayOrders(currentFilteredOrders);
-                
-                // 8. إغلاق المودال إذا كان مفتوحاً
-                closeModal();
-                closeStatusModal();
-                
-                // 9. إظهار إشعار النجاح
-                showNotification('✅ تم الحذف', `تم حذف الطلب #${orderNumber} بنجاح ولن يعود للظهور`);
-                
-                // 10. تحديث localStorage مرة أخرى للتأكد
-                localStorage.setItem('orders', JSON.stringify(allOrders.filter(o => o.source === 'local')));
-                
-            } catch (error) {
-                console.error('❌ خطأ في حذف الطلب:', error);
-                showNotification('خطأ في الحذف', error.message, 'error');
-            }
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 5000);
         }
 
-        // إزالة الطلب من localStorage بشكل كامل
-        function removeOrderFromLocalStorage(orderNumber) {
-            try {
-                // إزالة من orders
-                const orders = JSON.parse(localStorage.getItem('orders')) || [];
-                const filteredOrders = orders.filter(o => o.orderNumber != orderNumber);
-                localStorage.setItem('orders', JSON.stringify(filteredOrders));
-                
-                // إزالة من new_orders
-                const newOrders = JSON.parse(localStorage.getItem('new_orders')) || [];
-                const filteredNewOrders = newOrders.filter(o => o.orderId != orderNumber);
-                localStorage.setItem('new_orders', JSON.stringify(filteredNewOrders));
-                
-                // إزالة من أي مكان آخر
-                localStorage.removeItem(`order_${orderNumber}`);
-                
-                console.log(`✅ تم حذف الطلب #${orderNumber} من localStorage`);
-            } catch (error) {
-                console.error('❌ خطأ في إزالة الطلب من localStorage:', error);
-            }
+        // ========================= 🔧 **إخفاء الإشعار** =========================
+        function hideNotification() {
+            document.getElementById('notification').classList.remove('show');
         }
 
-        // عرض تفاصيل الطلب
+        // ========================= 🔧 **إغلاق المودال** =========================
+        function closeModal() {
+            document.getElementById('orderModal').classList.remove('show');
+        }
+
+        // ========================= 🔧 **إغلاق مودال الحالة** =========================
+        function closeStatusModal() {
+            document.getElementById('statusModal').classList.remove('show');
+        }
+
+        // ========================= 🔧 **إغلاق مودال الملاحظات** =========================
+        function closeNotesModal() {
+            document.getElementById('notesModal').classList.remove('show');
+        }
+
+        // ========================= 🔧 **عرض تفاصيل الطلب (محسن) مع زر إضافة/تعديل الملاحظات** =========================
         function viewOrderDetails(orderId) {
             const order = allOrders.find(o => o.id === orderId || o.orderId === orderId);
             if (!order) {
@@ -2392,208 +2804,227 @@
             
             const customer = order.customer || {};
             const address = customer.address || {};
-            const payment = order.payment || {};
-            const totals = order.totals || {};
+            const discount = order.discount || {};
             const items = order.items || [];
-            const discount = order.discount || order.discountInfo || {};
+            const notes = order.notes || '';
             
-            const country = address.country || customer.country || 'غير محدد';
-            const currency = totals.currency || (country === 'مصر' ? 'ج.م' : 'ر.س');
+            let productSum = order.totals?.subtotal || 0;
+            let productSumAfterDiscount = productSum - (discount.amount || 0);
+            
             const shippingCost = order.shippingCost || order.totals?.shipping || 0;
+            const totalRevenue = order.totals?.total || (productSumAfterDiscount + shippingCost);
             
-            // استخراج المحافظة والمدينة
-            const governorate = address.governorate || customer.governorate || address.city || customer.city || 'غير محدد';
-            const city = address.city || customer.city || address.region || customer.region || 'غير محدد';
-            const detailedAddress = address.details || customer.address || address.address || 'غير محدد';
-            
-            // حساب التوفير
-            const originalTotal = discount.originalTotal || totals.total || 0;
-            const finalTotal = totals.total || order.total || 0;
-            const discountAmount = discount.amount || (originalTotal - finalTotal);
-            const discountPercentage = originalTotal > 0 ? Math.round((discountAmount / originalTotal) * 100) : 0;
-            
-            // حساب إيرادات المنتجات
-            let productRevenue = 0;
-            items.forEach(item => {
-                productRevenue += (item.price || 0) * (item.quantity || 1);
-            });
-            
-            // تحضير قائمة المنتجات
-            let itemsHtml = '';
-            items.forEach((item, index) => {
-                const itemTotal = (item.price || 0) * (item.quantity || 1);
-                itemsHtml += `
-                    <tr>
-                        <td>${index + 1}</td>
-                        <td>
+            // عرض اسم المنتج ورقم المنتج بشكل واضح ومضغوط مع الكمية والسعر جنباً إلى جنب
+            const productsHtml = items.map((item, index) => `
+                <tr>
+                    <td style="text-align: center; width: 30px; padding: 4px 2px;">${index + 1}</td>
+                    <td class="product-name-cell">
+                        <div class="product-name">
                             <strong>${item.name || 'منتج'}</strong>
-                            ${item.id ? `<br><small style="color: var(--gray-light);">كود: ${item.id}</small>` : ''}
-                        </td>
-                        <td>${item.quantity || 1}</td>
-                        <td>${item.price || 0} ${currency}</td>
-                        <td><strong>${itemTotal} ${currency}</strong></td>
-                    </tr>
-                `;
-            });
+                        </div>
+                        ${item.code ? `<div class="product-code">${item.code}</div>` : ''}
+                    </td>
+                    <td style="text-align: center; width: 80px; padding: 4px 2px;">
+                        <div class="quantity-price-container">
+                            <span class="quantity-badge">${item.quantity || 1}</span>
+                            <span class="product-price">×</span>
+                            <span class="product-price">${formatCurrency(item.price || 0)} ${order.totals?.currency || 'ر.س'}</span>
+                        </div>
+                    </td>
+                    <td style="text-align: center; width: 90px; padding: 4px 2px;">
+                        <div class="product-price"><strong>${formatCurrency((item.price || 0) * (item.quantity || 1))} ${order.totals?.currency || 'ر.س'}</strong></div>
+                    </td>
+                    <td style="text-align: center; width: 100px; padding: 4px 2px;">
+                        <div class="product-price"><strong>${formatCurrency((item.price || 0) * (item.quantity || 1))} ${order.totals?.currency || 'ر.س'}</strong></div>
+                    </td>
+                </tr>
+            `).join('') || '<tr><td colspan="5" style="text-align: center; padding: 20px; color: var(--gray-light); font-size: 0.8rem;">لا توجد منتجات</td></tr>';
             
-            // قسم معلومات الخصم
-            let discountSection = '';
-            if (discount.applied) {
-                discountSection = `
-                    <div class="discount-details">
-                        <h4><i class="fas fa-gift"></i> معلومات الخصم</h4>
+            const modalContent = `
+                <div class="order-details-layout">
+                    <!-- العمود الأيمن: معلومات الطلب الأساسية -->
+                    <div class="order-info-column">
+                        <div class="info-section">
+                            <h4 class="section-title"><i class="fas fa-info-circle"></i> معلومات الطلب</h4>
+                            <div class="compact-grid">
+                                <div class="compact-item">
+                                    <strong>رقم الطلب</strong>
+                                    <span class="order-number">#${order.orderNumber || order.id}</span>
+                                </div>
+                                <div class="compact-item">
+                                    <strong>تاريخ الطلب</strong>
+                                    <span>${formatDate(order.createdAt)}</span>
+                                </div>
+                                <div class="compact-item">
+                                    <strong>حالة الطلب</strong>
+                                    <span class="status-badge status-${getStatusClass(order.status)}">
+                                        ${order.status || 'جديد'}
+                                    </span>
+                                </div>
+                                <div class="compact-item">
+                                    <strong>حالة الدفع</strong>
+                                    <span class="status-badge ${order.paymentStatus === 'paid' ? 'status-delivered' : 'status-review'}">
+                                        ${order.paymentStatus === 'paid' ? 'تم الدفع' : 'لم يتم الدفع'}
+                                    </span>
+                                </div>
+                                <div class="compact-item">
+                                    <strong>طريقة الدفع</strong>
+                                    <span>${getPaymentMethodArabic(order.payment?.method)}</span>
+                                </div>
+                                <div class="compact-item">
+                                    <strong>البلد</strong>
+                                    <span class="country-badge ${customer.country === 'مصر' ? 'egypt-badge' : 'saudi-badge'}">
+                                        ${customer.country || 'غير محدد'}
+                                    </span>
+                                </div>
+                                <div class="compact-item">
+                                    <strong>المحافظة</strong>
+                                    <span>${address.governorate || 'غير محدد'}</span>
+                                </div>
+                                <div class="compact-item">
+                                    <strong>المدينة</strong>
+                                    <span>${address.city || 'غير محدد'}</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="info-section">
+                            <h4 class="section-title"><i class="fas fa-user"></i> معلومات العميل</h4>
+                            <div class="compact-grid">
+                                <div class="compact-item">
+                                    <strong>اسم العميل</strong>
+                                    <span>${customer.name || customer.fullName || 'زائر'}</span>
+                                </div>
+                                <div class="compact-item">
+                                    <strong>الهاتف</strong>
+                                    <span>${customer.phone || 'غير محدد'}</span>
+                                </div>
+                                <div class="compact-item">
+                                    <strong>البريد الإلكتروني</strong>
+                                    <span>${customer.email || 'غير محدد'}</span>
+                                </div>
+                            </div>
+                            <div class="compact-item" style="grid-column: span 2; margin-top: 10px;">
+                                <strong>العنوان التفصيلي</strong>
+                                <div class="address-box" style="margin-top: 5px; font-size: 0.85rem; padding: 10px;">
+                                    ${address.details || 'غير محدد'}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- العمود الأيسر: المنتجات والملاحظات -->
+                    <div class="order-info-column">
+                        <div class="info-section" style="height: 100%;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                                <h4 class="section-title" style="margin: 0;"><i class="fas fa-shopping-bag"></i> المنتجات (${items.length})</h4>
+                                <button class="btn btn-secondary" onclick="editOrderNotes('${order.id || order.orderId}')" style="padding: 8px 15px; font-size: 0.85rem;">
+                                    <i class="fas fa-edit"></i> ${notes ? 'تعديل الملاحظة' : 'إضافة ملاحظة'}
+                                </button>
+                            </div>
+                            
+                            <div class="products-container">
+                                <table class="products-table">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>اسم المنتج</th>
+                                            <th>الكمية × السعر</th>
+                                            <th>المجموع</th>
+                                            <th>الإجمالي</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${productsHtml}
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <div style="margin-top: 15px;">
+                                <h4 class="section-title" style="font-size: 1rem; margin-bottom: 10px;">
+                                    <i class="fas fa-sticky-note"></i> ملاحظات الطلب
+                                    <button class="btn btn-secondary" onclick="editOrderNotes('${order.id || order.orderId}')" style="padding: 6px 12px; font-size: 0.8rem; margin-right: 10px;">
+                                        <i class="fas fa-edit"></i> ${notes ? 'تعديل' : 'إضافة'}
+                                    </button>
+                                </h4>
+                                <div class="notes-box ${!notes ? 'empty' : ''}" style="margin-top: 5px;">
+                                    ${notes ? notes : 'لا توجد ملاحظات لهذا الطلب'}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- معلومات الخصم والشحن -->
+                <div class="info-section" style="margin-top: 20px;">
+                    <h4 class="section-title"><i class="fas fa-calculator"></i> الإجماليات المالية</h4>
+                    
+                    ${discount.applied ? `
+                    <div class="discount-info">
                         <div class="discount-row">
                             <span>كود الخصم:</span>
-                            <span style="color: var(--success); font-weight: bold;">${discount.code || '--'}</span>
+                            <span><strong>${discount.code || 'بدون كود'}</strong></span>
                         </div>
                         <div class="discount-row">
                             <span>نسبة الخصم:</span>
-                            <span style="color: var(--success);">${discountPercentage}%</span>
+                            <span><strong>${discount.discountValue || discount.percentage || 0}%</strong></span>
+                        </div>
+                        <div class="discount-row">
+                            <span>قيمة الخصم:</span>
+                            <span><strong>${formatCurrency(discount.amount || 0)} ${order.totals?.currency || 'ر.س'}</strong></span>
                         </div>
                         <div class="discount-row">
                             <span>التوصيل:</span>
-                            <span style="color: var(--success);">
-                                ${discount.freeShipping ? 'مجاني ✅' : 'مدفوع'}
-                            </span>
-                        </div>
-                        <div class="discount-row">
-                            <span>مبلغ التوفير:</span>
-                            <span style="color: var(--success); font-weight: bold;">${formatCurrency(discountAmount)} ${currency}</span>
-                        </div>
-                    </div>
-                `;
-            }
-            
-            const modalContent = `
-                <div class="info-section">
-                    <h4 class="section-title"><i class="fas fa-info-circle"></i> معلومات الطلب</h4>
-                    <div class="info-grid">
-                        <div class="info-item">
-                            <strong>رقم الطلب</strong>
-                            <span class="order-number">#${order.orderId || order.id}</span>
-                        </div>
-                        <div class="info-item">
-                            <strong>تاريخ الطلب</strong>
-                            <span>${formatDate(order.createdAt)}</span>
-                        </div>
-                        <div class="info-item">
-                            <strong>حالة الطلب</strong>
-                            <span class="status-badge status-${getStatusClass(order.status)}">
-                                ${order.status || 'جديد'}
-                            </span>
-                        </div>
-                        <div class="info-item">
-                            <strong>البلد</strong>
-                            <span class="country-badge ${country === 'مصر' ? 'egypt-badge' : 'saudi-badge'}">
-                                ${country}
+                            <span>
+                                ${discount.freeShipping ? 
+                                    '<span class="free-shipping-badge"><i class="fas fa-truck"></i> مجاني</span>' : 
+                                    `${formatCurrency(shippingCost)} ${order.totals?.currency || 'ر.س'}`}
                             </span>
                         </div>
                     </div>
-                </div>
-                
-                <div class="info-section">
-                    <h4 class="section-title"><i class="fas fa-user"></i> معلومات العميل</h4>
-                    <div class="info-grid">
-                        <div class="info-item">
-                            <strong>الاسم الكامل</strong>
-                            <span>${customer.name || customer.fullName || 'غير محدد'}</span>
-                        </div>
-                        <div class="info-item">
-                            <strong>رقم الهاتف</strong>
-                            <span>${customer.phone || 'غير محدد'}</span>
-                        </div>
-                        <div class="info-item">
-                            <strong>البريد الإلكتروني</strong>
-                            <span>${customer.email || 'غير محدد'}</span>
-                        </div>
-                        <div class="info-item">
-                            <strong>حالة الدفع</strong>
-                            <span class="${order.paymentStatus === 'paid' ? 'status-delivered' : 'status-review'}" style="padding: 5px 10px; border-radius: 4px;">
-                                ${order.paymentStatus === 'paid' ? 'تم الدفع' : 'لم يتم الدفع'}
-                            </span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="info-section">
-                    <h4 class="section-title"><i class="fas fa-map-marker-alt"></i> العنوان والموقع</h4>
-                    <div class="info-grid">
-                        <div class="info-item">
-                            <strong>المحافظة</strong>
-                            <span>${governorate}</span>
-                        </div>
-                        <div class="info-item">
-                            <strong>المدينة/المنطقة</strong>
-                            <span>${city}</span>
-                        </div>
-                        <div class="info-item">
-                            <strong>سعر الشحن</strong>
-                            <span style="color: ${discount.freeShipping ? 'var(--success)' : 'var(--accent)'}; font-weight: bold;">
-                                ${discount.freeShipping ? 'مجاني ✅' : shippingCost + ' ' + currency}
-                            </span>
-                        </div>
-                    </div>
-                    <div class="info-item" style="margin-top: 20px;">
-                        <strong>العنوان التفصيلي</strong>
-                        <div class="address-box">${detailedAddress}</div>
-                    </div>
-                </div>
-                
-                ${discountSection}
-                
-                <div class="info-section">
-                    <h4 class="section-title"><i class="fas fa-shopping-bag"></i> المنتجات (${items.length})</h4>
-                    <table class="products-table">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>المنتج</th>
-                                <th>الكمية</th>
-                                <th>سعر الوحدة</th>
-                                <th>الإجمالي</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${itemsHtml || '<tr><td colspan="5" style="text-align: center; padding: 30px; color: var(--gray-light);">لا توجد منتجات</td></tr>'}
-                        </tbody>
-                    </table>
-                </div>
-                
-                <div class="info-section">
-                    <h4 class="section-title"><i class="fas fa-calculator"></i> ملخص مالي</h4>
+                    ` : ''}
+                    
                     <div class="financial-summary">
                         <div class="financial-item">
                             <span class="label">قيمة المنتجات</span>
-                            <span class="value">${formatCurrency(productRevenue)} ${currency}</span>
+                            <span class="value">${formatCurrency(productSum)} ${order.totals?.currency || 'ر.س'}</span>
                         </div>
                         <div class="financial-item">
                             <span class="label">الشحن</span>
-                            <span class="value">${discount.freeShipping ? 'مجاني' : formatCurrency(shippingCost) + ' ' + currency}</span>
+                            <span class="value">
+                                ${discount.freeShipping ? 
+                                    '<span style="color: #3b82f6;"><i class="fas fa-truck"></i> مجاني</span>' : 
+                                    `${formatCurrency(shippingCost)} ${order.totals?.currency || 'ر.س'}`}
+                            </span>
                         </div>
                         ${discount.applied ? `
-                        <div class="financial-item original">
-                            <span class="label">السعر الأصلي</span>
-                            <span class="value">${formatCurrency(originalTotal)} ${currency}</span>
-                        </div>
                         <div class="financial-item discount">
-                            <span class="label">الخصم</span>
-                            <span class="value">-${formatCurrency(discountAmount)} ${currency}</span>
+                            <span class="label">قيمة الخصم</span>
+                            <span class="value">-${formatCurrency(discount.amount || 0)} ${order.totals?.currency || 'ر.س'}</span>
+                        </div>
+                        <div class="financial-item original">
+                            <span class="label">الإجمالي قبل الخصم</span>
+                            <span class="value">${formatCurrency(productSum + shippingCost)} ${order.totals?.currency || 'ر.س'}</span>
                         </div>
                         ` : ''}
                         <div class="financial-item" style="grid-column: span 2; background: rgba(67, 97, 238, 0.1);">
-                            <span class="label">الإجمالي النهائي</span>
-                            <span class="value" style="color: var(--accent); font-size: 1.5rem;">
-                                ${formatCurrency(finalTotal)} ${currency}
+                            <span class="label">المجموع الكلي النهائي</span>
+                            <span class="value" style="color: #00ff88; font-size: 1.3rem;">
+                                ${formatCurrency(totalRevenue)} ${order.totals?.currency || 'ر.س'}
                             </span>
                         </div>
                     </div>
                 </div>
                 
+                <!-- أزرار الإجراءات -->
                 <div style="display: flex; gap: 15px; margin-top: 25px; padding-top: 25px; border-top: 1px solid rgba(255,255,255,0.1);">
                     <button class="btn btn-edit" onclick="editOrderStatusModal('${order.id || order.orderId}')" style="flex: 1;">
                         <i class="fas fa-edit"></i> تعديل حالة الطلب
                     </button>
-                    <button class="btn btn-danger" onclick="deleteOrder('${order.id || order.orderId}', '${order.orderId || order.id}')" style="flex: 1;">
+                    <button class="btn btn-secondary" onclick="editOrderNotes('${order.id || order.orderId}')" style="flex: 1;">
+                        <i class="fas fa-edit"></i> ${notes ? 'تعديل الملاحظة' : 'إضافة ملاحظة'}
+                    </button>
+                    <button class="btn btn-danger" onclick="deleteOrder('${order.id || order.orderId}', '${order.orderNumber || order.id}')" style="flex: 1;">
                         <i class="fas fa-trash"></i> حذف الطلب
                     </button>
                 </div>
@@ -2603,7 +3034,109 @@
             document.getElementById('orderModal').classList.add('show');
         }
 
-        // تعديل حالة الطلب
+        // ========================= 🔧 **تعديل/إضافة ملاحظة الطلب** =========================
+        function editOrderNotes(orderId) {
+            const order = allOrders.find(o => o.id === orderId || o.orderId === orderId);
+            if (!order) {
+                showNotification('الطلب غير موجود', 'تعذر العثور على الطلب المطلوب', 'error');
+                return;
+            }
+            
+            const customer = order.customer || {};
+            const orderNumber = order.orderNumber || order.id;
+            const currentNotes = order.notes || '';
+            
+            const modalContent = `
+                <div style="padding: 20px;">
+                    <div class="info-item" style="margin-bottom: 25px;">
+                        <strong style="display: block; margin-bottom: 10px; color: var(--accent);">رقم الطلب:</strong>
+                        <span class="order-number">#${orderNumber}</span>
+                    </div>
+                    
+                    <div class="info-item" style="margin-bottom: 25px;">
+                        <strong style="display: block; margin-bottom: 10px; color: var(--accent);">اسم العميل:</strong>
+                        <span style="font-size: 1.1rem;">${customer.name || customer.fullName || 'زائر'}</span>
+                    </div>
+                    
+                    <div class="form-group" style="margin-bottom: 30px;">
+                        <label for="orderNotes" style="display: block; margin-bottom: 10px; color: var(--light);">
+                            <i class="fas fa-sticky-note"></i> الملاحظة:
+                        </label>
+                        <textarea id="orderNotes" rows="6" style="width: 100%; padding: 12px; border-radius: 8px; background: #1e293b; border: 1px solid rgba(255,255,255,0.2); color: white; resize: vertical; font-family: inherit;" 
+                                  placeholder="اكتب ملاحظة عن الطلب هنا...">${currentNotes}</textarea>
+                    </div>
+                    
+                    <div style="display: flex; gap: 15px;">
+                        <button class="btn btn-secondary" onclick="closeNotesModal()" style="flex: 1;">
+                            <i class="fas fa-times"></i> إلغاء
+                        </button>
+                        <button class="btn btn-success" onclick="saveOrderNotes('${order.id || order.orderId}')" style="flex: 1;">
+                            <i class="fas fa-check"></i> حفظ الملاحظة
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('notesModalContent').innerHTML = modalContent;
+            document.getElementById('notesModal').classList.add('show');
+        }
+
+        // ========================= 🔧 **حفظ ملاحظة الطلب** =========================
+        async function saveOrderNotes(orderId) {
+            const notes = document.getElementById('orderNotes').value;
+            
+            const order = allOrders.find(o => o.id === orderId || o.orderId === orderId);
+            if (!order) {
+                showNotification('خطأ', 'الطلب غير موجود', 'error');
+                return;
+            }
+            
+            order.notes = notes;
+            
+            if (order.source === 'firebase' && order.firebaseId) {
+                try {
+                    await db.collection('orders').doc(order.firebaseId).update({
+                        notes: notes
+                    });
+                } catch (error) {
+                    console.error('❌ خطأ في تحديث ملاحظة الطلب:', error);
+                }
+            }
+            
+            updateNotesInLocalStorage(order);
+            closeNotesModal();
+            closeModal();
+            showNotification('تم الحفظ', `تم حفظ الملاحظة للطلب #${order.orderNumber || order.id}`, 'success');
+        }
+
+        // ========================= 🔧 **تحديث الملاحظات في localStorage** =========================
+        function updateNotesInLocalStorage(order) {
+            try {
+                const orders = JSON.parse(localStorage.getItem('orders')) || [];
+                const orderIndex = orders.findIndex(o => 
+                    o.orderNumber == order.orderNumber || 
+                    o.orderId == order.orderNumber
+                );
+                if (orderIndex !== -1) {
+                    orders[orderIndex].notes = order.notes;
+                    localStorage.setItem('orders', JSON.stringify(orders));
+                }
+                
+                const newOrders = JSON.parse(localStorage.getItem('new_orders')) || [];
+                const newOrderIndex = newOrders.findIndex(o => 
+                    o.orderId == order.orderNumber || 
+                    o.orderNumber == order.orderNumber
+                );
+                if (newOrderIndex !== -1) {
+                    newOrders[newOrderIndex].notes = order.notes;
+                    localStorage.setItem('new_orders', JSON.stringify(newOrders));
+                }
+            } catch (error) {
+                console.error('❌ خطأ في تحديث الملاحظات في localStorage:', error);
+            }
+        }
+
+        // ========================= 🔧 **تعديل حالة الطلب** =========================
         function editOrderStatusModal(orderId) {
             const order = allOrders.find(o => o.id === orderId || o.orderId === orderId);
             if (!order) {
@@ -2613,7 +3146,7 @@
             
             const customer = order.customer || {};
             const customerName = customer.name || customer.fullName || 'زائر';
-            const orderNumber = order.orderId || order.id;
+            const orderNumber = order.orderNumber || order.id;
             
             const modalContent = `
                 <div style="padding: 20px;">
@@ -2649,13 +3182,6 @@
                         </select>
                     </div>
                     
-                    <div class="form-group" style="margin-bottom: 30px;">
-                        <label for="orderNotes" style="display: block; margin-bottom: 10px; color: var(--light);">
-                            <i class="fas fa-sticky-note"></i> ملاحظات (اختياري):
-                        </label>
-                        <textarea id="orderNotes" rows="4" style="width: 100%; padding: 12px; border-radius: 8px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; resize: vertical;">${order.notes || ''}</textarea>
-                    </div>
-                    
                     <div style="display: flex; gap: 15px;">
                         <button class="btn btn-secondary" onclick="closeStatusModal()" style="flex: 1;">
                             <i class="fas fa-times"></i> إلغاء
@@ -2671,10 +3197,9 @@
             document.getElementById('statusModal').classList.add('show');
         }
 
-        // تحديث حالة الطلب
+        // ========================= 🔧 **تحديث حالة الطلب** =========================
         async function updateOrderStatus(orderId) {
             const newStatus = document.getElementById('newStatus').value;
-            const orderNotes = document.getElementById('orderNotes').value.trim();
             
             const order = allOrders.find(o => o.id === orderId || o.orderId === orderId);
             if (!order) {
@@ -2683,16 +3208,12 @@
             }
             
             order.status = newStatus;
-            if (orderNotes) {
-                order.notes = orderNotes;
-            }
             order.statusUpdatedAt = new Date().toISOString();
             
             if (order.source === 'firebase' && order.firebaseId) {
                 try {
                     await db.collection('orders').doc(order.firebaseId).update({
                         status: newStatus,
-                        notes: orderNotes,
                         statusUpdatedAt: firebase.firestore.FieldValue.serverTimestamp()
                     });
                 } catch (error) {
@@ -2704,25 +3225,29 @@
             closeStatusModal();
             updateAllStats(allOrders);
             displayOrders(currentFilteredOrders);
-            showNotification('تم التحديث', `تم تحديث حالة الطلب #${order.orderId || order.id} إلى "${newStatus}"`);
+            showNotification('تم التحديث', `تم تحديث حالة الطلب #${order.orderNumber || order.id} إلى "${newStatus}"`, 'success');
         }
 
-        // تحديث الطلب في localStorage
+        // ========================= 🔧 **تحديث الطلب في localStorage** =========================
         function updateOrderInLocalStorage(order) {
             try {
                 const orders = JSON.parse(localStorage.getItem('orders')) || [];
-                const orderIndex = orders.findIndex(o => o.orderNumber == order.orderId);
+                const orderIndex = orders.findIndex(o => 
+                    o.orderNumber == order.orderNumber || 
+                    o.orderId == order.orderNumber
+                );
                 if (orderIndex !== -1) {
                     orders[orderIndex].status = order.status;
-                    if (order.notes) orders[orderIndex].notes = order.notes;
                     localStorage.setItem('orders', JSON.stringify(orders));
                 }
                 
                 const newOrders = JSON.parse(localStorage.getItem('new_orders')) || [];
-                const newOrderIndex = newOrders.findIndex(o => o.orderId == order.orderId);
+                const newOrderIndex = newOrders.findIndex(o => 
+                    o.orderId == order.orderNumber || 
+                    o.orderNumber == order.orderNumber
+                );
                 if (newOrderIndex !== -1) {
                     newOrders[newOrderIndex].status = order.status;
-                    if (order.notes) newOrders[newOrderIndex].notes = order.notes;
                     localStorage.setItem('new_orders', JSON.stringify(newOrders));
                 }
             } catch (error) {
@@ -2730,153 +3255,130 @@
             }
         }
 
-        // تحديث وقت آخر تحديث
-        function updateLastUpdateTime() {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString('ar-SA', {
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit'
-            });
-            document.getElementById('lastUpdate').textContent = `آخر تحديث: ${timeString}`;
+        // ========================= 🔧 **حذف الطلب** =========================
+        async function deleteOrder(orderId, orderNumber) {
+            if (!confirm(`⚠️ هل أنت متأكد من حذف الطلب #${orderNumber}؟\nهذا الإجراء لا يمكن التراجع عنه.`)) {
+                return;
+            }
+            
+            try {
+                deletedOrders.add(orderNumber.toString());
+                localStorage.setItem('deleted_orders', JSON.stringify(Array.from(deletedOrders)));
+                
+                const order = allOrders.find(o => o.id === orderId || o.orderId === orderNumber);
+                
+                if (order && order.source === 'firebase' && order.firebaseId) {
+                    try {
+                        await db.collection('orders').doc(order.firebaseId).delete();
+                    } catch (firebaseError) {
+                        console.warn('⚠️ خطأ في حذف الطلب من Firebase:', firebaseError);
+                    }
+                }
+                
+                allOrders = allOrders.filter(o => 
+                    o.id !== orderId && 
+                    o.orderId !== orderNumber && 
+                    o.orderNumber !== orderNumber
+                );
+                
+                currentFilteredOrders = currentFilteredOrders.filter(o => 
+                    o.id !== orderId && 
+                    o.orderId !== orderNumber && 
+                    o.orderNumber !== orderNumber
+                );
+                
+                updateAllStats(allOrders);
+                displayOrders(currentFilteredOrders);
+                
+                closeModal();
+                closeStatusModal();
+                closeNotesModal();
+                
+                showNotification('✅ تم الحذف', `تم حذف الطلب #${orderNumber} بنجاح`, 'success');
+                
+            } catch (error) {
+                console.error('❌ خطأ في حذف الطلب:', error);
+                showNotification('خطأ في الحذف', error.message, 'error');
+            }
         }
 
-        // تحديث الطلبات
-        function refreshOrders() {
-            loadOrders();
-            showNotification('تم التحديث', 'تم تحديث البيانات بنجاح');
-        }
-
-        // تصدير إلى Excel
+        // ========================= 🔧 **تصدير إلى Excel** =========================
         function exportToExcel() {
             if (allOrders.length === 0) {
                 showNotification('لا توجد بيانات', 'لا توجد طلبات لتصديرها', 'error');
                 return;
             }
             
-            const data = allOrders.map((order, index) => {
+            const fileName = 'طلبات_مختلف.xlsx';
+            
+            const ordersData = allOrders.map((order, index) => {
                 const customer = order.customer || {};
                 const address = customer.address || {};
-                const totals = order.totals || {};
                 const items = order.items || [];
-                const discount = order.discount || order.discountInfo || {};
-                const country = address.country || customer.country || 'غير محدد';
-                const currency = totals.currency || (country === 'مصر' ? 'EGP' : 'SAR');
-                const shippingCost = order.shippingCost || order.totals?.shipping || 0;
-                const governorate = address.governorate || customer.governorate || address.city || customer.city || 'غير محدد';
-                const city = address.city || customer.city || address.region || customer.region || 'غير محدد';
-                const discountAmount = discount.amount || 0;
-                const originalTotal = discount.originalTotal || totals.total || 0;
-                const finalTotal = totals.total || order.total || 0;
+                const discount = order.discount || {};
+                const country = customer.country || address.country || 'غير محدد';
+                const currency = country === 'مصر' ? 'ج.م' : 'ر.س';
                 
-                // حساب إيرادات المنتجات
-                let productRevenue = 0;
-                items.forEach(item => {
-                    productRevenue += (item.price || 0) * (item.quantity || 1);
+                let productSum = order.totals?.subtotal || 0;
+                let productSumAfterDiscount = productSum - (discount.amount || 0);
+                
+                const shippingCost = order.shippingCost || 0;
+                const totalRevenue = productSumAfterDiscount + shippingCost;
+                
+                const orderDate = new Date(order.createdAt);
+                const formattedDate = orderDate.toLocaleDateString('ar-SA');
+                const formattedTime = orderDate.toLocaleTimeString('ar-SA', { 
+                    hour: '2-digit',
+                    minute: '2-digit'
                 });
                 
                 return {
                     'م': index + 1,
-                    'رقم الطلب': order.orderId || order.id,
-                    'التاريخ': formatDate(order.createdAt),
+                    'رقم الطلب': `#${order.orderNumber || order.id}`,
+                    'تاريخ الطلب': formattedDate,
+                    'وقت الطلب': formattedTime,
                     'اسم العميل': customer.name || customer.fullName || 'زائر',
-                    'الهاتف': customer.phone || 'غير محدد',
-                    'البريد الإلكتروني': customer.email || 'غير محدد',
-                    'البلد': country,
-                    'المحافظة': governorate,
-                    'المدينة': city,
-                    'العنوان التفصيلي': address.details || customer.address || address.address || 'غير محدد',
+                    'الهاتف': customer.phone || '',
+                    'البريد الإلكتروني': customer.email || '',
+                    'الدولة': country,
+                    'المحافظة': address.governorate || '',
+                    'المدينة': address.city || '',
                     'طريقة الدفع': getPaymentMethodArabic(order.payment?.method),
                     'حالة الدفع': order.paymentStatus === 'paid' ? 'تم الدفع' : 'لم يتم الدفع',
-                    'إيرادات المنتجات': productRevenue,
-                    'إيرادات الشحن': discount.freeShipping ? 0 : shippingCost,
-                    'عملة الشحن': currency,
-                    'كود الخصم': discount.code || '--',
-                    'مبلغ الخصم': discountAmount,
-                    'السعر الأصلي': originalTotal,
-                    'السعر بعد الخصم': finalTotal,
-                    'نسبة التوفير': originalTotal > 0 ? `${Math.round(((originalTotal - finalTotal) / originalTotal) * 100)}%` : '0%',
                     'حالة الطلب': order.status || 'جديد',
-                    'المنتجات': items.map(item => `${item.name} (الكمية: ${item.quantity || 1})`).join('، '),
                     'ملاحظات': order.notes || 'لا توجد',
-                    'المصدر': order.source === 'firebase' ? 'Firebase' : 'Local'
+                    'كود الخصم': discount.code || 'لا يوجد',
+                    'نسبة الخصم': discount.discountValue || discount.percentage || 0,
+                    'قيمة الخصم': discount.amount || 0,
+                    'مجموع المنتجات الأساسي': Math.round(productSum),
+                    'سعر المنتجات بعد الخصم': Math.round(productSumAfterDiscount),
+                    'سعر الشحن': shippingCost,
+                    'المجموع الكلي': Math.round(totalRevenue),
+                    'عدد المنتجات': items.length,
                 };
             });
             
-            const headers = Object.keys(data[0]);
-            const csvRows = [
-                headers.join(','),
-                ...data.map(row => 
-                    headers.map(header => {
-                        const cell = row[header] || '';
-                        if (typeof cell === 'string' && (cell.includes(',') || cell.includes('"') || cell.includes('\n'))) {
-                            return `"${cell.replace(/"/g, '""')}"`;
-                        }
-                        return cell;
-                    }).join(',')
-                )
-            ];
+            const ws = XLSX.utils.json_to_sheet(ordersData);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'الطلبات');
             
-            const csvContent = '\uFEFF' + csvRows.join('\n');
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement('a');
-            const url = URL.createObjectURL(blob);
+            XLSX.writeFile(wb, fileName);
             
-            const now = new Date();
-            const dateStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
-            const timeStr = `${String(now.getHours()).padStart(2, '0')}-${String(now.getMinutes()).padStart(2, '0')}`;
-            
-            link.setAttribute('href', url);
-            link.setAttribute('download', `طلبات_مختلف_${dateStr}_${timeStr}.csv`);
-            link.style.visibility = 'hidden';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            
-            showNotification('تم التصدير', `تم تصدير ${allOrders.length} طلب بنجاح`);
+            showNotification('✅ تم تصدير ملف Excel', 
+                `تم حفظ ${allOrders.length} طلب في الملف:\n📂 ${fileName}`,
+                'success'
+            );
         }
 
-        // إظهار الإشعار
-        function showNotification(title, message, type = 'success') {
-            const notification = document.getElementById('notification');
-            const notificationTitle = document.getElementById('notificationTitle');
-            const notificationMessage = document.getElementById('notificationMessage');
-            
-            notificationTitle.textContent = title;
-            notificationMessage.textContent = message;
-            
-            notification.className = 'notification';
-            if (type === 'error') {
-                notification.classList.add('error');
-            }
-            
-            notification.classList.add('show');
-            
-            setTimeout(() => {
-                notification.classList.remove('show');
-            }, 5000);
-        }
-
-        // إخفاء الإشعار
-        function hideNotification() {
-            document.getElementById('notification').classList.remove('show');
-        }
-
-        // إغلاق المودال
-        function closeModal() {
-            document.getElementById('orderModal').classList.remove('show');
-        }
-
-        // إغلاق مودال الحالة
-        function closeStatusModal() {
-            document.getElementById('statusModal').classList.remove('show');
-        }
-
-        // بدء التطبيق
+        // ========================= 🔧 **بدء التطبيق** =========================
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 بدء تحميل لوحة التحكم...');
+            
             if (checkAuth()) {
+                console.log('✅ المستخدم مسجل مسبقاً');
                 startAutoRefresh();
             } else {
+                console.log('👤 عرض شاشة تسجيل الدخول');
                 document.getElementById('loginScreen').style.display = 'flex';
             }
             
