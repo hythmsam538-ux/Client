@@ -356,7 +356,7 @@
 
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
-  //const visitRef = ref(db, "visitCount_dr");
+  const visitRef = ref(db, "visitCount_ha");
 
   // تحديث العدد مباشرة عند أي تغيير
   onValue(visitRef, snapshot => {
@@ -405,4 +405,5 @@
 
 
 </body>
+
 </html>
