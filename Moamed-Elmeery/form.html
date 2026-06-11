@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>تسجيل الطلاب</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy:   #1a2744;
+      --navy2:  #243257;
+      --gold:   #f0b429;
+      --gold2:  #e0a010;
+      --white:  #ffffff;
+      --light:  #e8edf5;
+      --muted:  #8896b3;
+      --success:#22c55e;
+      --error:  #ef4444;
+    }
+    body {
+      font-family: 'Tajawal', sans-serif;
+      background: var(--navy);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+      position: relative;
+      overflow-x: hidden;
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      top: -200px; right: -200px;
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(240,180,41,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    body::after {
+      content: '';
+      position: fixed;
+      bottom: -200px; left: -200px;
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(240,180,41,0.05) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .card {
+      background: var(--white);
+      border-radius: 20px;
+      width: 100%;
+      max-width: 520px;
+      overflow: hidden;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.4), 0 0 0 1px rgba(240,180,41,0.15);
+      animation: slideUp 0.5s ease;
+    }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .card-header {
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy2) 100%);
+      padding: 36px 32px 28px;
+      text-align: center;
+      position: relative;
+    }
+    .card-header::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    }
+
+    /* ========================================
+       مكان اللوجو
+       غيّر src="logo.jpg" لاسم ملف اللوجو بتاعك
+    ======================================== */
+    .logo-img {
+      width: 110px;
+      height: 110px;
+      object-fit: contain;
+      border-radius: 50%;
+      margin-bottom: 16px;
+      border: 3px solid rgba(240,180,41,0.5);
+      padding: 4px;
+      background: rgba(255,255,255,0.07);
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .card-header h1 {
+      font-family: 'Cairo', sans-serif;
+      font-weight: 900;
+      font-size: 1.65rem;
+      color: var(--white);
+      margin-bottom: 6px;
+    }
+    .card-header p { font-size: 0.88rem; color: var(--muted); }
+    .card-body { padding: 32px; background: #f8faff; }
+    .field-group { margin-bottom: 20px; }
+    label {
+      display: block;
+      font-family: 'Cairo', sans-serif;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--navy);
+      margin-bottom: 8px;
+    }
+    label span.req { color: var(--gold2); margin-right: 3px; }
+    input[type="text"],
+    input[type="tel"],
+    select {
+      width: 100%;
+      padding: 13px 16px;
+      border: 2px solid #dde3f0;
+      border-radius: 10px;
+      font-family: 'Tajawal', sans-serif;
+      font-size: 0.97rem;
+      color: var(--navy);
+      background: var(--white);
+      transition: border-color 0.25s, box-shadow 0.25s;
+      outline: none;
+      direction: rtl;
+    }
+    input[type="tel"] { direction: ltr; text-align: right; }
+    input:focus, select:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 4px rgba(240,180,41,0.12);
+    }
+    input.error-field, select.error-field { border-color: var(--error) !important; }
+    input.valid-field, select.valid-field { border-color: var(--success) !important; }
+    select {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238896b3' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: left 14px center;
+      cursor: pointer;
+    }
+    .field-error {
+      color: var(--error);
+      font-size: 0.8rem;
+      margin-top: 5px;
+      display: none;
+      font-family: 'Cairo', sans-serif;
+    }
+    .field-error.visible { display: block; }
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 6px 0 20px;
+    }
+    .divider span { flex: 1; height: 1px; background: #dde3f0; }
+    .divider p {
+      font-size: 0.78rem;
+      color: var(--muted);
+      white-space: nowrap;
+      font-family: 'Cairo', sans-serif;
+    }
+    .btn-submit {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(135deg, var(--gold) 0%, var(--gold2) 100%);
+      color: var(--navy);
+      font-family: 'Cairo', sans-serif;
+      font-weight: 900;
+      font-size: 1rem;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      margin-top: 8px;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.15s, box-shadow 0.15s;
+      box-shadow: 0 4px 15px rgba(240,180,41,0.35);
+    }
+    .btn-submit:hover  { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(240,180,41,0.45); }
+    .btn-submit:active { transform: translateY(0); }
+    .btn-submit:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
+    .btn-submit::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(255,255,255,0);
+      transition: background 0.3s;
+    }
+    .btn-submit:active::after { background: rgba(255,255,255,0.2); }
+    .toast {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 18px;
+      border-radius: 10px;
+      margin-top: 16px;
+      font-family: 'Cairo', sans-serif;
+      font-weight: 600;
+      font-size: 0.9rem;
+      animation: fadeIn 0.3s ease;
+    }
+    .toast.show { display: flex; }
+    .toast.success { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+    .toast.error   { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .spinner {
+      width: 18px; height: 18px;
+      border: 2px solid rgba(26,39,68,0.3);
+      border-top-color: var(--navy);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: none;
+      margin: 0 auto;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .card-footer {
+      padding: 16px 32px;
+      background: var(--light);
+      border-top: 1px solid #dde3f0;
+      text-align: center;
+      font-size: 0.78rem;
+      color: var(--muted);
+      font-family: 'Cairo', sans-serif;
+    }
+    @media (max-width: 480px) {
+      .card-body { padding: 24px 20px; }
+      .card-header { padding: 28px 20px 22px; }
+      .logo-img { width: 90px; height: 90px; }
+    }
+  </style>
+</head>
+<body>
+<div class="card">
+
+  <div class="card-header">
+    <!-- ========================================
+         اللوجو — غيّر logo.jpg لاسم ملفك
+    ======================================== -->
+    <img src="logo.jpg" alt="لوجو" class="logo-img" />
+
+    <h1>تسجيل الطالب</h1>
+    <p>يرجى ملء جميع البيانات بشكل صحيح وكامل</p>
+  </div>
+
+  <div class="card-body">
+    <form id="registrationForm" novalidate>
+
+      <!-- الاسم الثلاثي — إجباري -->
+      <div class="field-group">
+        <label for="fullName">الاسم الثلاثي <span class="req">*</span></label>
+        <input type="text" id="fullName" name="fullName"
+               placeholder="مثال: أحمد محمد علي" maxlength="80" />
+        <div class="field-error" id="fullName-err">يرجى إدخال الاسم الثلاثي كاملاً (3 كلمات على الأقل)</div>
+      </div>
+
+      <!-- الصف الدراسي — إجباري -->
+      <div class="field-group">
+        <label for="grade">الصف الدراسي <span class="req">*</span></label>
+        <select id="grade" name="grade">
+          <option value="">— اختر الصف —</option>
+          <option value="الأول الثانوي">الأول الثانوي</option>
+          <option value="الثاني الثانوي">الثاني الثانوي</option>
+          <option value="الثالث الثانوي">الثالث الثانوي</option>
+        </select>
+        <div class="field-error" id="grade-err">يرجى اختيار الصف الدراسي</div>
+      </div>
+
+      <div class="divider">
+        <span></span>
+        <p>بيانات التواصل</p>
+        <span></span>
+      </div>
+
+      <!-- رقم موبايل الطالب — إجباري، 11 رقم مصري -->
+      <div class="field-group">
+        <label for="studentPhone">رقم موبايل الطالب <span class="req">*</span></label>
+        <input type="tel" id="studentPhone" name="studentPhone"
+               placeholder="01xxxxxxxxx" maxlength="11" inputmode="numeric" />
+        <div class="field-error" id="studentPhone-err">رقم غير صحيح — يجب أن يكون 11 رقم ويبدأ بـ 010 أو 011 أو 012 أو 015</div>
+      </div>
+
+      <!-- رقم موبايل ولي الأمر — إجباري، 11 رقم مصري -->
+      <div class="field-group">
+        <label for="parentPhone">رقم موبايل ولي الأمر <span class="req">*</span></label>
+        <input type="tel" id="parentPhone" name="parentPhone"
+               placeholder="01xxxxxxxxx" maxlength="11" inputmode="numeric" />
+        <div class="field-error" id="parentPhone-err">رقم غير صحيح — يجب أن يكون 11 رقم ويبدأ بـ 010 أو 011 أو 012 أو 015</div>
+      </div>
+
+      <button type="submit" class="btn-submit" id="submitBtn">
+        <span id="btnText">📩 &nbsp; إرسال البيانات</span>
+        <div class="spinner" id="spinner"></div>
+      </button>
+
+      <div class="toast success" id="toastSuccess">
+        ✅ &nbsp; تم إرسال البيانات بنجاح! سنتواصل معك قريباً.
+      </div>
+      <div class="toast error" id="toastError">
+        ❌ &nbsp; حدث خطأ أثناء الإرسال، حاول مجدداً.
+      </div>
+
+    </form>
+  </div>
+
+  <div class="card-footer">
+    جميع البيانات محفوظة وآمنة · لأي استفسار تواصل مع المدرس
+  </div>
+
+</div>
+
+<script>
+  // =====================================================
+  // ⚙️ إعدادات Google Sheets
+  // 1. افتح Google Apps Script وانشر الكود
+  // 2. الصق الـ URL هنا بدل YOUR_SCRIPT_ID_HERE
+  // =====================================================
+  const SCRIPT_URL = "https://script.google.com/macros/s/YOUR_SCRIPT_ID_HERE/exec";
+
+  // الرقم المصري: 11 رقم يبدأ بـ 010 أو 011 أو 012 أو 015
+  function isValidEgyptPhone(val) {
+    return /^01[0125]\d{8}$/.test(val.trim());
+  }
+
+  function setFieldState(id, isError) {
+    const errEl = document.getElementById(id + '-err');
+    const inp   = document.getElementById(id);
+    if (!inp) return;
+    if (isError) {
+      inp.classList.add('error-field');
+      inp.classList.remove('valid-field');
+      if (errEl) errEl.classList.add('visible');
+    } else {
+      inp.classList.remove('error-field');
+      inp.classList.add('valid-field');
+      if (errEl) errEl.classList.remove('visible');
+    }
+  }
+
+  function validate(id) {
+    const el  = document.getElementById(id);
+    if (!el) return true;
+    const val = el.value.trim();
+    if (id === 'fullName') {
+      const ok = val.split(/\s+/).filter(Boolean).length >= 3;
+      setFieldState(id, !ok); return ok;
+    }
+    if (id === 'grade') {
+      const ok = !!val;
+      setFieldState(id, !ok); return ok;
+    }
+    if (id === 'studentPhone' || id === 'parentPhone') {
+      const ok = isValidEgyptPhone(val);
+      setFieldState(id, !ok); return ok;
+    }
+    return true;
+  }
+
+  ['fullName','grade','studentPhone','parentPhone'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('blur', () => validate(id));
+    el.addEventListener('input', () => {
+      if (el.classList.contains('error-field')) validate(id);
+    });
+  });
+
+  document.getElementById('registrationForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const fields = ['fullName','grade','studentPhone','parentPhone'];
+    const results = fields.map(f => validate(f));
+    if (!results.every(Boolean)) {
+      const firstError = fields.find((f, i) => !results[i]);
+      if (firstError) document.getElementById(firstError).scrollIntoView({behavior:'smooth', block:'center'});
+      return;
+    }
+    const btn = document.getElementById('submitBtn');
+    document.getElementById('btnText').style.display = 'none';
+    document.getElementById('spinner').style.display = 'block';
+    btn.disabled = true;
+    document.getElementById('toastSuccess').classList.remove('show');
+    document.getElementById('toastError').classList.remove('show');
+
+    const payload = {
+      fullName:     document.getElementById('fullName').value.trim(),
+      grade:        document.getElementById('grade').value,
+      studentPhone: document.getElementById('studentPhone').value.trim(),
+      parentPhone:  document.getElementById('parentPhone').value.trim(),
+      timestamp:    new Date().toLocaleString('ar-EG', {timeZone:'Africa/Cairo'})
+    };
+
+    try {
+      await fetch(SCRIPT_URL, {
+        method:  'POST',
+        mode:    'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify(payload)
+      });
+      document.getElementById('toastSuccess').classList.add('show');
+      this.reset();
+      fields.forEach(f => {
+        const el = document.getElementById(f);
+        if (el) el.classList.remove('valid-field','error-field');
+      });
+    } catch (err) {
+      document.getElementById('toastError').classList.add('show');
+      console.error(err);
+    } finally {
+      document.getElementById('btnText').style.display = 'inline';
+      document.getElementById('spinner').style.display = 'none';
+      btn.disabled = false;
+    }
+  });
+</script>
+</body>
+</html>
