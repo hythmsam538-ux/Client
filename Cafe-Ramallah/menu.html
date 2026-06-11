@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ram Allah — Menu</title>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:    #120b04;
+      --card:  #1e1108;
+      --gold:  #d4a96a;
+      --gold2: #b8873e;
+      --cream: #f0dfc0;
+      --muted: #8a6d4a;
+      --border: rgba(212,169,106,0.15);
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Tajawal', sans-serif; background: var(--bg); color: var(--cream); }
+
+    .hero { text-align: center; padding: 44px 20px 32px; border-bottom: 1px solid var(--border); }
+    .logo-circle { width:96px; height:96px; border-radius:50%; overflow:hidden; margin:0 auto 16px; border:2px solid var(--gold2); box-shadow:0 0 24px rgba(212,169,106,0.2); }
+    .logo-circle img { width:100%; height:100%; object-fit:cover; }
+    .hero h1 { font-size:clamp(24px,6vw,44px); font-weight:800; color:var(--cream); letter-spacing:3px; }
+    .hero p { font-size:13px; color:var(--gold); letter-spacing:4px; margin-top:4px; text-transform:uppercase; opacity:.8; }
+
+    nav { position:sticky; top:0; z-index:99; background:rgba(10,5,1,0.96); backdrop-filter:blur(12px); border-bottom:1px solid var(--border); display:flex; overflow-x:auto; scrollbar-width:none; padding:0 6px; }
+    nav::-webkit-scrollbar { display:none; }
+    .nav-btn { flex-shrink:0; background:none; border:none; color:var(--muted); font-family:'Tajawal',sans-serif; font-size:13px; font-weight:600; padding:12px 14px; cursor:pointer; border-bottom:2px solid transparent; transition:color .2s,border-color .2s; white-space:nowrap; }
+    .nav-btn.active, .nav-btn:hover { color:var(--gold); border-bottom-color:var(--gold); }
+
+    main { max-width:900px; margin:0 auto; padding:0 14px 60px; }
+
+    .sec { padding-top:40px; }
+    .sec-head { display:flex; align-items:center; gap:10px; margin-bottom:18px; padding-bottom:12px; border-bottom:1px solid var(--border); }
+    .sec-icon { width:36px; height:36px; border-radius:10px; background:rgba(212,169,106,0.1); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; }
+    .sec-title { font-size:clamp(18px,4vw,24px); font-weight:800; color:var(--cream); }
+    .sec-line { flex:1; height:1px; background:linear-gradient(to left,transparent,var(--border)); }
+
+    .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:10px; }
+
+    .card { background:var(--card); border:1px solid var(--border); border-radius:12px; overflow:hidden; transition:border-color .2s,transform .2s,box-shadow .2s; }
+    .card:hover { border-color:rgba(212,169,106,0.35); transform:translateY(-2px); box-shadow:0 8px 22px rgba(0,0,0,0.45); }
+
+    /* صورة المنتج */
+    .card-img {
+      width:100%; aspect-ratio:4/3; object-fit:cover; display:block; background:var(--card);
+    }
+    .card-img-placeholder {
+      width:100%; aspect-ratio:4/3;
+      background: linear-gradient(135deg, #1e1108, #2d1a0d);
+      display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px;
+      color:var(--muted); font-size:11px; letter-spacing:1px;
+    }
+    .card-img-placeholder svg { opacity:.3; }
+
+    .card-body { padding:12px 13px 14px; }
+    .card-name { font-size:14px; font-weight:700; color:var(--cream); line-height:1.3; }
+    .card-sub { font-size:11px; color:var(--muted); margin-top:3px; }
+    .card-price { font-size:18px; font-weight:800; color:var(--gold); margin-top:8px; }
+    .dual { display:flex; gap:12px; margin-top:8px; }
+    .dual-item { display:flex; flex-direction:column; align-items:center; }
+    .dual-label { font-size:10px; color:var(--muted); }
+    .dual-val { font-size:16px; font-weight:800; color:var(--gold); }
+
+    .sub-label { font-size:13px; font-weight:700; color:var(--muted); letter-spacing:1px; margin:18px 0 10px; text-transform:uppercase; }
+    .extras { display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:8px; }
+    .extra { background:rgba(212,169,106,0.06); border:1px solid rgba(212,169,106,0.14); border-radius:10px; padding:11px 13px; display:flex; justify-content:space-between; align-items:center; }
+    .extra-name { font-size:13px; font-weight:600; color:var(--cream); }
+    .extra-price { font-size:15px; font-weight:800; color:var(--gold); }
+
+    footer { text-align:center; padding:22px; border-top:1px solid var(--border); font-size:12px; color:var(--muted); }
+
+    @media (max-width:400px) { .grid { grid-template-columns:repeat(2,1fr); } }
+  </style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="logo-circle"><img src="LOGO.jpg"
+
+  <h1>RAM ALLAH</h1>
+  <p>Coffee &amp; More</p>
+  </div>
+</header>
+
+<nav>
+  <button class="nav-btn active" data-t="hot-coffee">☕ قهوة ساخنة</button>
+  <button class="nav-btn" data-t="hot-drinks">🍵 مشروبات ساخنة</button>
+  <button class="nav-btn" data-t="iced-coffee">🧊 قهوة باردة</button>
+  <button class="nav-btn" data-t="cold-drinks">🥤 باردة</button>
+  <button class="nav-btn" data-t="smoothies">🍓 سموزي</button>
+  <button class="nav-btn" data-t="milkshakes">🥛 ميلك شيك</button>
+  <button class="nav-btn" data-t="juices">🍊 عصائر</button>
+  <button class="nav-btn" data-t="matcha">🍵 ماتشا</button>
+  <button class="nav-btn" data-t="sodas">🫧 سوفت</button>
+  <button class="nav-btn" data-t="desserts">🍰 ديزيرت</button>
+  <button class="nav-btn" data-t="shisha">💨 شيشة</button>
+</nav>
+
+<main>
+<section class="sec" id="hot-coffee">
+  <div class="sec-head">
+    <div class="sec-icon">☕</div>
+    <h2 class="sec-title">قهوة ساخنة</h2>
+    <div class="sec-line"></div>
+  </div>
+  <div class="grid">
+    <div class="card">
+      <div class="card-img-placeholder">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        <span>ADD PHOTO</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">قهوة تركي</div>
+        <div class="dual"><div class="dual-item"><span class="dual-label">سنجل</span><span class="dual-val">30</span></div><div class="dual-item"><span class="dual-label">دبل</span><span class="dual-val">40</span></div></div>
+      </div>
+    </div>    <div class="card">
+      <div class="card-img-placeholder">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        <span>ADD PHOTO</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">اسبرسو</div>
+        <div class="dual"><div class="dual-item"><span class="dual-label">سنجل</span><span class="dual-val">45</span></div><div class="dual-item"><span class="dual-label">دبل</span><span class="dual-val">65</span></div></div>
+      </div>
+    </div>    <div class="card">
+      <div class="card-img-placeholder">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        <span>ADD PHOTO</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">ماكياتو</div>
+        <div class="dual"><div class="dual-item"><span class="dual-label">سنجل</span><span class="dual-val">50</span></div><div class="dual-item"><span class="dual-label">دبل</span><span class="dual-val">70</span></div></div>
+      </div>
+    </div>    <div class="card">
+      <div class="card-img-placeholder">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        <span>ADD PHOTO</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">كابتشينو</div>
+        <div class="card-price">60</div>
+      </div>
+    </div>    <div class="card">
+      <div class="card-img-placeholder">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        <span>ADD PHOTO</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">لاتيه</div>
+        <div class="card-price">60</div>
+      </div>
+    </div>    <div class="card">
+      <div class="card-img-placeholder">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        <span>ADD PHOTO</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">فلات وايت</div>
+        <div class="card-price">70</div>
+      </div>
+    </div>    <div class="card">
+      <div class="card-img-placeholder">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        <span>ADD PHOTO</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">كورتادو</div>
+        <div class="card-price">60</div>
+      </div>
+    </div>    <div class="card">
+      <div class="card-img-placeholder">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        <span>ADD PHOTO</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">موكا</div>
+        <div class="card-price">70</div>
+      </div>
+    </div>    <div class="card">
+      <div class="card-img-placeholder">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        <span>ADD PHOTO</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">لاتيه فستق</div>
+        <div class="card-price">75</div>
+      </div>
+    </div>    <div class="card">
+      <div class="card-img-placeholder">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        <span>ADD PHOTO</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">سبانش لاتيه</div>
+        <div class="card-price">80</div>
+      </div>
+    </div>    <div class="card">
+      <div class="card-img-placeholder">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        <span>ADD PHOTO</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">كراميل لاتيه</div>
+        <div class="card-price">75</div>
+      </div>
+    </div>    <div class="card">
+      <div class="card-img-placeholder">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        <span>ADD PHOTO</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">أمريكانو</div>
+        <div class="card-price">60</div>
+      </div>
+    </div>    <div class="card">
+      <div class="card-img-placeholder">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        <span>ADD PHOTO</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">قهوة فرنساوي</div>
+        <div class="card-price">50</div>
+      </div>
+    </div>    <div class="card">
+      <div class="card-img-placeholder">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        <span>ADD PHOTO</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">قهوة بندق</div>
+        <div class="card-price">55</div>
+      </div>
+    </div>    <div class="card">
+      <div class="card-img-placeholder">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        <span>ADD PHOTO</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">نسكافيه</div>
+        <div class="card-price">60</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="hot-drinks">
+  <div class="sec-head">
+    <div class="sec-icon">🍵</div>
+    <h2 class="sec-title">مشروبات ساخنة</h2>
+    <div class="sec-line"></div>
+  </div>
+  <div class="grid">
+    <div class="card">
+      <div class="card-img-placeholder">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        <span>ADD PHOTO</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">هوت شوكلت</div>
+        <div class="card-price">65</div>
+      </div>
+    </div>    <div class="card">
+      <div class="card-img-placeholder">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        <span>ADD PHOTO</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">شاي</div>
+        <div class="card-price">30</div>
+      </div>
+    </div>    <div class="card">
+      <div class="card-img-placeholder">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        <span>ADD PHOTO</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">شاي أعشاب</div>
+        <div class="card-price">35</div>
+      </div>
+    </div>    <div class="card">
+      <div class="card-img-placeholder">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        <span>ADD PHOTO</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">شاي أخضر</div>
+        <div class="card-price">40</div>
+      </div>
+    </div>    <div class="card">
+      <div class="card-img-placeholder">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        <span>ADD PHOTO</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">هوت سيدر</div>
+        <div class="card-price">50</div>
+      </div>
+    </div>    <div class="card">
+      <div class="card-img-placeholder">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        <span>ADD PHOTO</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">سحلب مكسرات</div>
+        <div class="card-price">60</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="iced-coffee">
+  <div class="sec-head">
+    <div class="sec-icon">🧊</div>
+    <h2 class="sec-title">قهوة باردة</h2>
+    <div class="sec-line"></div>
+  </div>
+  <div class="grid">
+    <div class="card">
+      <div class="card-img-placeholder">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        <span>ADD PHOTO</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">أيس أمريكانو</div>
+        <div class="card-price">70</div>
+      </div>
+    </div>    <div class="card">
+      <div class="card-img-placeholder">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        <span>ADD PHOTO</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">أيس لاتيه</div>
+        <div class="card-price">80</div>
+      </div>
+    </div>    <div class="card">
+      <div class="card-img-placeholder">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        <span>ADD PHOTO</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">أيس سبانش</div>
+        <div class="card-price">90</div>
+      </div>
+    </div>    <div class="card">
+      <div class="card-img-placeholder">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        <span>ADD PHOTO</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">فرابتشينو</div>
+        <div class="card-price">90</div>
+      </div>
+    </div>    <div class="card">
+      <div class="card-img-placeholder">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        <span>ADD PHOTO</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">أيس كراميل ماكياتو</div>
+        <div class="card-price">80</div>
+      </div>
+    </div>    <div class="card">
+      <div class="card-img-placeholder">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        <span>ADD PHOTO</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">أيس موكا</div>
+        <div class="card-price">90</div>
+      </div>
+    </div>    <div class="card">
+      <div class="card-img-placeholder">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        <span>ADD PHOTO</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">فرابيه فستق</div>
+        <div class="card-price">90</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="cold-drinks">
+  <div class="sec-head">
+    <div class="sec-icon">🥤</div>
+    <h2 class="sec-title">مشروبات باردة</h2>
+    <div class="sec-line"></div>
+  </div>
+  <div class="grid">
+    <div class="card">
+      <div class="card-img-placeholder">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        <span>ADD PHOTO</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">ريد بول موهيتو</div>
+        <div class="card-price">100</div>
+      </div>
+    </div>    <div class="card">
+      <div class="card-img-placeholder">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        <span>ADD PHOTO</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">موهيتو</div>
+        <div class="card-price">80</div>
+      </div>
+    </div>    <div class="card">
+      <div class="card-img-placeholder">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        <span>ADD PHOTO</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">صن شاين</div>
+        <div class="card-price">80</div>
+      </div>
+    </div>    <div class="card">
+      <div class="card-img-placeholder">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        <span>ADD PHOTO</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">بينا كولادا</div>
+        <div class="card-price">85</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="smoothies">
+  <div class="sec-head">
+    <div class="sec-icon">🍓</div>
+    <h2 class="sec-title">سموزي فريش</h2>
+    <div class="sec-line"></div>
+  </div>
+  <div class="grid">
+    <div class="card">
+      <div class="card-img-placeholder">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        <span>ADD PHOTO</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">بلوبيري</div>
+        <div class="card-price">70</div>
+      </div>
+    </div>    <div class="card">
+      <div class="card-img-placeholder">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        <span>ADD PHOTO</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">راسبيري</div>
+        <div class="card-price">75</div>
+      </div>
+    </div>    <div class="card">
+      <div class="card-img-placeholder">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        <span>ADD PHOTO</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">فراوله</div>
+        <div class="card-price">70</div>
+      </div>
+    </div>    <div class="card">
+      <div class="card-img-placeholder">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        <span>ADD PHOTO</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">مانجو</div>
+        <div class="card-price">80</div>
+      </div>
+    </div>    <div class="card">
+      <div class="card-img-placeholder">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        <span>ADD PHOTO</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">بطيخ نعناع</div>
+        <div class="card-price">75</div>
+      </div>
+    </div>    <div class="card">
+      <div class="card-img-placeholder">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        <span>ADD PHOTO</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">باشون فروت</div>
+        <div class="card-price">75</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="milkshakes">
+  <div class="sec-head">
+    <div class="sec-icon">🥛</div>
+    <h2 class="sec-title">ميلك شيك مثلج</h2>
+    <div class="sec-line"></div>
+  </div>
+  <div class="grid">
+    <div class="card">
+      <div class="card-img-placeholder">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        <span>ADD PHOTO</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">بلو بيري</div>
+        <div class="card-price">80</div>
+      </div>
+    </div>    <div class="card">
+      <div class="card-img-placeholder">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        <span>ADD PHOTO</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">فراوله</div>
+        <div class="card-price">80</div>
+      </div>
+    </div>    <div class="card">
+      <div class="card-img-placeholder">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        <span>ADD PHOTO</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">شوكولاته</div>
+        <div class="card-price">80</div>
+      </div>
+    </div>    <div class="card">
+      <div class="card-img-placeholder">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        <span>ADD PHOTO</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">فانيليا</div>
+        <div class="card-price">80</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="juices">
+  <div class="sec-head">
+    <div class="sec-icon">🍊</div>
+    <h2 class="sec-title">عصائر فريش</h2>
+    <div class="sec-line"></div>
+  </div>
+  <div class="grid">
+    <div class="card">
+      <div class="card-img-placeholder">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        <span>ADD PHOTO</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">ليمون نعناع</div>
+        <div class="card-price">70</div>
+      </div>
+    </div>    <div class="card">
+      <div class="card-img-placeholder">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        <span>ADD PHOTO</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">ليمون</div>
+        <div class="card-price">65</div>
+      </div>
+    </div>    <div class="card">
+      <div class="card-img-placeholder">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        <span>ADD PHOTO</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">مانجو</div>
+        <div class="card-price">80</div>
+      </div>
+    </div>    <div class="card">
+      <div class="card-img-placeholder">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        <span>ADD PHOTO</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">بطيخ</div>
+        <div class="card-price">70</div>
+      </div>
+    </div>    <div class="card">
+      <div class="card-img-placeholder">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        <span>ADD PHOTO</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">برتقال</div>
+        <div class="card-price">70</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="sodas">
+  <div class="sec-head">
+    <div class="sec-icon">🫧</div>
+    <h2 class="sec-title">مشروبات سوفت</h2>
+    <div class="sec-line"></div>
+  </div>
+  <div class="grid">
+    <div class="card">
+      <div class="card-img-placeholder">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        <span>ADD PHOTO</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">بيبسي / سفن / ميرندا</div>
+        <div class="card-price">40</div>
+      </div>
+    </div>    <div class="card">
+      <div class="card-img-placeholder">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        <span>ADD PHOTO</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">بيريل</div>
+        <div class="card-price">45</div>
+      </div>
+    </div>    <div class="card">
+      <div class="card-img-placeholder">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        <span>ADD PHOTO</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">فيروز</div>
+        <div class="card-price">45</div>
+      </div>
+    </div>    <div class="card">
+      <div class="card-img-placeholder">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        <span>ADD PHOTO</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">ريد بول</div>
+        <div class="card-price">90</div>
+      </div>
+    </div>    <div class="card">
+      <div class="card-img-placeholder">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        <span>ADD PHOTO</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">مياه معدنيه</div>
+        <div class="card-price">10</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="desserts">
+  <div class="sec-head">
+    <div class="sec-icon">🍰</div>
+    <h2 class="sec-title">ديزيرت لذيذة</h2>
+    <div class="sec-line"></div>
+  </div>
+  <div class="grid">
+    <div class="card">
+      <div class="card-img-placeholder">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        <span>ADD PHOTO</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">تشيز كيك كلاسيك</div>
+        <div class="card-price">75</div>
+      </div>
+    </div>    <div class="card">
+      <div class="card-img-placeholder">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        <span>ADD PHOTO</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">تشيز كيك</div><div class="card-sub">لوتس / نوتيلا / بلوبيري / فراوله</div>
+        <div class="card-price">85</div>
+      </div>
+    </div>    <div class="card">
+      <div class="card-img-placeholder">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        <span>ADD PHOTO</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">مولتن كيك + أيس كريم نوتيلا</div>
+        <div class="card-price">95</div>
+      </div>
+    </div>    <div class="card">
+      <div class="card-img-placeholder">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        <span>ADD PHOTO</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">سان سيباستيان كلاسيك</div>
+        <div class="card-price">90</div>
+      </div>
+    </div>    <div class="card">
+      <div class="card-img-placeholder">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        <span>ADD PHOTO</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">سان سيباستيان</div><div class="card-sub">نوتيلا / بلوبيري / لوتس</div>
+        <div class="card-price">95</div>
+      </div>
+    </div>    <div class="card">
+      <div class="card-img-placeholder">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        <span>ADD PHOTO</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">نوتيلا فادج</div>
+        <div class="card-price">95</div>
+      </div>
+    </div>    <div class="card">
+      <div class="card-img-placeholder">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        <span>ADD PHOTO</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">بان كيك</div>
+        <div class="card-price">55</div>
+      </div>
+    </div>    <div class="card">
+      <div class="card-img-placeholder">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        <span>ADD PHOTO</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">بان كيك فواكه</div>
+        <div class="card-price">75</div>
+      </div>
+    </div>    <div class="card">
+      <div class="card-img-placeholder">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        <span>ADD PHOTO</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">وافل</div>
+        <div class="card-price">55</div>
+      </div>
+    </div>    <div class="card">
+      <div class="card-img-placeholder">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        <span>ADD PHOTO</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">وافل فواكه</div>
+        <div class="card-price">75</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="shisha">
+  <div class="sec-head">
+    <div class="sec-icon">💨</div>
+    <h2 class="sec-title">شيشة فاخرة</h2>
+    <div class="sec-line"></div>
+  </div>
+  <div class="grid">
+    <div class="card">
+      <div class="card-img-placeholder">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        <span>ADD PHOTO</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">ارجيله فاخرة</div>
+        <div class="card-price">90</div>
+      </div>
+    </div>    <div class="card">
+      <div class="card-img-placeholder">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        <span>ADD PHOTO</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">لي طبي</div>
+        <div class="card-price">15</div>
+      </div>
+    </div>    <div class="card">
+      <div class="card-img-placeholder">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        <span>ADD PHOTO</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">معسل</div>
+        <div class="card-price">30</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+<footer>RAM ALLAH — Coffee &amp; More &nbsp;|&nbsp; جميع الأسعار بالجنيه المصري</footer>
+
+<script>
+  const btns = document.querySelectorAll('.nav-btn');
+  const secs  = document.querySelectorAll('.sec');
+  btns.forEach(b => b.addEventListener('click', () => {
+    btns.forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    const el = document.getElementById(b.dataset.t);
+    if (el) window.scrollTo({ top: el.getBoundingClientRect().top + scrollY - 52, behavior: 'smooth' });
+  }));
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting)
+        btns.forEach(b => b.classList.toggle('active', b.dataset.t === e.target.id));
+    });
+  }, { rootMargin: '-30% 0px -60% 0px' });
+  secs.forEach(s => obs.observe(s));
+</script>
+</body>
+</html>
