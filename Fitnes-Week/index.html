@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fitnes Week</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    :root {
+      --main-color: #00b894;
+      --bg-dark: linear-gradient(135deg, #000000, #003d2e, #001f17);
+      --bg-light: linear-gradient(135deg, #ffffff, #ccfff1, #ffffff);
+    }
+
+    body {
+      font-family: 'Tajawal', sans-serif;
+      color: #fff;
+      background: var(--bg-dark);
+      background-size: 400% 400%;
+      animation: gradientMove 10s ease infinite;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 15px;
+      overflow-x: hidden;
+      transition: 0.8s ease background, 0.8s ease color;
+    }
+
+    @keyframes gradientMove {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* 🌟 شاشة البداية */
+    #intro-screen {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: black;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      animation: fadeOut 1s ease forwards;
+      animation-delay: 2.8s;
+    }
+
+    #intro-screen img {
+      width: 600px;
+      max-width: 80%;
+      animation: fadeInLogo 3s ease;
+    }
+
+    @keyframes fadeInLogo {
+      0% { opacity: 0; transform: scale(0.8); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    @keyframes fadeOut {
+      to { opacity: 0; visibility: hidden; }
+    }
+
+    /* ✨ نجوم الخلفية */
+    .stars {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      overflow: hidden;
+      z-index: 0;
+    }
+
+    .stars span {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: white;
+      border-radius: 50%;
+      opacity: 0.8;
+      animation: moveStar 10s linear infinite;
+    }
+
+    @keyframes moveStar {
+      0% { transform: translateY(0) scale(1); opacity: 0.8; }
+      50% { transform: translateY(100px) scale(1.2); opacity: 1; }
+      100% { transform: translateY(0) scale(1); opacity: 0.8; }
+    }
+
+    /* 🟩 البطاقة */
+    .card {
+      position: relative;
+      background: rgba(27, 27, 27, 0.9);
+      padding: 25px;
+      border-radius: 18px;
+      box-shadow: 0 0 25px rgba(0, 0, 0, 0.6);
+      text-align: center;
+      max-width: 330px;
+      width: 100%;
+      backdrop-filter: blur(8px);
+      border: 1px solid #00b89433;
+      z-index: 2;
+      opacity: 0;
+      transform: translateY(40px);
+      animation: fadeInCard 1.5s ease-out forwards;
+      animation-delay: 0s;
+    }
+
+    @keyframes fadeInCard {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .theme-toggle {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 2px solid var(--main-color);
+      color: var(--main-color);
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 14px;
+      transition: 0.3s;
+      box-shadow: 0 0 8px var(--main-color);
+    }
+
+    .theme-toggle:hover {
+      background: var(--main-color);
+      color: #111;
+      transform: scale(1.1);
+    }
+
+    .card img {
+      width: 182px;
+      height: 182px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 12px;
+      border: 2px solid #00b894;
+      box-shadow: 0 0 12px #00b89488;
+    }
+
+    .card h1 {
+      font-size: 25px;
+      margin-bottom: 10px;
+      text-shadow: 0 0 4px #00b894;
+    }
+
+    .bio {
+      font-size: 15px;
+      margin-top: -8px;
+      margin-bottom: 6px;
+      text-shadow: 0 0 6px rgba(0, 255, 200, 0.4);
+    }
+
+    .quote {
+      font-size: 14px;
+      opacity: 0.9;
+      margin-bottom: 15px;
+      text-shadow: 0 0 8px rgba(0, 184, 148, 0.5);
+    }
+
+    .links {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .links a {
+      text-decoration: none;
+      color: #fff;
+      background: #222;
+      padding: 10px;
+      border-radius: 10px;
+      transition: 0.3s;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      opacity: 0;
+      transform: translateY(30px);
+      animation: slideIn 0.8s forwards;
+    }
+
+    @keyframes slideIn {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .links a:hover {
+      background: #00b894;
+      color: #111;
+      transform: scale(1.05);
+      box-shadow: 0 0 12px #00b894aa;
+    }
+
+    .call-button {
+      margin-top: 18px;
+      display: inline-block;
+      background: #00b894;
+      color: #ffffff;
+      padding: 10px 22px;
+      border-radius: 40px;
+      font-size: 15px;
+      font-weight: 600;
+      text-decoration: none;
+      box-shadow: 0 0 20px #00b894;
+    }
+
+    footer {
+      margin-top: 18px;
+      font-size: 11px;
+      color: #aaa;
+    }
+
+    .visits {
+      position: absolute;
+      bottom: 8px;
+      left: 10px;
+      font-size: 14px;
+      color: #aaa;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+    }
+
+    .visits i {
+      color: var(--main-color);
+    }
+
+    .visits span {
+      opacity: 0;
+      transition: 0.4s ease;
+    }
+
+    .visits.show span { opacity: 1; }
+
+    /* 🌞 وضع النهار */
+    body.light {
+      background: var(--bg-light);
+      color: #111;
+    }
+
+    body.light .card {
+      background: rgba(255, 255, 255, 0.9);
+      color: #111;
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+    }
+
+    body.light .links a {
+      background: #f0f0f0;
+      color: #111;
+    }
+
+    body.light .links a:hover {
+      background: #00b894;
+      color: white;
+    }
+
+    /* 🟢 شريط التمرير الجانبي */
+    #scroll-progress {
+      position: fixed;
+      right: 10px;
+      top: 0;
+      width: 6px;
+      height: 0;
+      background: var(--main-color);
+      border-radius: 4px;
+      z-index: 9999;
+      box-shadow: 0 0 10px var(--main-color);
+      transition: height 0.2s ease-out;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 🟢 شريط التمرير الجانبي -->
+  <div id="scroll-progress"></div>
+
+  <!-- 🌟 شاشة البداية -->
+  
+
+  <div class="stars" id="stars"></div>
+
+  <div class="card">
+    <button class="theme-toggle" id="theme-toggle"><i class="fas fa-moon"></i></button>
+
+<img src="f.jpg" alt="صورتك">
+    <h1> Fitnes Week
+</h1>
+    <p class="bio"> كمال اجسام لياقه بدنيه تنحيف مسبح سونا بخار ركن كافيه</p>
+
+    <div class="links">
+      <a href="https://www.facebook.com/ftnswyk?mibextid=wwXIfr&rdid=1QLMvPlpOt2egOrv&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F1CsRjJyKrz%2F%3Fmibextid%3DwwXIfr#" target="_blank"><i class="fab fa-facebook"></i> Facebook</a>
+      <a href="https://www.instagram.com/fitnes_week?igsh=ZzdkMXFpejh1cDc5&utm_source=qr" target="_blank"><i class="fab fa-instagram"></i> Instagram</a>
+      <a href="https://www.youtube.com/channel/UCdiCvkMVgiWxEcF5XIi1vuQ" target="_blank"><i class="fab fa-youtube"></i> Youtube</a>
+      <a href="https://www.tiktok.com/@gymcfw?_r=1&_t=ZS-97LfQMHo15E" target="_blank"><i class="fab fa-tiktok"></i> TikTok</a>
+      <a href="https://www.snapchat.com/@t0_4h?invite_id=JyQB3ENK&locale=ar_SA%40calendar%3Dgregorian&share_id=wYl_eX_RQDGYetDOp31mfw&sid=3fa4585f80ac4cd79a6186cddbb3f5ee" target="_blank"><i class="fab fa-snapchat-ghost"></i> Snapchat</a>
+      <a href="https://x.com/gymcfw?s=11" target="_blank"><i class="fab fa-x-twitter"></i> </a>
+      <a href="https://www.google.com/maps/place/%D9%85%D8%B1%D9%83%D8%B2+%D9%81%D8%AA%D9%86%D8%B3+%D9%88%D9%8A%D9%83+%D8%A7%D9%84%D8%B1%D9%8A%D8%A7%D8%B6%D9%8A%E2%80%AD/@28.2993829,46.1175484,910m/data=!3m2!1e3!4b1!4m6!3m5!1s0x3fd72ffaea245abf:0x697a6e386d6849ea!8m2!3d28.2993829!4d46.1175484!16s%2Fg%2F11t4cbwt6m!18m1!1e1?entry=ttu&g_ep=EgoyMDI2MDYxNi4wIKXMDSoASAFQAw%3D%3D" target="_blank">
+  <i class="fa-solid fa-location-dot"></i>
+موقعنا  على الخريطة</a>
+
+
+
+    <footer>جميع الحقوق محفوظة © 2026 | مُـخـتـلـف | هويتك الذكية
+ </footer>
+
+    <div class="visits" id="visits">
+      
+    </div>
+  </div>
+
+ <script type="module">
+  // 🌙 تبديل الوضع الليلي / النهاري
+  const toggleButton = document.getElementById('theme-toggle');
+  const body = document.body;
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme === 'light') {
+    body.classList.add('light');
+    toggleButton.innerHTML = '<i class="fas fa-sun"></i>';
+  }
+
+  toggleButton.addEventListener('click', () => {
+    body.classList.toggle('light');
+    const isLight = body.classList.contains('light');
+    toggleButton.innerHTML = isLight ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+    localStorage.setItem('theme', isLight ? 'light' : 'dark');
+  });
+
+  /* ------------------ 🔥 Firebase ------------------ */
+  
+
+
+  /* ------------------------------------------------------- */
+
+  // ✨ توليد النجوم
+  const starsContainer = document.getElementById('stars');
+  for (let i = 0; i < 70; i++) {
+    const star = document.createElement('span');
+    star.style.top = Math.random() * 100 + '%';
+    star.style.left = Math.random() * 100 + '%';
+    star.style.animationDelay = Math.random() * 5 + 's';
+    star.style.animationDuration = 6 + Math.random() * 5 + 's';
+    starsContainer.appendChild(star);
+  }
+
+  // 🕓 تسلسل ظهور الأزرار
+  const links = document.querySelectorAll('.links a');
+  links.forEach((link, index) => {
+    link.style.animationDelay = `${index * 0.2}s`;
+  });
+
+  // 🟢 شريط التمرير الجانبي
+  window.addEventListener('scroll', () => {
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const scrollPercent = (scrollTop / docHeight) * 100;
+    document.getElementById('scroll-progress').style.height = scrollPercent + '%';
+  });
+</script>
+
+
+</body>
+</html>
