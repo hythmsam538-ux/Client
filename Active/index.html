@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Active</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --main-color: #00b894;
+      --accent-orange: #ff7e29;
+      --accent-blue: #00c2ff;
+      --accent-purple: #8b5cf6;
+      --bg-dark: linear-gradient(135deg, #000000, #003d2e, #001f17);
+      --bg-light: linear-gradient(135deg, #ffffff, #ccfff1, #ffffff);
+    }
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: 'Tajawal', sans-serif;
+      color: #fff;
+      background: var(--bg-dark);
+      background-size: 400% 400%;
+      animation: gradientMove 10s ease infinite;
+      display: flex; align-items: center; justify-content: center;
+      min-height: 100vh; margin: 0; padding: 15px;
+      overflow-x: hidden;
+      transition: 0.8s ease background, 0.8s ease color;
+      position: relative;
+    }
+    @keyframes gradientMove {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    @keyframes popIn { 0% { opacity: 0; transform: scale(.5); } 100% { opacity: 1; transform: scale(1); } }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes bounceIn {
+      0% { opacity: 0; transform: translateY(40px) scale(0.7); }
+      60% { opacity: 1; transform: translateY(-8px) scale(1.06); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* ============== 🟢 شاشة البداية (إنترو) ============== */
+    #intro-screen {
+      position: fixed; inset: 0; z-index: 99999;
+      background: radial-gradient(circle at 50% 28%, #013c2c 0%, #000000 72%);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      overflow: hidden;
+      transition: opacity 0.7s ease, visibility 0.7s ease;
+    }
+    #intro-screen.hide { opacity: 0; visibility: hidden; pointer-events: none; }
+
+    .intro-bg { position: absolute; inset: 0; z-index: 0; }
+    .intro-bg .slide {
+      position: absolute; inset: 0; background-size: cover; background-position: center;
+      opacity: 0; transition: opacity 1.4s ease;
+    }
+    .intro-bg .slide.active { opacity: 0.32; }
+    .intro-overlay {
+      position: absolute; inset: 0; z-index: 1;
+      background: linear-gradient(180deg, rgba(0,0,0,.35), rgba(0,0,0,.88));
+    }
+
+    .intro-orbs { position: absolute; inset: 0; z-index: 1; overflow: hidden; }
+    .intro-orbs span {
+      position: absolute; border-radius: 50%; filter: blur(50px); opacity: 0.3;
+      animation: floatOrb 14s ease-in-out infinite;
+    }
+
+    .intro-content { position: relative; z-index: 2; text-align: center; padding: 0 24px; }
+
+    .intro-logo-img {
+      display: none; max-width: 220px; max-height: 140px; object-fit: contain;
+      margin: 0 auto; animation: popIn 0.9s cubic-bezier(.34,1.56,.64,1);
+      filter: drop-shadow(0 0 22px rgba(0,184,148,.55));
+    }
+    .intro-logo-fallback { display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .logo-word {
+      font-size: 48px; font-weight: 900; letter-spacing: 0.5px;
+      background: linear-gradient(90deg, var(--main-color), var(--accent-blue), var(--accent-purple), var(--accent-orange));
+      background-size: 300% 100%;
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+      animation: popIn 0.9s cubic-bezier(.34,1.56,.64,1), gradientMove 4s ease infinite;
+    }
+    .logo-jump { font-size: 28px; color: var(--accent-orange); animation: jumpIcon 1.1s ease-in-out infinite; }
+    @keyframes jumpIcon {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-14px) rotate(-14deg); }
+    }
+
+    .intro-tagline {
+      margin-top: 10px; font-size: 14px; color: #cfffe9; letter-spacing: .3px;
+      opacity: 0; animation: fadeUp 0.8s 0.35s forwards;
+    }
+
+    .intro-activities {
+      display: flex; gap: 12px; justify-content: center; margin-top: 26px;
+      flex-wrap: wrap; max-width: 300px;
+    }
+    .intro-chip {
+      display: flex; flex-direction: column; align-items: center; gap: 6px;
+      font-size: 11px; color: #fff; opacity: 0;
+      animation: fadeUp 0.6s cubic-bezier(.34,1.56,.64,1) forwards;
+    }
+    .intro-chip i {
+      font-size: 19px; width: 44px; height: 44px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(255,255,255,.07); border: 1.5px solid currentColor;
+    }
+
+    .intro-skip {
+      position: absolute; bottom: 26px; right: 50%; transform: translateX(50%);
+      background: transparent; border: 1px solid rgba(255,255,255,.4); color: #fff;
+      padding: 7px 18px; border-radius: 30px; font-size: 12px; cursor: pointer;
+      z-index: 3; font-family: 'Tajawal', sans-serif;
+    }
+    .intro-skip:hover { border-color: var(--main-color); color: var(--main-color); }
+
+    /* ============== خلفية الصفحة الرئيسية ============== */
+    .orbs { position: fixed; inset: 0; overflow: hidden; z-index: 0; pointer-events: none; }
+    .orb { position: absolute; border-radius: 50%; filter: blur(55px); opacity: 0.35; animation: floatOrb 16s ease-in-out infinite; }
+    .orb1 { width: 220px; height: 220px; background: var(--accent-orange); top: -40px; right: -40px; }
+    .orb2 { width: 260px; height: 260px; background: var(--accent-blue); bottom: -60px; left: -60px; animation-delay: 3s; }
+    .orb3 { width: 180px; height: 180px; background: var(--accent-purple); bottom: 30%; right: -50px; animation-delay: 6s; }
+    .orb4 { width: 160px; height: 160px; background: var(--main-color); top: 20%; left: -50px; animation-delay: 9s; }
+    @keyframes floatOrb {
+      0%, 100% { transform: translate(0,0) scale(1); }
+      50% { transform: translate(20px,-25px) scale(1.15); }
+    }
+
+    .stars { position: absolute; width: 100%; height: 100%; top: 0; left: 0; overflow: hidden; z-index: 0; }
+    .stars span {
+      position: absolute; width: 2px; height: 2px; background: white; border-radius: 50%;
+      opacity: 0.8; animation: moveStar 10s linear infinite;
+    }
+    @keyframes moveStar {
+      0% { transform: translateY(0) scale(1); opacity: 0.8; }
+      50% { transform: translateY(100px) scale(1.2); opacity: 1; }
+      100% { transform: translateY(0) scale(1); opacity: 0.8; }
+    }
+
+    /* ============== 🟩 البطاقة الرئيسية ============== */
+    .card {
+      position: relative;
+      background: rgba(27, 27, 27, 0.9);
+      padding: 26px 22px;
+      border-radius: 22px;
+      box-shadow: 0 0 25px rgba(0, 0, 0, 0.6);
+      text-align: center;
+      max-width: 360px; width: 100%;
+      backdrop-filter: blur(8px);
+      border: 1px solid #00b89433;
+      z-index: 2;
+      opacity: 0; transform: translateY(40px);
+      animation: fadeInCard 1.2s ease-out forwards;
+    }
+    @keyframes fadeInCard { to { opacity: 1; transform: translateY(0); } }
+
+    .theme-toggle {
+      position: absolute; top: 12px; left: 12px;
+      background: rgba(255, 255, 255, 0.1); border: 2px solid var(--main-color); color: var(--main-color);
+      border-radius: 50%; width: 32px; height: 32px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; font-size: 14px; transition: 0.3s; box-shadow: 0 0 8px var(--main-color);
+    }
+    .theme-toggle:hover { background: var(--main-color); color: #111; transform: scale(1.1); }
+
+    .avatar-ring {
+      width: 184px; height: 184px; border-radius: 50%; margin: 0 auto 12px; padding: 5px;
+      background: conic-gradient(from 0deg, var(--main-color), var(--accent-blue), var(--accent-purple), var(--accent-orange), var(--main-color));
+      animation: spinRing 7s linear infinite, popIn 0.8s cubic-bezier(.34,1.56,.64,1) both;
+      box-shadow: 0 0 18px rgba(0,184,148,0.45);
+    }
+    @keyframes spinRing { to { transform: rotate(360deg); } }
+    .card img.profile { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block; border: 3px solid #111; }
+
+    .card h1 {
+      font-size: 30px; font-weight: 900; letter-spacing: .3px; margin: 4px 0 6px;
+      text-shadow: 0 0 4px #00b894;
+      opacity: 0; animation: popIn 0.7s 0.15s cubic-bezier(.34,1.56,.64,1) forwards;
+    }
+    .bio {
+      font-size: 14.5px; margin: 0 0 16px; color: #d7fff1;
+      text-shadow: 0 0 6px rgba(0, 255, 200, 0.35);
+      opacity: 0; animation: popIn 0.7s 0.3s cubic-bezier(.34,1.56,.64,1) forwards;
+    }
+
+    .section-eyebrow {
+      text-align: right; font-size: 12px; font-weight: 700; letter-spacing: .3px;
+      color: var(--accent-orange); margin: 2px 2px 8px;
+      opacity: 0; animation: fadeUp 0.6s 0.55s forwards;
+    }
+
+    /* ============== 🎮 قسم الألعاب والأنشطة ============== */
+    .activities-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 18px; }
+    .activity-card {
+      position: relative; border-radius: 14px; overflow: hidden; aspect-ratio: 4 / 3;
+      border: 1.5px solid rgba(255,255,255,.1);
+      background: linear-gradient(135deg, rgba(255,255,255,.07), rgba(255,255,255,.02));
+      opacity: 0; transform: translateY(20px) scale(.9);
+      animation: bounceIn 0.6s cubic-bezier(.34,1.56,.64,1) forwards;
+    }
+    .activity-icon-fallback { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 26px; }
+    .activity-card img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; }
+    .activity-overlay {
+      position: absolute; bottom: 0; right: 0; left: 0; z-index: 2; padding: 7px 8px;
+      background: linear-gradient(0deg, rgba(0,0,0,.8), transparent);
+      display: flex; align-items: center; gap: 5px;
+    }
+    .activity-overlay span { font-size: 11.5px; font-weight: 700; color: #fff; }
+    .activity-overlay i { font-size: 11px; }
+
+    /* ============== أزرار الإجراءات ============== */
+    .cta-row { display: flex; gap: 10px; margin-bottom: 18px; }
+    .cta-btn {
+      flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 4px; padding: 13px 8px; border-radius: 16px; text-decoration: none;
+      font-size: 13px; font-weight: 700; cursor: pointer; border: none;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      opacity: 0; transform: translateY(25px) scale(.85);
+      animation: bounceIn 0.7s cubic-bezier(.34,1.56,.64,1) forwards;
+      font-family: 'Tajawal', sans-serif;
+    }
+    .cta-btn i { font-size: 19px; }
+    .watch-btn {
+      color: #fff;
+      background: linear-gradient(135deg, var(--accent-orange), var(--accent-purple), var(--accent-blue));
+      background-size: 200% 200%;
+      animation: bounceIn 0.7s cubic-bezier(.34,1.56,.64,1) forwards, gradientMove 6s ease infinite;
+      box-shadow: 0 0 16px rgba(139, 92, 246, 0.45);
+    }
+    .watch-btn:hover { transform: translateY(-4px) scale(1.04); box-shadow: 0 0 22px rgba(139, 92, 246, 0.7); }
+    .menu-btn { color: #fff; background: #00b894; box-shadow: 0 0 16px #00b89488; }
+    .menu-btn:hover { transform: translateY(-4px) scale(1.04); box-shadow: 0 0 22px #00b894cc; }
+
+    .links { display: flex; flex-direction: column; gap: 8px; }
+    .links a {
+      text-decoration: none; color: #fff; background: #222;
+      padding: 10px; border-radius: 10px; transition: 0.3s; font-size: 17px;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      opacity: 0; transform: translateY(30px); animation: slideIn 0.8s forwards;
+    }
+    @keyframes slideIn { to { opacity: 1; transform: translateY(0); } }
+    .links a:hover { background: #00b894; color: #111; transform: scale(1.05); box-shadow: 0 0 12px #00b894aa; }
+
+    footer { margin-top: 18px; font-size: 11px; color: #aaa; }
+
+    .visits {
+      position: absolute; bottom: 8px; left: 10px; font-size: 14px; color: #aaa;
+      display: flex; align-items: center; gap: 5px; cursor: pointer;
+    }
+    .visits i { color: var(--main-color); }
+    .visits span { opacity: 0; transition: 0.4s ease; }
+    .visits.show span { opacity: 1; }
+
+    body.light { background: var(--bg-light); color: #111; }
+    body.light .card { background: rgba(255, 255, 255, 0.92); color: #111; box-shadow: 0 0 12px rgba(0, 0, 0, 0.1); }
+    body.light .links a { background: #f0f0f0; color: #111; }
+    body.light .links a:hover { background: #00b894; color: white; }
+    body.light .bio { color: #0a3b30; }
+    body.light .activity-card { background: linear-gradient(135deg, rgba(0,0,0,.05), rgba(0,0,0,.02)); border-color: rgba(0,0,0,.1); }
+    body.light .gallery-box { background: rgba(255,255,255,0.97); color: #111; }
+    body.light .gallery-loading, body.light .gallery-empty { color: #555; }
+
+    #scroll-progress {
+      position: fixed; right: 10px; top: 0; width: 6px; height: 0;
+      background: var(--main-color); border-radius: 4px; z-index: 9999;
+      box-shadow: 0 0 10px var(--main-color); transition: height 0.2s ease-out;
+    }
+
+    /* ============== 📸 معرض صور المكان ============== */
+    .gallery-overlay {
+      position: fixed; inset: 0; z-index: 10001;
+      background: rgba(0,0,0,0.92); backdrop-filter: blur(6px);
+      display: flex; align-items: center; justify-content: center; padding: 18px;
+      opacity: 0; visibility: hidden; transition: opacity 0.35s ease, visibility 0.35s ease;
+    }
+    .gallery-overlay.active { opacity: 1; visibility: visible; }
+    .gallery-box {
+      background: rgba(20,20,20,0.96); border-radius: 20px; padding: 18px;
+      max-width: 460px; width: 100%; max-height: 82vh; overflow-y: auto;
+      border: 1px solid var(--accent-purple); box-shadow: 0 0 30px rgba(139,92,246,0.35);
+      transform: scale(0.9) translateY(20px); transition: transform 0.35s ease;
+    }
+    .gallery-overlay.active .gallery-box { transform: scale(1) translateY(0); }
+    .gallery-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+    .gallery-header h2 {
+      font-size: 17px; margin: 0;
+      background: linear-gradient(90deg, var(--accent-orange), var(--accent-blue));
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .gallery-close {
+      background: rgba(255,255,255,0.1); border: 2px solid var(--accent-orange); color: var(--accent-orange);
+      border-radius: 50%; width: 30px; height: 30px; cursor: pointer; font-size: 14px;
+      display: flex; align-items: center; justify-content: center; transition: 0.25s;
+    }
+    .gallery-close:hover { background: var(--accent-orange); color: #111; transform: rotate(90deg); }
+    .gallery-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .gallery-grid img {
+      width: 100%; aspect-ratio: 1 / 1; object-fit: cover; border-radius: 14px;
+      cursor: pointer; border: 2px solid transparent;
+      opacity: 0; transform: translateY(35px) scale(0.75);
+      animation: bounceIn 0.65s cubic-bezier(.34,1.56,.64,1) forwards;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+    .gallery-grid img:nth-child(4n+1) { border-color: var(--accent-orange); }
+    .gallery-grid img:nth-child(4n+2) { border-color: var(--accent-blue); }
+    .gallery-grid img:nth-child(4n+3) { border-color: var(--accent-purple); }
+    .gallery-grid img:nth-child(4n+4) { border-color: var(--main-color); }
+    .gallery-grid img:hover { transform: translateY(-4px) scale(1.04); box-shadow: 0 0 16px rgba(0,194,255,0.5); }
+    .gallery-loading, .gallery-empty { grid-column: 1 / -1; text-align: center; color: #ccc; font-size: 14px; padding: 24px 0; }
+
+    .lightbox {
+      position: fixed; inset: 0; z-index: 10002; background: rgba(0,0,0,0.97);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease; padding: 20px;
+    }
+    .lightbox.active { opacity: 1; visibility: visible; }
+    .lightbox img { max-width: 92vw; max-height: 80vh; border-radius: 12px; box-shadow: 0 0 30px rgba(0,184,148,0.4); }
+    .lightbox-close {
+      position: absolute; top: 18px; left: 18px;
+      background: rgba(255,255,255,0.1); border: 2px solid #fff; color: #fff;
+      border-radius: 50%; width: 34px; height: 34px; font-size: 15px;
+      display: flex; align-items: center; justify-content: center; cursor: pointer;
+    }
+    .lightbox-nav {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      background: rgba(255,255,255,0.1); border: 2px solid var(--main-color); color: var(--main-color);
+      border-radius: 50%; width: 38px; height: 38px; font-size: 16px;
+      display: flex; align-items: center; justify-content: center; cursor: pointer;
+    }
+    .lightbox-prev { right: 16px; }
+    .lightbox-next { left: 16px; }
+    .lightbox-nav.hidden, .lightbox-close.hidden { display: none; }
+  </style>
+</head>
+<body>
+
+  <!-- ============== شاشة البداية ============== -->
+  <div id="intro-screen">
+    <div class="intro-bg" id="intro-bg"></div>
+    <div class="intro-overlay"></div>
+    <div class="intro-orbs">
+      <span style="width:200px;height:200px;background:var(--accent-orange);top:-30px;right:-30px;"></span>
+      <span style="width:220px;height:220px;background:var(--accent-blue);bottom:-40px;left:-40px;animation-delay:3s;"></span>
+      <span style="width:160px;height:160px;background:var(--accent-purple);bottom:35%;right:-40px;animation-delay:6s;"></span>
+    </div>
+    <div class="intro-content">
+      <img id="intro-logo-img" class="intro-logo-img" alt="شعار Active">
+      <div class="intro-logo-fallback" id="intro-logo-fallback">
+        <span class="logo-word">Active</span>
+        <i class="fa-solid fa-person-falling logo-jump"></i>
+      </div>
+      <p class="intro-tagline">قفز. تسلق. مرح. بلا حدود.</p>
+      <div class="intro-activities" id="intro-activities"></div>
+    </div>
+    <button class="intro-skip" id="intro-skip">تخطي ⏭</button>
+  </div>
+
+  <div id="scroll-progress"></div>
+  <div class="orbs">
+    <div class="orb orb1"></div><div class="orb orb2"></div><div class="orb orb3"></div><div class="orb orb4"></div>
+  </div>
+  <div class="stars" id="stars"></div>
+
+  <div class="card">
+    <button class="theme-toggle" id="theme-toggle"><i class="fas fa-moon"></i></button>
+
+    <div class="avatar-ring">
+      <img class="profile" src="a.jpg" alt="صورتك">
+    </div>
+
+    <h1>Active</h1>
+    <p class="bio">لتجربة فريدة مليئة بالترفيه واللياقة</p>
+
+    <p class="section-eyebrow">🔥 جرّب معانا</p>
+    <div class="activities-grid" id="activities-grid"></div>
+
+    <div class="cta-row">
+      <button type="button" class="cta-btn watch-btn" id="watch-place-btn">
+        <i class="fa-solid fa-camera-retro"></i> شاهد المكان
+      </button>
+      <a href="m.pdf" target="_blank" class="cta-btn menu-btn">
+        <i class="fa-solid fa-table-list"></i> Menu
+      </a>
+    </div>
+
+    <div class="links">
+      <a href="https://www.instagram.com/activesaudi?igsh=MXA2ZjhycDB4d3Nzcg==" target="_blank"><i class="fab fa-instagram"></i> Instagram</a>
+      <a href="https://www.tiktok.com/@activesaudi?_r=1&_t=ZS-97NaOEzHVbQ" target="_blank"><i class="fab fa-tiktok"></i> TikTok</a>
+      <a href="https://wa.me/966555473239" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+      <a href="https://snapchat.com/t/xElSbiMc" target="_blank"><i class="fab fa-snapchat-ghost"></i> Snapchat</a>
+      <a href="https://maps.app.goo.gl/bv8ZqwYi6p4LE5PY8?g_st=ic" target="_blank">
+        <i class="fa-solid fa-location-dot"></i> موقعنا على الخريطة
+      </a>
+    </div>
+
+    <footer>جميع الحقوق محفوظة © 2026 | مُـخـتـلـف | هويتك الذكية</footer>
+    <div class="visits" id="visits"></div>
+  </div>
+
+  <!-- 📸 نافذة معرض صور المكان -->
+  <div class="gallery-overlay" id="gallery-overlay">
+    <div class="gallery-box">
+      <div class="gallery-header">
+        <h2><i class="fa-solid fa-photo-film"></i> شاهد المكان</h2>
+        <button class="gallery-close" id="gallery-close"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="gallery-grid" id="gallery-grid">
+        <p class="gallery-loading">جاري تحميل الصور...</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="lightbox" id="lightbox">
+    <button class="lightbox-close" id="lightbox-close"><i class="fa-solid fa-xmark"></i></button>
+    <button class="lightbox-nav lightbox-prev" id="lightbox-prev"><i class="fa-solid fa-chevron-right"></i></button>
+    <img id="lightbox-img" src="" alt="صورة المكان">
+        <img id="lightbox-img" src="1.jpeg" alt="صورة المكان">
+
+    <button class="lightbox-nav lightbox-next" id="lightbox-next"><i class="fa-solid fa-chevron-left"></i></button>
+  </div>
+
+  <script type="module">
+    /* =========================================================
+<
+       1) الشعار (إنترو):        logo.png  أو  logo.jpg
+       2) خلفية الإنترو المتحركة: intro-1.jpg  →  intro-4.jpg
+       3) صور الأنشطة (4 فقط):    activity-1.jpg → activity-4.jpg
+          بالترتيب: حفرة الإسفنج، التسلق، الترامبولين، إيربورت بارك
+       4) صورة البروفايل:         a.jpg (موجودة بالفعل)
+       5) معرض "شاهد المكان":     gallery-1.jpg → gallery-12.jpg
+          (gallery-1.jpg موجودة بالفعل)
+       فقط ارفع الملف بنفس الاسم بجانب index.html وسيظهر تلقائياً.
+    ========================================================= */
+
+    // 🌙 الوضع الليلي/النهاري
+    const toggleButton = document.getElementById('theme-toggle');
+    const body = document.body;
+    if (localStorage.getItem('theme') === 'light') {
+      body.classList.add('light');
+      toggleButton.innerHTML = '<i class="fas fa-sun"></i>';
+    }
+    toggleButton.addEventListener('click', () => {
+      body.classList.toggle('light');
+      const isLight = body.classList.contains('light');
+      toggleButton.innerHTML = isLight ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+      localStorage.setItem('theme', isLight ? 'light' : 'dark');
+    });
+
+    // ✨ النجوم
+    const starsContainer = document.getElementById('stars');
+    for (let i = 0; i < 70; i++) {
+      const star = document.createElement('span');
+      star.style.top = Math.random() * 100 + '%';
+      star.style.left = Math.random() * 100 + '%';
+      star.style.animationDelay = Math.random() * 5 + 's';
+      star.style.animationDuration = 6 + Math.random() * 5 + 's';
+      starsContainer.appendChild(star);
+    }
+
+    // 🕓 تسلسل ظهور أزرار الروابط
+    document.querySelectorAll('.links a').forEach((link, index) => {
+      link.style.animationDelay = `${1.25 + index * 0.15}s`;
+    });
+
+    // 🟢 شريط التمرير الجانبي
+    window.addEventListener('scroll', () => {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      document.getElementById('scroll-progress').style.height = (docHeight > 0 ? (scrollTop / docHeight) * 100 : 0) + '%';
+    });
+
+    /* ===================== 🎬 شاشة الإنترو ===================== */
+    const introScreen = document.getElementById('intro-screen');
+    const introSkip = document.getElementById('intro-skip');
+    const introLogoImg = document.getElementById('intro-logo-img');
+    const introLogoFallback = document.getElementById('intro-logo-fallback');
+    const introBg = document.getElementById('intro-bg');
+    const introActivitiesEl = document.getElementById('intro-activities');
+
+    // محاولة تحميل شعار حقيقي
+    (function tryLogo() {
+      const candidates = ['logo.png', 'logo.jpg', 'logo.jpeg', 'logo.svg'];
+      let i = 0;
+      function attempt() {
+        if (i >= candidates.length) return;
+        const img = new Image();
+        img.onload = () => { introLogoImg.src = candidates[i]; introLogoImg.style.display = 'block'; introLogoFallback.style.display = 'none'; };
+        img.onerror = () => { i++; attempt(); };
+        img.src = candidates[i];
+      }
+      attempt();
+    })();
+
+    // خلفية إنترو متحركة (اختيارية)
+    let slideIdx = 0;
+    for (let i = 1; i <= 4; i++) {
+      const src = `intro-${i}.jpg`;
+      const img = new Image();
+      img.onload = () => {
+        const div = document.createElement('div');
+        div.className = 'slide';
+        div.style.backgroundImage = `url(${src})`;
+        introBg.appendChild(div);
+        if (introBg.children.length === 1) div.classList.add('active');
+      };
+      img.src = src;
+    }
+    setInterval(() => {
+      const slides = introBg.querySelectorAll('.slide');
+      if (slides.length < 2) return;
+      slides[slideIdx].classList.remove('active');
+      slideIdx = (slideIdx + 1) % slides.length;
+      slides[slideIdx].classList.add('active');
+    }, 1900);
+
+    // شرائح الأنشطة فوق الإنترو
+    const INTRO_CHIPS = [
+      { icon: 'fa-water', label: 'حفرة إسفنج', color: 'var(--accent-orange)' },
+      { icon: 'fa-mountain', label: 'تسلق', color: 'var(--accent-blue)' },
+      { icon: 'fa-person-falling', label: 'ترامبولين', color: 'var(--accent-purple)' },
+      { icon: 'fa-wind', label: 'إيربورت بارك', color: 'var(--main-color)' },
+    ];
+    INTRO_CHIPS.forEach((c, i) => {
+      const chip = document.createElement('div');
+      chip.className = 'intro-chip';
+      chip.style.color = c.color;
+      chip.style.animationDelay = `${0.7 + i * 0.15}s`;
+      chip.innerHTML = `<i class="fa-solid ${c.icon}"></i><span>${c.label}</span>`;
+      introActivitiesEl.appendChild(chip);
+    });
+
+    function endIntro() {
+      introScreen.classList.add('hide');
+      document.body.style.overflow = '';
+    }
+    introSkip.addEventListener('click', endIntro);
+    introScreen.addEventListener('click', (e) => { if (e.target === introScreen) endIntro(); });
+    document.body.style.overflow = 'hidden';
+    setTimeout(endIntro, 4200);
+
+    /* ===================== 🎮 قسم الألعاب والأنشطة ===================== */
+    const ACTIVITIES = [
+      { label: 'حفرة الإسفنج', icon: 'fa-water', img: 'activity-1.jpg', color: 'var(--accent-orange)' },
+      { label: 'جدار التسلق', icon: 'fa-mountain', img: 'activity-2.jpg', color: 'var(--accent-blue)' },
+      { label: 'الترامبولين', icon: 'fa-person-falling', img: 'activity-3.jpg', color: 'var(--accent-purple)' },
+      { label: 'إيربورت بارك', icon: 'fa-wind', img: 'activity-4.jpg', color: 'var(--main-color)' },
+    ];
+    const activitiesGrid = document.getElementById('activities-grid');
+    ACTIVITIES.forEach((a, i) => {
+      const card = document.createElement('div');
+      card.className = 'activity-card';
+      card.style.animationDelay = `${0.9 + i * 0.12}s`;
+      card.style.borderColor = a.color;
+      card.innerHTML = `
+        <div class="activity-icon-fallback" style="color:${a.color}"><i class="fa-solid ${a.icon}"></i></div>
+        <img src="${a.img}" alt="${a.label}" onerror="this.remove()">
+        <div class="activity-overlay"><i class="fa-solid ${a.icon}" style="color:${a.color}"></i><span>${a.label}</span></div>
+      `;
+      activitiesGrid.appendChild(card);
+    });
+
+    /* ===================== 📸 معرض صور المكان ===================== */
+    const MAX_GALLERY_IMAGES = 12;
+    let galleryImages = [];
+    let galleryDetected = false;
+
+    function detectGalleryImages() {
+      return new Promise((resolve) => {
+        const found = new Array(MAX_GALLERY_IMAGES).fill(null);
+        let checked = 0;
+        for (let i = 1; i <= MAX_GALLERY_IMAGES; i++) {
+          const src = `gallery-${i}.jpeg`;
+          const img = new Image();
+          img.onload = () => { found[i - 1] = src; checked++; if (checked === MAX_GALLERY_IMAGES) finish(); };
+          img.onerror = () => { checked++; if (checked === MAX_GALLERY_IMAGES) finish(); };
+          img.src = src;
+        }
+        function finish() { galleryImages = found.filter(Boolean); galleryDetected = true; resolve(galleryImages); }
+      });
+    }
+
+    const galleryGrid = document.getElementById('gallery-grid');
+    function renderGalleryGrid() {
+      galleryGrid.innerHTML = '';
+      if (galleryImages.length === 0) {
+        galleryGrid.innerHTML = '<p class="gallery-empty">📸 الصور قادمة قريباً</p>';
+        return;
+      }
+      galleryImages.forEach((src, index) => {
+        const imgEl = document.createElement('img');
+        imgEl.src = src;
+        imgEl.alt = `صورة المكان ${index + 1}`;
+        imgEl.style.animationDelay = `${index * 0.08}s`;
+        imgEl.addEventListener('click', () => openLightbox(index));
+        galleryGrid.appendChild(imgEl);
+      });
+    }
+
+    const galleryOverlay = document.getElementById('gallery-overlay');
+    const watchBtn = document.getElementById('watch-place-btn');
+    const galleryCloseBtn = document.getElementById('gallery-close');
+
+    async function openGallery() {
+      galleryOverlay.classList.add('active');
+      document.body.style.overflow = 'hidden';
+      if (!galleryDetected) { galleryGrid.innerHTML = '<p class="gallery-loading">جاري تحميل الصور...</p>'; await detectGalleryImages(); }
+      renderGalleryGrid();
+    }
+    function closeGallery() { galleryOverlay.classList.remove('active'); document.body.style.overflow = ''; }
+    watchBtn.addEventListener('click', openGallery);
+    galleryCloseBtn.addEventListener('click', closeGallery);
+    galleryOverlay.addEventListener('click', (e) => { if (e.target === galleryOverlay) closeGallery(); });
+    detectGalleryImages(); // تحميل مسبق في الخلفية
+
+    /* عارض الصورة بالحجم الكامل */
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightbox-img');
+    const lightboxClose = document.getElementById('lightbox-close');
+    const lightboxPrev = document.getElementById('lightbox-prev');
+    const lightboxNext = document.getElementById('lightbox-next');
+    let currentIndex = 0;
+    function openLightbox(index) {
+      currentIndex = index; lightboxImg.src = galleryImages[currentIndex];
+      lightbox.classList.add('active');
+      const multiple = galleryImages.length > 1;
+      lightboxPrev.classList.toggle('hidden', !multiple);
+      lightboxNext.classList.toggle('hidden', !multiple);
+    }
+    function closeLightbox() { lightbox.classList.remove('active'); }
+    lightboxClose.addEventListener('click', closeLightbox);
+    lightbox.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox(); });
+    lightboxPrev.addEventListener('click', () => { currentIndex = (currentIndex - 1 + galleryImages.length) % galleryImages.length; lightboxImg.src = galleryImages[currentIndex]; });
+    lightboxNext.addEventListener('click', () => { currentIndex = (currentIndex + 1) % galleryImages.length; lightboxImg.src = galleryImages[currentIndex]; });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') { closeLightbox(); closeGallery(); endIntro(); }
+      if (lightbox.classList.contains('active')) {
+        if (e.key === 'ArrowLeft') lightboxNext.click();
+        if (e.key === 'ArrowRight') lightboxPrev.click();
+      }
+    });
+  </script>
+
+</body>
+</html>
