@@ -195,24 +195,55 @@
       opacity: 0; animation: fadeUp 0.6s 0.55s forwards;
     }
 
-    /* ============== 🎮 قسم الألعاب والأنشطة ============== */
+    /* ============== 🔗 كروت الروابط السريعة ============== */
     .activities-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 18px; }
     .activity-card {
-      position: relative; border-radius: 14px; overflow: hidden; aspect-ratio: 4 / 3;
-      border: 1.5px solid rgba(255,255,255,.1);
+      position: relative; border-radius: 14px; overflow: hidden;
+      padding: 16px 10px 14px;
+      border: 1.5px solid rgba(255,255,255,.12);
       background: linear-gradient(135deg, rgba(255,255,255,.07), rgba(255,255,255,.02));
       opacity: 0; transform: translateY(20px) scale(.9);
       animation: bounceIn 0.6s cubic-bezier(.34,1.56,.64,1) forwards;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+      cursor: pointer; text-decoration: none; color: #fff;
+      transition: transform 0.22s ease, box-shadow 0.22s ease;
+      min-height: 90px;
     }
-    .activity-icon-fallback { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 26px; }
-    .activity-card img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; }
-    .activity-overlay {
-      position: absolute; bottom: 0; right: 0; left: 0; z-index: 2; padding: 7px 8px;
-      background: linear-gradient(0deg, rgba(0,0,0,.8), transparent);
-      display: flex; align-items: center; gap: 5px;
+    .activity-card:hover { transform: translateY(-4px) scale(1.04); }
+    .activity-card .ac-icon {
+      font-size: 24px; width: 48px; height: 48px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(255,255,255,.07); border: 1.5px solid currentColor;
     }
-    .activity-overlay span { font-size: 11.5px; font-weight: 700; color: #fff; }
-    .activity-overlay i { font-size: 11px; }
+    .activity-card .ac-label { font-size: 12px; font-weight: 700; text-align: center; line-height: 1.3; }
+
+    /* ============== 📖 قسم الرؤية والرسالة ============== */
+    .vision-section {
+      margin-bottom: 18px; border-radius: 16px; overflow: hidden;
+      border: 1px solid rgba(0,184,148,.25);
+      background: linear-gradient(135deg, rgba(0,184,148,.08), rgba(139,92,246,.06));
+    }
+    .vision-tabs { display: flex; }
+    .vision-tab {
+      flex: 1; padding: 9px 6px; font-size: 12px; font-weight: 700;
+      background: transparent; border: none; color: rgba(255,255,255,.5);
+      cursor: pointer; font-family: 'Tajawal', sans-serif;
+      border-bottom: 2px solid transparent; transition: 0.25s;
+    }
+    .vision-tab.active { color: var(--main-color); border-bottom-color: var(--main-color); }
+    body.light .vision-tab { color: rgba(0,0,0,.4); }
+    body.light .vision-tab.active { color: var(--main-color); }
+    .vision-body { padding: 14px 14px 16px; }
+    .vision-pane { display: none; }
+    .vision-pane.active { display: block; }
+    .vision-pane h3 {
+      font-size: 13px; font-weight: 900; margin: 0 0 7px;
+      background: linear-gradient(90deg, var(--main-color), var(--accent-blue));
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .vision-pane p { font-size: 12.5px; line-height: 1.75; margin: 0; color: #cdeee5; text-align: right; }
+    body.light .vision-pane p { color: #1a3d32; }
 
     /* ============== أزرار الإجراءات ============== */
     .cta-row { display: flex; gap: 10px; margin-bottom: 18px; }
@@ -234,8 +265,7 @@
       box-shadow: 0 0 16px rgba(139, 92, 246, 0.45);
     }
     .watch-btn:hover { transform: translateY(-4px) scale(1.04); box-shadow: 0 0 22px rgba(139, 92, 246, 0.7); }
-    .menu-btn { color: #fff; background: #00b894; box-shadow: 0 0 16px #00b89488; }
-    .menu-btn:hover { transform: translateY(-4px) scale(1.04); box-shadow: 0 0 22px #00b894cc; }
+    
 
     .links { display: flex; flex-direction: column; gap: 8px; }
     .links a {
@@ -377,16 +407,29 @@
     <h1>Active</h1>
     <p class="bio">لتجربة فريدة مليئة بالترفيه واللياقة</p>
 
-    <p class="section-eyebrow">🔥 جرّب معانا</p>
+    <p class="section-eyebrow">🔗 روابط سريعة</p>
     <div class="activities-grid" id="activities-grid"></div>
+
+    <!-- 📖 الرؤية والرسالة -->
+    <div class="vision-section">
+      <div class="vision-tabs">
+        <button class="vision-tab active" data-pane="vision">🎯 رؤيتنا</button>
+        <button class="vision-tab" data-pane="mission">💡 رسالتنا</button>
+      </div>
+      <div class="vision-body">
+        <div class="vision-pane active" id="pane-vision">
+          <p>أن نكون الوجهة الترفيهية الأولى للعائلات والأطفال من خلال تقديم تجربة ألعاب وترفيه آمنة وممتعة ومبتكرة تساهم في تعزيز النشاط البدني والترفيه الهادف.</p>
+        </div>
+        <div class="vision-pane" id="pane-mission">
+          <p>توفير بيئة ترفيهية متكاملة وآمنة تضم الألعاب والأنشطة والخدمات المساندة، مع التركيز على جودة الخدمة ورضا العملاء وخلق تجارب ممتعة لا تُنسى للزوار.</p>
+        </div>
+      </div>
+    </div>
 
     <div class="cta-row">
       <button type="button" class="cta-btn watch-btn" id="watch-place-btn">
         <i class="fa-solid fa-camera-retro"></i> شاهد المكان
       </button>
-      <a href="m.pdf" target="_blank" class="cta-btn menu-btn">
-        <i class="fa-solid fa-table-list"></i> Menu
-      </a>
     </div>
 
     <div class="links">
@@ -410,9 +453,18 @@
         <h2><i class="fa-solid fa-photo-film"></i> شاهد المكان</h2>
         <button class="gallery-close" id="gallery-close"><i class="fa-solid fa-xmark"></i></button>
       </div>
+      <!-- 👇 دي 6 أماكن ثابتة للصور. غيّر src=".." بمكان كل صورة 👇 -->
       <div class="gallery-grid" id="gallery-grid">
-        <p class="gallery-loading">جاري تحميل الصور...</p>
+        <img class="gallery-photo" src="gallery-1.jpeg" alt="صورة المكان 1"><!-- صورة 1 -->
+        <img class="gallery-photo" src="gallery-2.jpeg" alt="صورة المكان 2"><!-- صورة 2 -->
+        <img class="gallery-photo" src="gallery-3.jpeg" alt="صورة المكان 3"><!-- صورة 3 -->
+        <img class="gallery-photo" src="gallery-4.jpeg" alt="صورة المكان 4"><!-- صورة 4 -->
+        <img class="gallery-photo" src="gallery-5.jpeg" alt="صورة المكان 5"><!-- صورة 5 -->
+        <img class="gallery-photo" src="gallery-6.jpeg" alt="صورة المكان 6"><!-- صورة 6 -->
+                <img class="gallery-photo" src="gallery-7.jpeg" alt="صورة المكان 6"><!-- صورة 6 -->
+
       </div>
+      <!-- 👆 لإضافة صورة: غيّر src="gallery-2.jpg" مثلاً لاسم ملف صورتك 👆 -->
     </div>
   </div>
 
@@ -420,23 +472,49 @@
     <button class="lightbox-close" id="lightbox-close"><i class="fa-solid fa-xmark"></i></button>
     <button class="lightbox-nav lightbox-prev" id="lightbox-prev"><i class="fa-solid fa-chevron-right"></i></button>
     <img id="lightbox-img" src="" alt="صورة المكان">
-        <img id="lightbox-img" src="1.jpeg" alt="صورة المكان">
-
     <button class="lightbox-nav lightbox-next" id="lightbox-next"><i class="fa-solid fa-chevron-left"></i></button>
   </div>
 
   <script type="module">
     /* =========================================================
-<
-       1) الشعار (إنترو):        logo.png  أو  logo.jpg
-       2) خلفية الإنترو المتحركة: intro-1.jpg  →  intro-4.jpg
-       3) صور الأنشطة (4 فقط):    activity-1.jpg → activity-4.jpg
+       🖼️ كل أماكن إضافة الصور في هذا الموقع:
+       تقدر ترفع أي امتداد: jpg أو jpeg أو png أو webp
+
+       1) الشعار (إنترو) — برفع ملف فقط:
+          logo.png / logo.jpg / logo.jpeg / logo.svg
+
+       2) خلفية الإنترو المتحركة (اختياري) — برفع ملف فقط:
+          intro-1 → intro-4
+
+       3) صور الأنشطة (4 فقط) — برفع ملف فقط:
+          activity-1 → activity-4
           بالترتيب: حفرة الإسفنج، التسلق، الترامبولين، إيربورت بارك
-       4) صورة البروفايل:         a.jpg (موجودة بالفعل)
-       5) معرض "شاهد المكان":     gallery-1.jpg → gallery-12.jpg
-          (gallery-1.jpg موجودة بالفعل)
-       فقط ارفع الملف بنفس الاسم بجانب index.html وسيظهر تلقائياً.
+
+       4) صورة البروفايل: a.jpg (موجودة بالفعل)
+
+       5) معرض "شاهد المكان" (6 أماكن ثابتة داخل الكود نفسه):
+          دوّر تحت على <div class="gallery-grid"> في HTML،
+          هتلاقي 6 وسوم <img>. غيّر قيمة src="gallery-1.jpg" في كل
+          واحدة لاسم ملف صورتك. متلمسش حاجة تانية في السطر.
     ========================================================= */
+
+    // 🧩 يحاول إيجاد الصورة بأي امتداد (jpg / jpeg / png / webp) — هكذا تعمل
+    // الصور بغض النظر عن الصيغة اللي بترفعها بيها من جوالك
+    const IMG_EXTS = ['jpg', 'jpeg', 'png', 'webp'];
+    function tryImage(basename) {
+      return new Promise((resolve) => {
+        let i = 0;
+        function attempt() {
+          if (i >= IMG_EXTS.length) return resolve(null);
+          const src = `${basename}.${IMG_EXTS[i]}`;
+          const img = new Image();
+          img.onload = () => resolve(src);
+          img.onerror = () => { i++; attempt(); };
+          img.src = src;
+        }
+        attempt();
+      });
+    }
 
     // 🌙 الوضع الليلي/النهاري
     const toggleButton = document.getElementById('theme-toggle');
@@ -500,16 +578,14 @@
     // خلفية إنترو متحركة (اختيارية)
     let slideIdx = 0;
     for (let i = 1; i <= 4; i++) {
-      const src = `intro-${i}.jpg`;
-      const img = new Image();
-      img.onload = () => {
+      tryImage(`intro-${i}`).then((src) => {
+        if (!src) return;
         const div = document.createElement('div');
         div.className = 'slide';
         div.style.backgroundImage = `url(${src})`;
         introBg.appendChild(div);
         if (introBg.children.length === 1) div.classList.add('active');
-      };
-      img.src = src;
+      });
     }
     setInterval(() => {
       const slides = introBg.querySelectorAll('.slide');
@@ -544,79 +620,57 @@
     document.body.style.overflow = 'hidden';
     setTimeout(endIntro, 4200);
 
-    /* ===================== 🎮 قسم الألعاب والأنشطة ===================== */
-    const ACTIVITIES = [
-      { label: 'حفرة الإسفنج', icon: 'fa-water', img: 'activity-1.jpg', color: 'var(--accent-orange)' },
-      { label: 'جدار التسلق', icon: 'fa-mountain', img: 'activity-2.jpg', color: 'var(--accent-blue)' },
-      { label: 'الترامبولين', icon: 'fa-person-falling', img: 'activity-3.jpg', color: 'var(--accent-purple)' },
-      { label: 'إيربورت بارك', icon: 'fa-wind', img: 'activity-4.jpg', color: 'var(--main-color)' },
+    /* ===================== 🔗 كروت الروابط السريعة ===================== */
+    const QUICK_LINKS = [
+      { label: 'منيو الكافيه', icon: 'fa-mug-hot',      color: 'var(--accent-orange)', href: 'c.pdf'       },
+      { label: 'منيو المطعم', icon: 'fa-utensils',       color: 'var(--accent-blue)',   href: 'r.pdf' },
+      { label: 'الباقات والاشتراكات', icon: 'fa-tags',  color: 'var(--accent-purple)', href: 's.pdf'        },
+      { label: 'المناسبات والحفلات',  icon: 'fa-champagne-glasses', color: 'var(--main-color)', href: 'p.pdf' },
     ];
     const activitiesGrid = document.getElementById('activities-grid');
-    ACTIVITIES.forEach((a, i) => {
-      const card = document.createElement('div');
+    QUICK_LINKS.forEach((item, i) => {
+      const card = document.createElement('a');
       card.className = 'activity-card';
+      card.href = item.href;
+      card.target = '_blank';
       card.style.animationDelay = `${0.9 + i * 0.12}s`;
-      card.style.borderColor = a.color;
+      card.style.borderColor = item.color;
+      card.style.color = '#fff';
       card.innerHTML = `
-        <div class="activity-icon-fallback" style="color:${a.color}"><i class="fa-solid ${a.icon}"></i></div>
-        <img src="${a.img}" alt="${a.label}" onerror="this.remove()">
-        <div class="activity-overlay"><i class="fa-solid ${a.icon}" style="color:${a.color}"></i><span>${a.label}</span></div>
+        <span class="ac-icon" style="color:${item.color}"><i class="fa-solid ${item.icon}"></i></span>
+        <span class="ac-label">${item.label}</span>
       `;
       activitiesGrid.appendChild(card);
     });
 
-    /* ===================== 📸 معرض صور المكان ===================== */
-    const MAX_GALLERY_IMAGES = 12;
-    let galleryImages = [];
-    let galleryDetected = false;
-
-    function detectGalleryImages() {
-      return new Promise((resolve) => {
-        const found = new Array(MAX_GALLERY_IMAGES).fill(null);
-        let checked = 0;
-        for (let i = 1; i <= MAX_GALLERY_IMAGES; i++) {
-          const src = `gallery-${i}.jpeg`;
-          const img = new Image();
-          img.onload = () => { found[i - 1] = src; checked++; if (checked === MAX_GALLERY_IMAGES) finish(); };
-          img.onerror = () => { checked++; if (checked === MAX_GALLERY_IMAGES) finish(); };
-          img.src = src;
-        }
-        function finish() { galleryImages = found.filter(Boolean); galleryDetected = true; resolve(galleryImages); }
+    /* ===================== 📖 تبديل الرؤية والرسالة ===================== */
+    document.querySelectorAll('.vision-tab').forEach((tab) => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.vision-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.vision-pane').forEach(p => p.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById(`pane-${tab.dataset.pane}`).classList.add('active');
       });
-    }
+    });
 
-    const galleryGrid = document.getElementById('gallery-grid');
-    function renderGalleryGrid() {
-      galleryGrid.innerHTML = '';
-      if (galleryImages.length === 0) {
-        galleryGrid.innerHTML = '<p class="gallery-empty">📸 الصور قادمة قريباً</p>';
-        return;
-      }
-      galleryImages.forEach((src, index) => {
-        const imgEl = document.createElement('img');
-        imgEl.src = src;
-        imgEl.alt = `صورة المكان ${index + 1}`;
-        imgEl.style.animationDelay = `${index * 0.08}s`;
-        imgEl.addEventListener('click', () => openLightbox(index));
-        galleryGrid.appendChild(imgEl);
-      });
-    }
-
+    /* ===================== 📸 معرض صور المكان (6 أماكن ثابتة في الكود) ===================== */
     const galleryOverlay = document.getElementById('gallery-overlay');
     const watchBtn = document.getElementById('watch-place-btn');
     const galleryCloseBtn = document.getElementById('gallery-close');
+    const galleryPhotos = Array.from(document.querySelectorAll('.gallery-photo'));
 
-    async function openGallery() {
-      galleryOverlay.classList.add('active');
-      document.body.style.overflow = 'hidden';
-      if (!galleryDetected) { galleryGrid.innerHTML = '<p class="gallery-loading">جاري تحميل الصور...</p>'; await detectGalleryImages(); }
-      renderGalleryGrid();
-    }
+    // لو حد من الـ6 أماكن لسه فاضي/الصورة مش موجودة، نخفيه بدل ما تظهر أيقونة مكسورة
+    galleryPhotos.forEach((img) => {
+      img.style.cursor = 'pointer';
+      img.addEventListener('error', () => { img.style.display = 'none'; });
+    });
+    function visiblePhotos() { return galleryPhotos.filter((img) => img.style.display !== 'none'); }
+
+    function openGallery() { galleryOverlay.classList.add('active'); document.body.style.overflow = 'hidden'; }
     function closeGallery() { galleryOverlay.classList.remove('active'); document.body.style.overflow = ''; }
     watchBtn.addEventListener('click', openGallery);
     galleryCloseBtn.addEventListener('click', closeGallery);
     galleryOverlay.addEventListener('click', (e) => { if (e.target === galleryOverlay) closeGallery(); });
-    detectGalleryImages(); // تحميل مسبق في الخلفية
 
     /* عارض الصورة بالحجم الكامل */
     const lightbox = document.getElementById('lightbox');
@@ -625,18 +679,37 @@
     const lightboxPrev = document.getElementById('lightbox-prev');
     const lightboxNext = document.getElementById('lightbox-next');
     let currentIndex = 0;
-    function openLightbox(index) {
-      currentIndex = index; lightboxImg.src = galleryImages[currentIndex];
-      lightbox.classList.add('active');
-      const multiple = galleryImages.length > 1;
+
+    galleryPhotos.forEach((img) => {
+      img.addEventListener('click', () => {
+        const photos = visiblePhotos();
+        currentIndex = photos.indexOf(img);
+        showLightboxImage(photos);
+        lightbox.classList.add('active');
+      });
+    });
+
+    function showLightboxImage(photos) {
+      photos = photos || visiblePhotos();
+      if (photos.length === 0) return;
+      lightboxImg.src = photos[currentIndex].src;
+      const multiple = photos.length > 1;
       lightboxPrev.classList.toggle('hidden', !multiple);
       lightboxNext.classList.toggle('hidden', !multiple);
     }
     function closeLightbox() { lightbox.classList.remove('active'); }
     lightboxClose.addEventListener('click', closeLightbox);
     lightbox.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox(); });
-    lightboxPrev.addEventListener('click', () => { currentIndex = (currentIndex - 1 + galleryImages.length) % galleryImages.length; lightboxImg.src = galleryImages[currentIndex]; });
-    lightboxNext.addEventListener('click', () => { currentIndex = (currentIndex + 1) % galleryImages.length; lightboxImg.src = galleryImages[currentIndex]; });
+    lightboxPrev.addEventListener('click', () => {
+      const photos = visiblePhotos();
+      currentIndex = (currentIndex - 1 + photos.length) % photos.length;
+      showLightboxImage(photos);
+    });
+    lightboxNext.addEventListener('click', () => {
+      const photos = visiblePhotos();
+      currentIndex = (currentIndex + 1) % photos.length;
+      showLightboxImage(photos);
+    });
 
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') { closeLightbox(); closeGallery(); endIntro(); }
